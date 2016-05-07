@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceScreen android:title="Notificaciones">
+
+        <CheckBoxPreference
+            android:key="notificacion_activo"
+            android:title="Notificaciones"
+            android:summary="Activa o desactiva las notificaciones"
+            android:defaultValue="true"/>
+
+        <ListPreference
+            android:dependency="notificacion_activo"
+            android:key="notificacion_intervalo"
+            android:title="Comprobar notificaciones cada..."
+            android:summary="Intervalo para buscar notificaciones"
+            android:dialogTitle="Intervalo"
+            android:entries="@array/notificaciones_intervalo"
+            android:entryValues="@array/notificaciones_intervalo_values"
+            android:defaultValue="@string/notificaciones_intervalo_values_defecto"/>
+
+    </PreferenceScreen>
+
+    <PreferenceScreen android:title="Chats">
+
+        <ListPreference
+            android:key="chat_intervalo"
+            android:title="Comprobar mensajes cada..."
+            android:summary="Intervalo para buscar nuevos mensajes"
+            android:dialogTitle="Intervalo"
+            android:entries="@array/chat_intervalo"
+            android:entryValues="@array/chat_intervalo_values"
+            android:defaultValue="@string/chat_intervalo_values_defecto"/>
+
+    </PreferenceScreen>
+
+    <PreferenceScreen android:title="Ayuda">
+        <Preference android:title="Listado de cambios" android:key="changelog"/>
+        <Preference android:title="Acerca de" android:key="about"/>
+    </PreferenceScreen>
+
+</PreferenceScreen>

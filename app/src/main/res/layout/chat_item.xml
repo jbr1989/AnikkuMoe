@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="wrap_content">
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/ImgAvatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:contentDescription="Descripción del contenido de la imagen"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_alignBottom="@+id/content"
+            android:layout_margin="5sp" />
+
+    <LinearLayout
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:background="@drawable/out_message_bg"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:orientation="vertical"
+            android:id="@+id/lytBody"
+            android:baselineAligned="false"
+            android:layout_marginLeft="55dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Usuario"
+                android:id="@+id/txtUsuario"
+                android:textStyle="bold"
+                android:textIsSelectable="true"
+                android:clickable="true"
+                android:contextClickable="false"
+                android:textColor="#FFFFFF" />
+
+            <WebView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/webBody"
+                android:layout_gravity="center_horizontal"
+                android:background="@android:color/transparent"
+                android:layerType="software"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Fecha"
+                android:id="@+id/txtFecha"
+                android:textColor="#FFFFFF"
+                android:gravity="bottom|right"
+                android:layout_alignParentRight="true"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

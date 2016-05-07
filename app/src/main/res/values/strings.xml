@@ -1,0 +1,159 @@
+<resources>
+    <string name="app_name">AnikkuMoe+</string>
+    <string name="url">http://www.anikku.moe/</string>
+    <string name="open">Abrir</string>
+    <string name="close">Cerrar</string>
+    <string name="desconocido"> \? </string>
+    <string name="lblNakamas">Nakamas</string>
+    <string name="lblSiguiendo">Siguiendo</string>
+    <string name="lblSeguidores">Seguidores</string>
+    <string name="lblPublicaciones">Publicaciones</string>
+
+    <!-- MENU -->
+    <string name="action_settings">Configuración</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="drawer_open">Se abrio el menu lateral</string>
+    <string name="drawer_close">Se cerro el menu lateral</string>
+
+    <!-- Nombres de los items -->
+    <string-array name="nav_drawer_items">
+        <item>Novedades</item>
+        <item>Notificaciones</item>
+        <item>Chat global</item>
+        <item>Nakamas</item>
+        <item>Perfil</item>
+        <item>Configuración</item>
+        <item>Logout</item>
+    </string-array>
+
+    <!-- Iconos de los items -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_whats_hot</item>
+        <item>@drawable/ic_notifications_black_24dp</item>
+        <item>@drawable/ic_chat_bubble_outline_black_24dp</item>
+        <item>@drawable/ic_group_black_24dp</item>
+        <item>@drawable/ic_account_circle_black_24dp</item>
+        <item>@drawable/ic_settings_black_24dp</item>
+        <item>@drawable/ic_power_settings_new_black_24dp</item>
+    </array>
+
+    <!-- Content Description -->
+    <string name="desc_list_item_icon">Item Icon</string>
+
+    <!-- Notificaciones -->
+    <string name="MSG_NOTIF_MEGCOM">le gusta tu comentario</string>
+    <string name="MSG_NOTIF_REPPUB">ha replicado tu publicación</string>
+    <string name="MSG_NOTIF_MEGPUB">le ha dado me gusta a tu publicación</string>
+    <string name="MSG_NOTIF_USRSEG">ahora te sigue</string>
+    <string name="MSG_NOTIF_COMPUB">ha comentado tu publicación</string>
+    <string name="MSG_NOTIF_PUBMEN">te menciono en su publicación.</string>
+    <string name="MSG_NOTIF_COMMEN">te menciono dentro de una publicación</string>
+    <string name="MSG_NOTIF_MENPRIV">te envio un mensaje privado</string>
+    <string name="MSG_NOTIF_PUBGUA">guardo tu publicación</string>
+    <string name="MSG_NOTIF_MEGRPUB">le gusta la publicación que republicaste</string>
+    <string name="MSG_NOTIF_COMRPUB">comento en la publicación que replicaste</string>
+    <string name="MSG_NOTIF_PLUGMEGCOM">le ha dado me gusta a tu comentario en ???</string>
+    <string name="MSG_NOTIF_PLUGPUBMEN">te menciono en su comentario de ???</string>
+
+    <string-array name="notificaciones_intervalo">
+        <item name="intervalo_1m">1 minuto</item>
+        <item name="intervalo_5m">5 minutos</item>
+        <item name="intervalo_15m">15 minutos</item>
+        <item name="intervalo_30m">30 minutos</item>
+        <item name="intervalo_1h">1 hora</item>
+        <item name="intervalo_6h">6 horas</item>
+        <item name="intervalo_1d">1 día</item>
+    </string-array>
+
+    <string-array name="notificaciones_intervalo_values">
+        <item name="intervalo_1m">60</item>
+        <item name="intervalo_5m">300</item>
+        <item name="intervalo_15m">900</item>
+        <item name="intervalo_30m">1800</item>
+        <item name="intervalo_1h">3600</item>
+        <item name="intervalo_6h">21600</item>
+        <item name="intervalo_1d">86400</item>
+    </string-array>
+
+    <string name="notificaciones_intervalo_values_defecto">300</string>
+
+    <!-- Chats -->
+
+    <string-array name="chat_intervalo">
+        <item name="intervalo_never">Nunca</item>
+        <item name="intervalo_3s">3 segundos</item>
+        <item name="intervalo_5s">5 segundos</item>
+        <item name="intervalo_10s">10 segundos</item>
+        <item name="intervalo_30s">30 segundos</item>
+        <item name="intervalo_1m">1 minuto</item>
+        <item name="intervalo_3m">3 minutos</item>
+        <item name="intervalo_5m">5 minutos</item>
+        <item name="intervalo_10m">10 minutos</item>
+        <item name="intervalo_30m">30 minutos</item>
+        <item name="intervalo_1h">1 hora</item>
+        <item name="intervalo_3h">3 horas</item>
+        <item name="intervalo_6h">6 horas</item>
+        <item name="intervalo_12h">12 horas</item>
+        <item name="intervalo_1d">1 dia</item>
+    </string-array>
+
+    <string-array name="chat_intervalo_values">
+        <item name="intervalo_never">0</item>
+        <item name="intervalo_3s">3</item>
+        <item name="intervalo_5s">5</item>
+        <item name="intervalo_10s">10</item>
+        <item name="intervalo_30s">30</item>
+        <item name="intervalo_1m">60</item>
+        <item name="intervalo_3m">180</item>
+        <item name="intervalo_5m">300</item>
+        <item name="intervalo_10m">600</item>
+        <item name="intervalo_30m">1800</item>
+        <item name="intervalo_1h">3600</item>
+        <item name="intervalo_3h">10800</item>
+        <item name="intervalo_6h">21600</item>
+        <item name="intervalo_12h">43200</item>
+        <item name="intervalo_1d">86400</item>
+    </string-array>
+
+    <string name="chat_intervalo_values_defecto">10</string>
+
+    <!-- Changelog -->
+
+    <string name="title_changelog">Listado de cambios</string>
+    <string name="title_credits">Acerca de</string>
+
+    <!-- Validador -->
+
+    <string name="validate_user_empty">Usuario obligatorio</string>
+    <string name="validate_pass_empty">Contraseña obligatoria</string>
+
+    <!-- Reactions -->
+    <string-array name="reactions_names">
+        <item>Me gusta</item>
+        <item>Sugoi</item>
+        <item>HaHa</item>
+        <item>Ara ara</item>
+        <item>Me entristece</item>
+        <item>Me enfada</item>
+    </string-array>
+
+    <string-array name="reactions_values">
+        <item>like</item>
+        <item>love</item>
+        <item>haha</item>
+        <item>wow</item>
+        <item>sorry</item>
+        <item>anger</item>
+    </string-array>
+
+    <string-array name="reactions_icons">
+        <item>@drawable/reaction_like_32</item>
+        <item>@drawable/reaction_love_32</item>
+        <item>@drawable/reaction_haha_32</item>
+        <item>@drawable/reaction_wow_32</item>
+        <item>@drawable/reaction_sorry_32</item>
+        <item>@drawable/reaction_anger_32</item>
+    </string-array>
+
+
+</resources>
