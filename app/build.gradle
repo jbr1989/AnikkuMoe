@@ -30,4 +30,5 @@ dependencies {
     compile 'com.google.guava:guava:19.0'
     compile 'com.malinskiy:superrecyclerview:1.1.2'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }

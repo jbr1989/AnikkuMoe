@@ -20,8 +20,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.basgeekball.awesomevalidation.AwesomeValidation;
-import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +35,6 @@ import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsUsuario;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
-import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -59,8 +56,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private String user, password;
     private TextView txtError;
 
-    private com.basgeekball.awesomevalidation.AwesomeValidation mAwesomeValidation;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,22 +75,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         oUsuarioSession = new clsUsuarioSession(this);
         Config = PreferenceManager.getDefaultSharedPreferences(this);
-
-
-        clearValidation();
-        mAwesomeValidation = new AwesomeValidation(BASIC);
-        addValidation(this);
-    }
-
-    private void clearValidation() {
-        if (mAwesomeValidation != null) {
-            mAwesomeValidation.clear();
-        }
-    }
-
-    private void addValidation(final Activity activity) {
-        mAwesomeValidation.addValidation(activity, R.id.txtUser,RegexTemplate.NOT_EMPTY, R.string.validate_user_empty);
-        mAwesomeValidation.addValidation(activity, R.id.txtPassword, RegexTemplate.NOT_EMPTY, R.string.validate_pass_empty);
     }
 
     @Override
@@ -108,8 +87,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 password = txtPassword.getText().toString();
 
                 //new AttemptLogin().execute();
-
-                if (mAwesomeValidation.validate()) login();
+                login();
 
                 break;
             case R.id.lblRecuperar:

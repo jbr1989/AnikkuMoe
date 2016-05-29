@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -153,6 +154,7 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
     }
 
     private void setAlignment(ViewHolder holder, boolean isMe) {
+
         if (isMe) {
             holder.lytBody.setBackgroundResource(R.drawable.in_message_bg);
 
@@ -161,8 +163,11 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             holder.imgAvatar.setLayoutParams(lp);
 
+            holder.imgAvatar.getLayoutParams().width=150;
+            holder.imgAvatar.getLayoutParams().height=150;
+
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.lytBody.getLayoutParams();
-            layoutParams.setMargins(5,0,85,0);
+            layoutParams.setMargins(5,0,170,0);
             holder.lytBody.setLayoutParams(layoutParams);
 
         } else {
@@ -174,7 +179,7 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
             holder.imgAvatar.setLayoutParams(lp);
 
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.lytBody.getLayoutParams();
-            layoutParams.setMargins(85,0,5,0);
+            layoutParams.setMargins(170,0,5,0);
             holder.lytBody.setLayoutParams(layoutParams);
 
         }

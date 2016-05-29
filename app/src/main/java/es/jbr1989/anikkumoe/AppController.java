@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import es.jbr1989.anikkumoe.http.LruBitmapCache;
 
@@ -30,6 +31,7 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+
     }
 
     public static synchronized AppController getInstance() {

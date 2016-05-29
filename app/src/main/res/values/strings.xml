@@ -19,6 +19,7 @@
     <string-array name="nav_drawer_items">
         <item>Novedades</item>
         <item>Notificaciones</item>
+        <item>Mensajes Privados</item>
         <item>Chat global</item>
         <item>Nakamas</item>
         <item>Perfil</item>
@@ -30,6 +31,7 @@
     <array name="nav_drawer_icons">
         <item>@drawable/ic_whats_hot</item>
         <item>@drawable/ic_notifications_black_24dp</item>
+        <item>@drawable/ic_email_black_24dp</item>
         <item>@drawable/ic_chat_bubble_outline_black_24dp</item>
         <item>@drawable/ic_group_black_24dp</item>
         <item>@drawable/ic_account_circle_black_24dp</item>

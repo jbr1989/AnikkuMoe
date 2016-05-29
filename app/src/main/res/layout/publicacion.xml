@@ -28,7 +28,7 @@
             android:gravity="center|end">
 
             <com.android.volley.toolbox.NetworkImageView
-                android:id="@+id/imgAvatarOri"
+                android:id="@+id/imgPubAvatarOri"
                 android:layout_width="20sp"
                 android:layout_height="20sp" />
 
@@ -44,7 +44,7 @@
         </RelativeLayout>
 
         <com.android.volley.toolbox.NetworkImageView
-            android:id="@+id/ImgAvatar"
+            android:id="@+id/imgPubAvatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:adjustViewBounds="true"
@@ -123,7 +123,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/webBody"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:background="@android:drawable/presence_video_busy" />
 
     </LinearLayout>
 
@@ -139,7 +140,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="5sp"
-            android:layout_marginRight="5sp">
+            android:layout_marginRight="5sp"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -161,7 +163,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="5sp"
-            android:layout_marginRight="5sp">
+            android:layout_marginRight="5sp"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -183,7 +186,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="5sp"
-            android:layout_marginRight="5sp">
+            android:layout_marginRight="5sp"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -205,7 +209,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="5sp"
-            android:layout_marginRight="5sp">
+            android:layout_marginRight="5sp"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -228,7 +233,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="5sp"
-            android:layout_marginRight="5sp">
+            android:layout_marginRight="5sp"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -251,7 +257,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="5sp"
-            android:layout_marginRight="5sp">
+            android:layout_marginRight="5sp"
+            android:layout_weight="1">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -268,13 +275,59 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/lytReactionReplicas"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5sp"
+            android:layout_marginRight="5sp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="28dp"
+                android:background="@drawable/icon_rep"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/txtReactionReplicas"
+                android:text="0"
+                android:layout_gravity="center_vertical"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lytAnime"
+        android:background="#ccc"
+        android:clickable="true"
+        android:contextClickable="false">
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/imgAnime"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:contentDescription="Descripción del contenido de la imagen"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/avatar"
+            android:layout_margin="2dp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Replicas"
-            android:id="@+id/txtReplicas" />
-
+            android:id="@+id/txtAnime"
+            android:layout_gravity="center_vertical" />
     </LinearLayout>
 
     <LinearLayout
@@ -290,9 +343,38 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:id="@+id/lytComentarios"
+            android:layout_weight="1"
+            android:id="@+id/lytLikes"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
             android:clickable="true">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="18dp"
+                android:id="@+id/imgLike"
+                android:layout_margin="5dp"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txtLike"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Me gusta"
+                android:layout_gravity="center"
+                android:paddingRight="10sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:id="@+id/lytComentar"
+            android:clickable="true"
+            android:longClickable="false">
 
             <ImageView
                 android:layout_width="25dp"
@@ -344,34 +426,6 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/lytLikes"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="18dp"
-                android:id="@+id/imgLikes"
-                android:background="@drawable/icon_like"
-                android:layout_margin="5dp"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Me gusta"
-                android:layout_gravity="center"
-                android:paddingRight="10sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal">
 
@@ -381,9 +435,68 @@
                 android:id="@+id/imgMore"
                 android:nestedScrollingEnabled="false"
                 android:background="@drawable/icon_more"
-                android:layout_margin="5dp" />
+                android:layout_margin="5dp"
+                android:visibility="gone" />
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lytComentarios">
+
+        <es.jbr1989.anikkumoe.other.ExpandedListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000"
+            android:fadingEdge="none"
+            android:focusable="false"
+            android:scrollbars="none"
+            android:id="@+id/lstComentarios"
+            android:visibility="visible"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2sp">
+
+            <ImageButton
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:id="@+id/pubKamojiButton"
+                android:background="@drawable/icon_kamoji"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="5sp"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/txtMensaje"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/btnComentario"
+                android:layout_toRightOf="@+id/pubKamojiButton"
+                android:autoText="true"
+                android:hint="mensaje" />
+
+            <ImageButton
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:id="@+id/btnComentario"
+                android:background="@android:drawable/ic_menu_send"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="5sp"
+                android:longClickable="true" />
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 

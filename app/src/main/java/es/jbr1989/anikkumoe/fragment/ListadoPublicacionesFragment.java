@@ -49,8 +49,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
-    public static final String TAG = "publicacionesFragment";
-
+    public static final String TAG = "ListadopublicacionesFragment";
 
     private clsUsuarioSession oUsuarioSession;
 
@@ -125,7 +124,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
 */
         mRecycler.setAdapter(mAdapter);
-        cargar_publicaciones();
+        //cargar_publicaciones();
 
         mRecycler.setRefreshListener(this);
         mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
@@ -146,7 +145,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
     @Override
     public void onRefresh() {
-        Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), "Recargar", Toast.LENGTH_LONG).show();
 
         mHandler.postDelayed(new Runnable() {
             public void run() {
@@ -158,7 +157,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
     @Override
     public void onMoreAsked(int numberOfItems, int numberBeforeMore, int currentItemPos) {
-        Toast.makeText(getActivity(), "More", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), "Cargando más publicaciones", Toast.LENGTH_LONG).show();
 
         mHandler.postDelayed(new Runnable() {
             public void run() {
@@ -180,8 +179,6 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             mAdapter.remove(position);
         }
     }
-
-
 
     //La vista de layout ha sido creada y ya está disponible
     @Override

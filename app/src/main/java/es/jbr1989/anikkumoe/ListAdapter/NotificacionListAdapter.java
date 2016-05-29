@@ -104,7 +104,10 @@ public class NotificacionListAdapter extends BaseAdapter {
         String novedades="";
 
         for(clsNotificacion oNotificacion : oNotificaciones){
-            if(oNotificacion.nuevo()) novedades += "\n" + "@" + oNotificacion.user.getNombre() + " " + MSG_NOTIFICACION.get(oNotificacion.getTipo());
+            if(oNotificacion.nuevo()) {
+                if (!oNotificacion.getTipo().equalsIgnoreCase("REACT")) novedades += "\n" + "@" + oNotificacion.user.getNombre() + " " + MSG_NOTIFICACION.get(oNotificacion.getTipo());
+                else novedades += "\n" + "@" + oNotificacion.user.getNombre() + "ha reaccionado "+ "a tu publicación";
+            }
         }
 
         return novedades;
@@ -148,12 +151,16 @@ public class NotificacionListAdapter extends BaseAdapter {
             txtFecha = viewHolder.txtFecha;
         }
 
-        if (oNotificaciones.get(position).nuevo()==Boolean.TRUE) lytNotificacion.setBackgroundColor(context.getResources().getColor(R.color.notification_new));
+        clsNotificacion oNotificacion = oNotificaciones.get(position);
+
+        if (oNotificacion.nuevo()==Boolean.TRUE) lytNotificacion.setBackgroundColor(context.getResources().getColor(R.color.notification_new));
         else lytNotificacion.setBackgroundColor(Color.TRANSPARENT);
 
-        imgAvatar.setImageUrl(ROOT_URL+"static-img/"+oNotificaciones.get(position).user.getAvatar(), imageLoader);
-        txtDescr.setText("@" + oNotificaciones.get(position).user.getNombre() + " " + MSG_NOTIFICACION.get(oNotificaciones.get(position).getTipo()));
-        txtFecha.setText(oDate.DateDiff(oNotificaciones.get(position).getFecha13(), System.currentTimeMillis()));
+        imgAvatar.setImageUrl(ROOT_URL+"static-img/"+oNotificacion.user.getAvatar(), imageLoader);
+        txtFecha.setText(oDate.DateDiff(oNotificacion.getFecha13(), System.currentTimeMillis()));
+
+        if (!oNotificacion.getTipo().equalsIgnoreCase("REACT")) txtDescr.setText("@" + oNotificacion.user.getNombre() + " " + MSG_NOTIFICACION.get(oNotificacion.getTipo()));
+        else txtDescr.setText("@" + oNotificacion.user.getNombre() + " " + "ha reaccionado "+ "a tu publicación");
 
         return convertView;
     }
@@ -199,6 +206,7 @@ public class NotificacionListAdapter extends BaseAdapter {
             case "COMRPUB": url+="feed/"+oNotificacion.feed.user.getUsuario()+ "/"+oNotificacion.getId().toString(); break;
             case "PLUGMEGCOM": url+=oNotificacion.getLink(); break;
             case "PLUGPUBMEN": url+=oNotificacion.getLink(); break;
+            case "REACT": url+="feed/"+oNotificacion.feed.user.getUsuario()+"/"+oNotificacion.getId().toString();break;
         }
 /*
         switch(oNotificacion.getTipo()){

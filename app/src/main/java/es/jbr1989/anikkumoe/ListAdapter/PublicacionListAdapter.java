@@ -7,13 +7,18 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +43,10 @@ import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.ReactionActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
+import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
+import es.jbr1989.anikkumoe.other.ExpandedListView;
 import es.jbr1989.anikkumoe.other.clsDate;
 
 /**
@@ -49,11 +56,14 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     //region VARIABLES
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String API_URL = AppController.getInstance().getApi();
     public static final String SP_NAME = "Publicaciones";
     public Integer pos;
 
     private Context context;
     private Long ultima_fecha;
+
+    private ComentariosListAdapter oListadoComentarios;
 
     private ArrayList<clsPublicacion> oPublicaciones;
     private Map<String, String> MSG_NOTIFICACION;
@@ -70,6 +80,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     public RequestQueue requestQueue;
     public CustomRequest request;
+    public CustomRequest2 request2;
 
     //endregion
 
@@ -86,6 +97,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
         PublicacionesConfig = context.getSharedPreferences(SP_NAME, 0);
         PublicacionesConfigEditor = PublicacionesConfig.edit();
+
     }
 
     public PublicacionListAdapter(Context context, ArrayList<clsPublicacion> oPublicaciones) {
@@ -99,6 +111,8 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
         PublicacionesConfig = context.getSharedPreferences(SP_NAME, 0);
         PublicacionesConfigEditor = PublicacionesConfig.edit();
+
+        oListadoComentarios= new ComentariosListAdapter(context);
 
     }
     //endregion
@@ -121,7 +135,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             holder.txtNombreOri.setText(oPublicacion.user.getHTMLNombre());
         }
 
-        holder.imgAvatar.setImageUrl(ROOT_URL+"static-img/" + (oPublicacion.getType().equalsIgnoreCase("REP") == Boolean.FALSE ? oPublicacion.user.getAvatar() : oPublicacion.user_original.getAvatar()), imageLoader);
+        holder.imgAvatar.setImageUrl(ROOT_URL+"static-img/" + (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getAvatar() : oPublicacion.user_original.getAvatar()), imageLoader);
         holder.txtNombre.setText((!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getHTMLNombre() : oPublicacion.user_original.getHTMLNombre()));
         holder.txtUsuario.setText("@" + (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getHTMLUsuario() : oPublicacion.user_original.getHTMLUsuario()));
 
@@ -137,19 +151,22 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
             holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")){
-            String frameVideo = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><iframe width=\"100%\" height=\"95%\" src=\"https://www.youtube.com/embed/"+oPublicacion.feed.getVideo()+"\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
-            holder.webBody.getSettings().setJavaScriptEnabled(true);
-            holder.webBody.loadDataWithBaseURL(null, frameVideo, "text/html", "UTF-8", null);
+            String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><a href=\""+oPublicacion.feed.getVideo()+"\"><img src=\"https://i.ytimg.com/vi/" + oPublicacion.feed.getIdVideo()+"/hqdefault.jpg\" style=\"max-width:100%;\"></a></body></html>";
+            holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
+        }
+
+        holder.lytAnime.setVisibility(View.GONE);
+
+        if(oPublicacion.feed.getAnime()!=null){
+            holder.imgAnime.setImageUrl("http://www.anilista.com/img/dir/anime/regular/"+oPublicacion.feed.anime.getId().toString()+".jpg", imageLoader);
+            holder.txtAnime.setText(oPublicacion.feed.anime.getTitulo());
+            holder.lytAnime.setVisibility(View.VISIBLE);
         }
 
         holder.txtComentarios.setText(oPublicacion.feed.stats.getComments());
 
-        holder.txtReplicas.setVisibility((Integer.parseInt(oPublicacion.feed.stats.getShared())>0 ? View.VISIBLE : View.GONE));
-        holder.txtReplicas.setText(oPublicacion.feed.stats.getShared()+" Replicas");
-
         holder.lytReplicas.setBackgroundColor((oPublicacion.getIs_replicated() ? context.getResources().getColor(R.color.btn_rep) : Color.TRANSPARENT));
         //holder.lytLikes.setBackgroundColor((oPublicacion.getMy_reaction() ? context.getResources().getColor(R.color.btn_like) : Color.TRANSPARENT));
-
 
         holder.lytReactionLike.setVisibility((oPublicacion.feed.stats.reactions.getLike()>0 ? View.VISIBLE : View.GONE));
         holder.lytReactionLove.setVisibility((oPublicacion.feed.stats.reactions.getLove()>0 ? View.VISIBLE : View.GONE));
@@ -157,6 +174,8 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         holder.lytReactionWow.setVisibility((oPublicacion.feed.stats.reactions.getWow()>0 ? View.VISIBLE : View.GONE));
         holder.lytReactionSorry.setVisibility((oPublicacion.feed.stats.reactions.getSorry()>0 ? View.VISIBLE : View.GONE));
         holder.lytReactionAnger.setVisibility((oPublicacion.feed.stats.reactions.getAnger()>0 ? View.VISIBLE : View.GONE));
+        holder.lytReactionReplicas.setVisibility((Integer.parseInt(oPublicacion.feed.stats.getShared())>0 ? View.VISIBLE : View.GONE));
+
 
         holder.txtReactionLike.setText(oPublicacion.feed.stats.reactions.getLike().toString());
         holder.txtReactionLove.setText(oPublicacion.feed.stats.reactions.getLove().toString());
@@ -164,6 +183,9 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         holder.txtReactionWow.setText(oPublicacion.feed.stats.reactions.getWow().toString());
         holder.txtReactionSorry.setText(oPublicacion.feed.stats.reactions.getSorry().toString());
         holder.txtReactionAnger.setText(oPublicacion.feed.stats.reactions.getAnger().toString());
+        holder.txtReactionReplicas.setText(oPublicacion.feed.stats.getShared());
+
+        holder.lytComentarios.setVisibility(View.GONE);
 
         holder.txtNombre.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -193,9 +215,24 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             }
         });
 
-        holder.lytComentarios.setOnClickListener(new View.OnClickListener() {
+        holder.lytAnime.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "PROXIMAMENTE", Toast.LENGTH_SHORT).show();
+                Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+"serie/" + oPublicacion.feed.anime.getId()));
+                v.getContext().startActivity(browserIntent1);
+
+            }
+        });
+
+        holder.lytComentar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(holder.lytComentarios.getVisibility()!=View.VISIBLE){
+                    oListadoComentarios= new ComentariosListAdapter(context);
+                    holder.lstComentarios.setAdapter(oListadoComentarios);
+                    cargar_comentarios(holder.lstComentarios, oPublicacion.feed.getId());
+                    holder.lytComentarios.setVisibility(View.VISIBLE);
+                }else{
+                    holder.lytComentarios.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -213,6 +250,45 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
                 if (!oPublicacion.getIs_replicated()) republicar(holder.lytReplicas, position, oPublicacion.feed.getId());
             }
         });
+
+        holder.btnComentario.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String messageText = holder.txtMessage.getText().toString();
+                if (TextUtils.isEmpty(messageText)) {
+                    Toast.makeText(context, "Escribe un comentario", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                comentar(holder, oPublicacion.feed.getId(),messageText);
+            }
+        });
+
+
+        String my_reaction =oPublicacion.getMy_reaction();
+
+        if (my_reaction.equalsIgnoreCase("like")) {
+            holder.imgLike.setImageResource(R.drawable.reaction_like_32);
+            holder.txtLike.setText("Me gusta");
+        } else if (my_reaction.equalsIgnoreCase("love")){
+            holder.imgLike.setImageResource(R.drawable.reaction_love_32);
+            holder.txtLike.setText("Sugoi");
+        } else if (my_reaction.equalsIgnoreCase("haha")){
+            holder.imgLike.setImageResource(R.drawable.reaction_haha_32);
+            holder.txtLike.setText("HaHa");
+        } else if (my_reaction.equalsIgnoreCase("wow")){
+            holder.imgLike.setImageResource(R.drawable.reaction_wow_32);
+            holder.txtLike.setText("Ara ara");
+        } else if (my_reaction.equalsIgnoreCase("sorry")){
+            holder.imgLike.setImageResource(R.drawable.reaction_sorry_32);
+            holder.txtLike.setText("Me entristece");
+        } else if (my_reaction.equalsIgnoreCase("anger")) {
+            holder.imgLike.setImageResource(R.drawable.reaction_anger_32);
+            holder.txtLike.setText("Me enfada");
+        }else{
+            holder.imgLike.setImageResource(R.drawable.icon_like);
+            holder.txtLike.setText("Me gusta");
+        }
+
+
 
     }
 
@@ -296,28 +372,36 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     // Guardar item cargado
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final LinearLayout lytPublicacion, lytComentarios, lytLikes, lytReplicas, lytReactionLike, lytReactionLove, lytReactionHaha, lytReactionWow, lytReactionSorry, lytReactionAnger;
-        public final NetworkImageView imgAvatar,imgAvatarOri;
+        public final LinearLayout lytPublicacion, lytAnime, lytComentar,lytComentarios, lytLikes, lytReplicas, lytReactionLike, lytReactionLove, lytReactionHaha, lytReactionWow, lytReactionSorry, lytReactionAnger, lytReactionReplicas;
+        public final NetworkImageView imgAvatar,imgAvatarOri,imgAnime;
+        public final ImageView imgLike;
         public final WebView webBody;
-        public final TextView txtNombre, txtFecha, txtUsuario, txtNombreOri, txtBody, txtComentarios, txtReplicas,  txtReactionLike, txtReactionLove, txtReactionHaha, txtReactionWow, txtReactionSorry, txtReactionAnger;;
+        public final TextView txtNombre, txtFecha, txtUsuario, txtNombreOri, txtBody, txtAnime, txtComentarios, txtReactionLike, txtReactionLove, txtReactionHaha, txtReactionWow, txtReactionSorry, txtReactionAnger, txtReactionReplicas, txtLike, txtMessage;
+        public final ExpandedListView lstComentarios;
+        public final ImageButton btnComentario;
 
         public ViewHolder(View itemView){
             super(itemView);
 
             this.lytPublicacion = (LinearLayout) itemView.findViewById(R.id.lytBody);
+            this.lytAnime = (LinearLayout) itemView.findViewById(R.id.lytAnime);
+            this.lytComentar = (LinearLayout)  itemView.findViewById(R.id.lytComentar);
             this.lytComentarios = (LinearLayout)  itemView.findViewById(R.id.lytComentarios);
             this.lytReplicas = (LinearLayout)  itemView.findViewById(R.id.lytReplicas);
             this.lytLikes = (LinearLayout)  itemView.findViewById(R.id.lytLikes);
-            this.imgAvatar = (NetworkImageView) itemView.findViewById(R.id.ImgAvatar);
-            this.imgAvatarOri = (NetworkImageView) itemView.findViewById(R.id.ImgAvatar);
+
+            this.imgAvatar = (NetworkImageView) itemView.findViewById(R.id.imgPubAvatar);
+            this.imgAvatarOri = (NetworkImageView) itemView.findViewById(R.id.imgPubAvatarOri);
             this.webBody= (WebView) itemView.findViewById(R.id.webBody);
             this.txtNombre = (TextView) itemView.findViewById(R.id.txtNombre);
             this.txtFecha = (TextView) itemView.findViewById(R.id.txtFecha);
             this.txtUsuario = (TextView) itemView.findViewById(R.id.txtUsuario);
             this.txtNombreOri = (TextView) itemView.findViewById(R.id.txtNombreOri);
             this.txtBody = (TextView) itemView.findViewById(R.id.txtBody);
+
+            this.imgAnime = (NetworkImageView) itemView.findViewById(R.id.imgAnime);
+            this.txtAnime=(TextView) itemView.findViewById(R.id.txtAnime);
             this.txtComentarios = (TextView) itemView.findViewById(R.id.txtComentarios);
-            this.txtReplicas = (TextView) itemView.findViewById(R.id.txtReplicas);
 
             this.lytReactionLike = (LinearLayout) itemView.findViewById(R.id.lytReactionLike);
             this.lytReactionLove = (LinearLayout) itemView.findViewById(R.id.lytReactionLove);
@@ -325,6 +409,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             this.lytReactionWow = (LinearLayout) itemView.findViewById(R.id.lytReactionWow);
             this.lytReactionSorry = (LinearLayout) itemView.findViewById(R.id.lytReactionSorry);
             this.lytReactionAnger = (LinearLayout) itemView.findViewById(R.id.lytReactionAnger);
+            this.lytReactionReplicas = (LinearLayout) itemView.findViewById(R.id.lytReactionReplicas);
 
             this.txtReactionLike = (TextView) itemView.findViewById(R.id.txtReactionLike);
             this.txtReactionLove = (TextView) itemView.findViewById(R.id.txtReactionLove);
@@ -332,83 +417,93 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             this.txtReactionWow = (TextView) itemView.findViewById(R.id.txtReactionWow);
             this.txtReactionSorry = (TextView) itemView.findViewById(R.id.txtReactionSorry);
             this.txtReactionAnger = (TextView) itemView.findViewById(R.id.txtReactionAnger);
+            this.txtReactionReplicas = (TextView) itemView.findViewById(R.id.txtReactionReplicas);
+
+            this.imgLike=(ImageView) itemView.findViewById(R.id.imgLike);
+            this.txtLike=(TextView)  itemView.findViewById(R.id.txtLike);
+
+            this.lstComentarios= (ExpandedListView) itemView.findViewById(R.id.lstComentarios);
+            this.btnComentario = (ImageButton) itemView.findViewById(R.id.btnComentario);
+            this.txtMessage = (EditText) itemView.findViewById(R.id.txtMensaje);
         }
     }
 
-    /*
-    //region OPCIONES PUBLICACION
+    //region COMENTARIOS
 
-    public void like(final LinearLayout lytLikes, final Integer position, String publicacion, final String tipo){
+    public void cargar_comentarios(final ExpandedListView lstComentarios, Integer id_publicacion){
+
+        oListadoComentarios.clearComentarios();
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
         headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("mdl", "publicaciones");
-        params.put("acc", "megusta");
-        params.put("usuario", "tester");
-        params.put("publicacion", publicacion);
-        params.put("tipo", tipo);
+        //params.put("mdl", "notificaciones");
+        //params.put("acc", "obtener");
 
-        request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
+        request2 = new CustomRequest2(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    if(response.getString("estado").equalsIgnoreCase("OK")){
-                        clsPublicacion oPublicacion = oPublicaciones.get(position);
-                        oPublicacion.setIs_liked(tipo.equalsIgnoreCase("crear"));
-                        lytLikes.setBackgroundColor((oPublicacion.getIs_liked() ? context.getResources().getColor(R.color.btn_like) : Color.TRANSPARENT));
-                    }else{Toast.makeText(context, response.getString("estado"), Toast.LENGTH_SHORT).show();}
-                } catch (JSONException e) {
-                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+            public void onResponse(JSONArray response) {
 
+                oListadoComentarios.setComentarios(response);
+                oListadoComentarios.putConfigNewsCount();
+
+                // setting the nav drawer list adapter
+                oListadoComentarios.notifyDataSetChanged();
+
+                //lstComentarios.setVisibility(View.VISIBLE);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
             }
-        });
+        },ROOT_URL+"api/user/activity/"+id_publicacion.toString()+"/comment?page=0");
+
+        requestQueue.add(request2);
+
+    }
+
+    public void comentar(final ViewHolder holder, Integer id_publicacion, String messageText){
+
+        holder.btnComentario.setEnabled(false);
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Content-Disposition", "form-data");
+        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("usus", "");
+        params.put("texto", messageText);
+
+        request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (oListadoComentarios.setNewComentarios(response)) oListadoComentarios.notifyDataSetChanged();
+                holder.txtMessage.setText("");
+                holder.btnComentario.setEnabled(true);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+                holder.btnComentario.setEnabled(true);
+            }
+        }, ROOT_URL+ "api/user/activity/" + id_publicacion.toString() + "/comment");
 
         requestQueue.add(request);
     }
-
-    public void dislike(final LinearLayout lytLikes, final Integer position, String publicacion, String tipo){
-
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("mdl", "publicaciones");
-        params.put("acc", "nomegusta");
-        params.put("usuario", "tester");
-        params.put("publicacion", publicacion);
-        params.put("tipo", tipo);
-
-        request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    if(response.getString("estado").equalsIgnoreCase("OK"))
-                        Toast.makeText(context, "LIKE", Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        requestQueue.add(request);
+/*
+    public void clearMessage(){
+        messageText.setText("");
     }
 */
+    //endregion
+
+    //region OPCIONES PUBLICACION
+
     public void republicar(final LinearLayout lytLikes, final Integer position, Integer id_publicacion){
 
         Map<String, String> headers = new HashMap<String, String>();

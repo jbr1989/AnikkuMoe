@@ -12,6 +12,14 @@ public class clsDate {
         Long diff = fin-inicio;
         Long aux = (long) 0;
 
+        aux=diff/(1000*60*60*24*(long)365.25); //Años
+        if(aux==1) return "hace 1 año";
+        if(aux!=0) return "hace "+aux.toString() + " años";
+
+        aux=diff/(1000*60*60*24*(long)30); //Meses
+        if(aux==1) return "hace 1 mes";
+        if(aux!=0) return "hace "+aux.toString() + " meses";
+
         aux =diff/(1000*60*60*24); //Días
         if(aux==1) return "hace 1 día";
         if(aux!=0) return "hace "+aux.toString() + " días";

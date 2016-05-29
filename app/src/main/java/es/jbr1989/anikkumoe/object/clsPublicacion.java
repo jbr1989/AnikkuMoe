@@ -25,7 +25,7 @@ public class clsPublicacion {
     public clsUser user_original;
     public clsPublicacionFeed feed;
 
-    private Boolean my_reaction;
+    private String my_reaction;
     private Boolean is_replicated;
 
     //endregion
@@ -95,10 +95,10 @@ public class clsPublicacion {
             try {this.feed.texto= feed.getString("texto");}
             catch (JSONException ex){ex.printStackTrace();}
 
-            try {this.feed.imagen= feed.getString("imagen");}
+            try {this.feed.imagen= feed.getString("imagen"); if(this.feed.imagen.equalsIgnoreCase("null"))this.feed.imagen="";}
             catch (JSONException ex){ex.printStackTrace();}
 
-            try {this.feed.video= feed.getString("video");}
+            try {this.feed.video= feed.getString("video"); if(this.feed.video.equalsIgnoreCase("null"))this.feed.video=""; }
             catch (JSONException ex){ex.printStackTrace();}
 
             try {this.feed.fecha= feed.getLong("fecha");}
@@ -163,7 +163,7 @@ public class clsPublicacion {
         }
         catch (JSONException ex){ex.printStackTrace();}
 
-        try {this.my_reaction= jPub.getBoolean("my_reaction");}
+        try {this.my_reaction= jPub.getString("my_reaction");}
         catch (JSONException ex){ex.printStackTrace();}
 
         try {this.is_replicated= jPub.getBoolean("is_replicated");}
@@ -200,8 +200,8 @@ public class clsPublicacion {
         return feed;
     }
 
-    public Boolean getMy_reaction() {
-        return (my_reaction==true);
+    public String getMy_reaction() {
+        return (my_reaction);
     }
 
     public Boolean getIs_replicated() {
@@ -231,8 +231,8 @@ public class clsPublicacion {
         private Integer id;
         private Boolean spoiler;
         private String texto;
-        private String imagen;
-        private String video;
+        private String imagen="";
+        private String video="";
         private Long fecha;
 
         public clsPublicacionFeedAnime anime;
@@ -256,6 +256,10 @@ public class clsPublicacion {
 
         public String getVideo() {
             return video;
+        }
+
+        public String getIdVideo(){
+            return video.split("&")[0].replace("https://www.youtube.com/watch?v=","");
         }
 
         public Long getFecha() {

@@ -23,10 +23,10 @@ import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.fragment.ConfigFragment;
 import es.jbr1989.anikkumoe.fragment.ListadoPublicacionesFragment;
 import es.jbr1989.anikkumoe.fragment.chatFragment;
+import es.jbr1989.anikkumoe.fragment.mensajesFragment;
 import es.jbr1989.anikkumoe.fragment.nakamasFragment;
 import es.jbr1989.anikkumoe.fragment.notificacionesFragment;
 import es.jbr1989.anikkumoe.fragment.perfilFragment;
-import es.jbr1989.anikkumoe.fragment.publicacionesFragment;
 import es.jbr1989.anikkumoe.menu.NavDrawerItem;
 import es.jbr1989.anikkumoe.menu.NavDrawerListAdapter;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
@@ -83,16 +83,18 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
         // Notificaciones
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1), true, oListadoNotificaciones.getConfigNewsCount().toString()));
-        // Chat global
+        // Mensajes Privados
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "0"));
-        // Nakamas conectados
+        // Chat global
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "0"));
+        // Nakamas conectados
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1), true, "0"));
         // Perfil
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
-        // Configuración
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(5, -1)));
-        // Logout
+        // Configuración
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(6, -1)));
+        // Logout
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(7, -1)));
 
 
         // Recycle the typed array
@@ -194,18 +196,21 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
                 fragment = new notificacionesFragment();
                 break;
             case 2:
-                fragment = new chatFragment();
+                fragment= new mensajesFragment();
                 break;
             case 3:
-                fragment = new nakamasFragment();
+                fragment = new chatFragment();
                 break;
             case 4:
-                fragment = new perfilFragment();
+                fragment = new nakamasFragment();
                 break;
             case 5:
-                fragment = new ConfigFragment();
+                fragment = new perfilFragment();
                 break;
             case 6:
+                fragment = new ConfigFragment();
+                break;
+            case 7:
                 oUsuarioSession.delUsuario();
                 oUsuarioSession.setLogin(false);
                 stopService(new Intent(this, NotifyService.class));

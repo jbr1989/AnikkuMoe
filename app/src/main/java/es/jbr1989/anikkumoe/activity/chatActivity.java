@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -58,8 +57,6 @@ public class chatActivity extends Activity {
 
     Long intervalo;
 
-    private com.basgeekball.awesomevalidation.AwesomeValidation mAwesomeValidation;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +77,8 @@ public class chatActivity extends Activity {
 
         lstChats.setAdapter(oListadoChats);
 
-        messageET = (EditText) findViewById(R.id.messageEdit);
-        sendBtn = (ImageButton) findViewById(R.id.chatSendButton);
+        messageET = (EditText) findViewById(R.id.txtMensaje);
+        sendBtn = (ImageButton) findViewById(R.id.btnComentario);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override

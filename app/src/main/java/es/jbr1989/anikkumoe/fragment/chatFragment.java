@@ -1,9 +1,7 @@
 package es.jbr1989.anikkumoe.fragment;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -23,8 +20,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
-import com.basgeekball.awesomevalidation.AwesomeValidation;
-import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 
 import org.json.JSONObject;
 
@@ -36,8 +31,6 @@ import es.jbr1989.anikkumoe.ListAdapter.ChatListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
-
-import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
 
 /**
  * Created by jbr1989 on 09/12/2015.
@@ -65,9 +58,6 @@ public class chatFragment extends Fragment {
     public static final String SP_NAME = "Chats";
 
     Long intervalo;
-
-    private com.basgeekball.awesomevalidation.AwesomeValidation mAwesomeValidation;
-
 
     private FragmentIterationListener mCallback = null;
     public interface FragmentIterationListener{
@@ -102,8 +92,8 @@ public class chatFragment extends Fragment {
 
         lstChats.setAdapter(oListadoChats);
 
-        messageET = (EditText) rootView.findViewById(R.id.messageEdit);
-        sendBtn = (ImageButton) rootView.findViewById(R.id.chatSendButton);
+        messageET = (EditText) rootView.findViewById(R.id.txtMensaje);
+        sendBtn = (ImageButton) rootView.findViewById(R.id.btnComentario);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override

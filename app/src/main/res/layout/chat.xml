@@ -14,20 +14,21 @@ android:orientation="vertical">
         <ImageButton
             android:layout_width="30sp"
             android:layout_height="30sp"
-            android:id="@+id/chatKamojiButton"
+            android:id="@+id/pubKamojiButton"
             android:background="@drawable/icon_kamoji"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_margin="5sp" />
+            android:layout_margin="5sp"
+            android:visibility="gone" />
 
         <EditText
-            android:id="@+id/messageEdit"
+            android:id="@+id/txtMensaje"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/chatSendButton"
-            android:layout_toRightOf="@+id/chatKamojiButton"
+            android:layout_toLeftOf="@+id/btnComentario"
+            android:layout_toRightOf="@+id/pubKamojiButton"
             android:autoText="true"
             android:hint="mensaje" />
 
@@ -35,7 +36,7 @@ android:orientation="vertical">
         <ImageButton
             android:layout_width="30sp"
             android:layout_height="30sp"
-            android:id="@+id/chatSendButton"
+            android:id="@+id/btnComentario"
             android:background="@android:drawable/ic_menu_send"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
@@ -48,15 +49,12 @@ android:orientation="vertical">
             android:layout_height="match_parent"
             android:layout_alignParentLeft="false"
             android:layout_alignParentTop="false"
-            android:layout_above="@+id/messageEdit"
+            android:layout_above="@+id/txtMensaje"
             android:listSelector="@android:color/transparent"
             android:transcriptMode="alwaysScroll"
             android:dividerHeight="5sp"
             android:divider="@null"
             android:contextClickable="false" />
-
-
-
 
     </RelativeLayout>
 </LinearLayout>
