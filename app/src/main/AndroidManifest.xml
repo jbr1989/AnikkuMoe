@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".activity.homeActivity" android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".activity.chatActivity" />
+        <activity android:name=".activity.NuevaPublicacionActivity" android:theme="@android:style/Theme.DeviceDefault.Light.DarkActionBar" android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".activity.ReactionActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" android:noHistory="true" android:label="Puntuar" />
 
         <!--

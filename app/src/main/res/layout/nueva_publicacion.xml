@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    tools:context=".activity.NuevaPublicacionActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/txtPublicacion"
+        android:layout_weight="0.95"
+        android:layout_gravity="top"
+        android:backgroundTint="@color/abc_secondary_text_material_light"
+        android:gravity="top|start" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PUBLICAR"
+        android:id="@+id/btnAddPublicacion"
+        android:layout_gravity="bottom|right" />
+</LinearLayout>
