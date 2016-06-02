@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class NuevaPublicacionActivity extends Activity {
 
     public EditText txtPublicacion;
     public Button btnAddPublicacion;
+    public CheckBox chkSpoiler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class NuevaPublicacionActivity extends Activity {
 
         txtPublicacion = (EditText) findViewById(R.id.txtPublicacion);
         btnAddPublicacion = (Button) findViewById(R.id.btnAddPublicacion);
+        chkSpoiler = (CheckBox)  findViewById(R.id.chkSpoiler);
 
         btnAddPublicacion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +79,7 @@ public class NuevaPublicacionActivity extends Activity {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("texto", publicacionText);
-        params.put("spoiler", "false");
+        params.put("spoiler", String.valueOf(chkSpoiler.isChecked()));
         params.put("tipo", "1");
         //params.put("tags", "1");
         //params.put("usus", "1");

@@ -9,6 +9,8 @@
     <string name="lblSeguidores">Seguidores</string>
     <string name="lblPublicaciones">Publicaciones</string>
 
+    <string name="alertaSpoiler">Advertencia, esta publicación podría contener spoiler. \n (click para ver)</string>
+
     <!-- MENU -->
     <string name="action_settings">Configuración</string>
     <string name="hello_world">Hello world!</string>
@@ -17,7 +19,7 @@
 
     <!-- Nombres de los items -->
     <string-array name="nav_drawer_items">
-        <item>Novedades</item>
+        <item>Resumen</item>
         <item>Notificaciones</item>
         <item>Mensajes Privados</item>
         <item>Chat global</item>

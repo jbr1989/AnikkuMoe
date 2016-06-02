@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<changelog>
-    <release version="1.2" versioncode="3" summary="Example summary" date="12/26/2012">
-        <change>Fixed: A bug fix</change>
-        <change>Button appearance changed</change>
-        <change>More small layout changes</change>
-    </release>    
-    <release version="1.1" versioncode="2" date="12/25/2012">
-        <change>Small layout change</change>
-        <change>Minor tweaks</change>
-    </release>
-</changelog>
+    <changelog>
+        <release version="0.2.3" versioncode="4" summary="Alpha" date="02/06/2016">
+            <change>Se ocultan los spoiler.</change>
+            <change>Opción de spoiler en crear publicación.</change>
+            <change>Eliminado el permiso innecesario de escritura en la SD.</change>
+        </release>
+        <release version="0.2.2" versioncode="3" summary="Alpha" date="01/06/2016">
+            <change>Posibilidad de publicar.</change>
+        </release>
+        <release version="0.2.1" versioncode="2" summary="Alpha" date="Mayo 2016">
+            <change>Ver publicaciones del "Resumen".</change>
+            <change>Puntuar publicaciones.</change>
+            <change>Replicar publicaciones.</change>
+            <change>Ver y comentar publicaciones.</change>
+        </release>
+        <release version="0.1" versioncode="1" date="Durante 2015">
+            <change>Primeros pasos de la aplicación.</change>
+        </release>
+    </changelog>

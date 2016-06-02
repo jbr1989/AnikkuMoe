@@ -13,12 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -143,17 +141,8 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         holder.txtNombreOri.setVisibility((!oPublicacion.getType().equalsIgnoreCase("REP") ? View.GONE : View.VISIBLE));
 
         holder.txtFecha.setText(oDate.DateDiff(oPublicacion.feed.getFecha(), System.currentTimeMillis()));
-        holder.txtBody.setText(oPublicacion.feed.getHTMLTexto());
-        holder.webBody.setVisibility((!oPublicacion.feed.getImagen().equalsIgnoreCase("") || !oPublicacion.feed.getVideo().equalsIgnoreCase("") ? View.VISIBLE : View.GONE));
 
-        if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) {
-            String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\"></body></html>";
-            holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
-            holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        }else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")){
-            String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><a href=\""+oPublicacion.feed.getVideo()+"\"><img src=\"https://i.ytimg.com/vi/" + oPublicacion.feed.getIdVideo()+"/maxresdefault.jpg\" style=\"max-width:100%;\"></a></body></html>";
-            holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
-        }
+        mostrar_body(holder, oPublicacion, oPublicacion.feed.getSpoiler());
 
         holder.lytAnime.setVisibility(View.GONE);
 
@@ -212,6 +201,12 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             public void onClick(View v) {
                 Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+"user/" + oPublicacion.user_original.getUsuario()));
                 v.getContext().startActivity(browserIntent1);
+            }
+        });
+
+        holder.lytSpoiler.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mostrar_body(holder, oPublicacion, false);
             }
         });
 
@@ -372,7 +367,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     // Guardar item cargado
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final LinearLayout lytPublicacion, lytAnime, lytComentar,lytComentarios, lytLikes, lytReplicas, lytReactionLike, lytReactionLove, lytReactionHaha, lytReactionWow, lytReactionSorry, lytReactionAnger, lytReactionReplicas;
+        public final LinearLayout lytPublicacion, lytBody, lytSpoiler, lytAnime, lytComentar,lytComentarios, lytLikes, lytReplicas, lytReactionLike, lytReactionLove, lytReactionHaha, lytReactionWow, lytReactionSorry, lytReactionAnger, lytReactionReplicas;
         public final NetworkImageView imgAvatar,imgAvatarOri,imgAnime;
         public final ImageView imgLike;
         public final WebView webBody;
@@ -383,7 +378,9 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         public ViewHolder(View itemView){
             super(itemView);
 
-            this.lytPublicacion = (LinearLayout) itemView.findViewById(R.id.lytBody);
+            this.lytPublicacion = (LinearLayout) itemView.findViewById(R.id.lytPublicacion);
+            this.lytBody = (LinearLayout) itemView.findViewById(R.id.lytBody);
+            this.lytSpoiler = (LinearLayout) itemView.findViewById(R.id.lytSpoiler);
             this.lytAnime = (LinearLayout) itemView.findViewById(R.id.lytAnime);
             this.lytComentar = (LinearLayout)  itemView.findViewById(R.id.lytComentar);
             this.lytComentarios = (LinearLayout)  itemView.findViewById(R.id.lytComentarios);
@@ -503,6 +500,30 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
     //endregion
 
     //region OPCIONES PUBLICACION
+
+    public void mostrar_body(final PublicacionListAdapter.ViewHolder holder, clsPublicacion oPublicacion, Boolean ver_spoiler){
+
+        if (!ver_spoiler){
+            holder.lytSpoiler.setVisibility(View.GONE);
+            holder.lytBody.setVisibility(View.VISIBLE);
+
+            holder.txtBody.setText(oPublicacion.feed.getHTMLTexto());
+            holder.webBody.setVisibility((!oPublicacion.feed.getImagen().equalsIgnoreCase("") || !oPublicacion.feed.getVideo().equalsIgnoreCase("") ? View.VISIBLE : View.GONE));
+
+            if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) {
+                String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\"></body></html>";
+                holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
+                holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            }else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")){
+                String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><a href=\""+oPublicacion.feed.getVideo()+"\"><img src=\"https://i.ytimg.com/vi/" + oPublicacion.feed.getIdVideo()+"/maxresdefault.jpg\" style=\"max-width:100%;\"></a></body></html>";
+                holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
+            }
+        }else{
+            holder.lytBody.setVisibility(View.GONE);
+            holder.lytSpoiler.setVisibility(View.VISIBLE);
+        }
+
+    }
 
     public void republicar(final LinearLayout lytLikes, final Integer position, Integer id_publicacion){
 

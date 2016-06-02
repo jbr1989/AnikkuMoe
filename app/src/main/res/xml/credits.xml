@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<credits>
-	    <section title="AnikkuMoe+">
-			<function title="Información">
-				<credit>Aplicación no oficial de la web Anikku.moe</credit>
-				<credit>Hice esta aplicación como un proyecto personal, por eso, no me hago responsable que cualquier mal uso que se haga de ella.</credit>
+		<section title="AnikkuMoe+">
+			<function title="Informacion">
+				<credit>Aplicacion no oficial de la web Anikku.moe</credit>
+				<credit>Hice esta aplicacion como un proyecto personal, por eso, no me hago responsable que cualquier mal uso que se haga de ella.</credit>
 			</function>
-		    <function title="Creador">
-		        <credit>@dizo</credit>
+			<function title="Creador">
+				<credit>@dizo</credit>
 			</function>
-		    <function title="Agradecimientos a">
-		        <credit>@Miree (Gracias a ella conocí Anikku)</credit>
-		        <credit>@mechafruit (Camarada en el plugin de Anikku)</credit>
-		        <credit>A ti que estas viendo esto por apoyar. :)</credit>
+			<function title="Agradecimientos a">
+				<credit>@Miree (Gracias a ella conoci Anikku)</credit>
+				<credit>@mechafruit (Camarada en el plugin de Anikku)</credit>
+				<credit>A ti que estas viendo esto por apoyar. :)</credit>
 			</function>
 		</section>
 		<websites>
-		    <url title="Página Web (PROXIMAMENTE)">https://anikkumoe.jbr1989</url>
+			<url title="Pagina Web (PROXIMAMENTE)">https://anikkumoe.jbr1989</url>
 		</websites>
 		<copyright>(c) dizo 2016</copyright>
 	</credits>
+

@@ -108,6 +108,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/lytBody"
         android:background="@drawable/layout_titulo_body"
         android:layout_margin="1sp">
 
@@ -125,6 +126,28 @@
             android:id="@+id/webBody"
             android:layout_gravity="center_horizontal"
             android:background="@android:drawable/presence_video_busy" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lytSpoiler"
+        android:background="#FFC0CB"
+        android:layout_margin="1sp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/txtSpoiler"
+            android:gravity="left"
+            android:text="@string/alertaSpoiler"
+            android:textAlignment="center"
+            android:layout_marginTop="15dip"
+            android:layout_marginBottom="15dip"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" />
 
     </LinearLayout>
 
