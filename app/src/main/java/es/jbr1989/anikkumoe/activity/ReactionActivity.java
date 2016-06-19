@@ -1,11 +1,9 @@
 package es.jbr1989.anikkumoe.activity;
 
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;

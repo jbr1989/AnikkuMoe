@@ -1,7 +1,6 @@
 package es.jbr1989.anikkumoe.other;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.ListView;
 

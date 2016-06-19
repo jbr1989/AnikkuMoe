@@ -138,7 +138,7 @@
         <item>HaHa</item>
         <item>Ara ara</item>
         <item>Me entristece</item>
-        <item>Me enfada</item>
+        <item>No me gusta</item>
     </string-array>
 
     <string-array name="reactions_values">
@@ -156,7 +156,7 @@
         <item>@drawable/reaction_haha_32</item>
         <item>@drawable/reaction_wow_32</item>
         <item>@drawable/reaction_sorry_32</item>
-        <item>@drawable/reaction_anger_32</item>
+        <item>@drawable/reaction_anger2_32</item>
     </string-array>
 
 

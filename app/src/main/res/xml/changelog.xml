@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
+        <release version="0.2.4" versioncode="5" summary="Alpha" date="19/06/2016">
+            <change>Agregar vídeo al publicar.</change>
+            <change>Prueba de visualización de videos de las publicaciones.</change>
+        </release>
         <release version="0.2.3" versioncode="4" summary="Alpha" date="02/06/2016">
             <change>Se ocultan los spoiler.</change>
             <change>Opción de spoiler en crear publicación.</change>

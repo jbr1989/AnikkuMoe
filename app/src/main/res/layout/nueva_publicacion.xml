@@ -19,24 +19,100 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="100dp"
         android:layout_weight="0.95">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PUBLICAR"
-            android:id="@+id/btnAddPublicacion"
-            android:layout_gravity="bottom|right"
-            android:layout_alignParentRight="true" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:id="@+id/lytMultimedia"
+            android:visibility="gone">
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Spoiler"
-            android:id="@+id/chkSpoiler"
-            android:layout_gravity="left|bottom"
-            android:layout_margin="9dp" />
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:id="@+id/imgNewPubImagen"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/lblNewPubVideo"
+                android:layout_toEndOf="@id/imgNewPubImagen" />
+
+            <ImageButton
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/btnDelPubVideo"
+                android:focusableInTouchMode="false"
+                android:layout_toEndOf="@id/lblNewPubVideo"
+                android:background="@android:drawable/ic_menu_delete"
+                android:layout_marginLeft="5dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="64dp"
+            android:visibility="visible">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PUBLICAR"
+                android:id="@+id/btnAddPublicacion"
+                android:layout_gravity="bottom|right"
+                android:layout_alignParentRight="true" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnVideo"
+                android:background="@android:drawable/ic_menu_slideshow"
+                android:layout_toStartOf="@id/btnAddPublicacion"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="5dp" />
+
+            <ImageButton
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:id="@+id/btnGaleria"
+                android:layout_toStartOf="@id/btnVideo"
+                android:background="@android:drawable/ic_menu_gallery"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:visibility="invisible" />
+
+            <ImageButton
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:id="@+id/btnFoto"
+                android:background="@android:drawable/ic_menu_camera"
+                android:layout_toStartOf="@id/btnGaleria"
+                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:visibility="invisible" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Spoiler"
+                android:id="@+id/chkSpoiler"
+                android:layout_gravity="left|bottom"
+                android:layout_margin="10dp" />
+        </RelativeLayout>
+
     </RelativeLayout>
 
 </LinearLayout>

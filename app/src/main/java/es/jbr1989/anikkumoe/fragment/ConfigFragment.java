@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.widget.Toast;
 
 import es.jbr1989.anikkumoe.NotifyService;
 import es.jbr1989.anikkumoe.R;

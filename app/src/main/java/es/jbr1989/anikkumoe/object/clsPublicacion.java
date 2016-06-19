@@ -6,8 +6,6 @@ import android.text.Spanned;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-
 import es.jbr1989.anikkumoe.other.clsTexto;
 
 /**

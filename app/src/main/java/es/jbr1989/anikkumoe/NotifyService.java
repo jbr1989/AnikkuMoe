@@ -18,7 +18,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,7 +26,6 @@ import java.util.Map;
 
 import es.jbr1989.anikkumoe.ListAdapter.NotificacionListAdapter;
 import es.jbr1989.anikkumoe.activity.homeActivity;
-import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 

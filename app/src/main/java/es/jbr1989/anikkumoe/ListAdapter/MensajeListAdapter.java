@@ -3,7 +3,6 @@ package es.jbr1989.anikkumoe.ListAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,6 @@ import java.util.Map;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.object.clsMensaje;
-import es.jbr1989.anikkumoe.object.clsNotificacion;
 import es.jbr1989.anikkumoe.other.clsDate;
 
 /**

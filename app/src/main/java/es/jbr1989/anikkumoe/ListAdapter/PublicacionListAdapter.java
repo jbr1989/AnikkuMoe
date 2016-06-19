@@ -515,7 +515,11 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
                 holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
                 holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
             }else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")){
-                String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><a href=\""+oPublicacion.feed.getVideo()+"\"><img src=\"https://i.ytimg.com/vi/" + oPublicacion.feed.getIdVideo()+"/maxresdefault.jpg\" style=\"max-width:100%;\"></a></body></html>";
+                String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><a href=\""+oPublicacion.feed.getVideo()+"\"><iframe src=\"http://www.youtube.com/embed/"+oPublicacion.feed.getIdVideo()+"\" type=\"text/html\" width=\"100%\"></iframe></a></body></html>";
+                holder.webBody.getSettings().setPluginState(WebSettings.PluginState.ON);
+                holder.webBody.getSettings().setJavaScriptEnabled(true);
+                //holder.webBody.getSettings().setUseWideViewPort(true);
+                holder.webBody.getSettings().setLoadWithOverviewMode(true);
                 holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
             }
         }else{

@@ -12,7 +12,6 @@ import com.android.volley.toolbox.HttpHeaderParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONArray;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
