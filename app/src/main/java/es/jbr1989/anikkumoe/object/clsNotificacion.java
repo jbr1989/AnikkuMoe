@@ -1,7 +1,13 @@
 package es.jbr1989.anikkumoe.object;
 
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+
+import es.jbr1989.anikkumoe.R;
 
 /**
  * Created by jbr1989 on 05/12/2015.
@@ -204,6 +210,17 @@ public class clsNotificacion {
 
     public String getReaction() {
         return reaction;
+    }
+
+    public String getReactionString(Context context){
+        String[] oReactions, oReactionsString;
+        oReactions = context.getResources().getStringArray(R.array.reactions_values);
+        oReactionsString = context.getResources().getStringArray(R.array.reactions_names);
+
+        Integer pos = Arrays.asList(oReactions).indexOf(reaction);
+
+        if (pos!=-1) return oReactionsString[pos];
+        else return "";
     }
 
     public clsUser getUser() {

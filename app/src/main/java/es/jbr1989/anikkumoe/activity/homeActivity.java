@@ -3,9 +3,11 @@ package es.jbr1989.anikkumoe.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import es.jbr1989.anikkumoe.ListAdapter.NotificacionListAdapter;
 import es.jbr1989.anikkumoe.NotifyService;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.fragment.ConfigFragment;
+import es.jbr1989.anikkumoe.fragment.ExplorarPublicacionesFragment;
 import es.jbr1989.anikkumoe.fragment.ListadoPublicacionesFragment;
 import es.jbr1989.anikkumoe.fragment.chatFragment;
 import es.jbr1989.anikkumoe.fragment.mensajesFragment;
@@ -79,22 +82,24 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         navDrawerItems = new ArrayList();
 
         // agregar un nuevo item al menu deslizante
-        // Novedades
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(0, -1)));
         // Notificaciones
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(Integer.parseInt("1"), -1), true, oListadoNotificaciones.getConfigNewsCount().toString()));
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[0], navMenuIcons.getResourceId(Integer.parseInt("0"), -1), true, oListadoNotificaciones.getConfigNewsCount().toString()));
+        // Resumen
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(Integer.parseInt("1"), -1)));
+        // Novedades
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(Integer.parseInt("2"), -1)));
         // Mensajes Privados
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(Integer.parseInt("2"), -1), true, "0"));
-        // Chat global
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(Integer.parseInt("3"), -1), true, "0"));
-        // Nakamas conectados
+        // Chat global
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(Integer.parseInt("4"), -1), true, "0"));
+        // Nakamas conectados
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(Integer.parseInt("5"), -1), true, "0"));
         // Perfil
-        navDrawerItems.add(new NavDrawerItem(navMenuTitles[5], navMenuIcons.getResourceId(Integer.parseInt("5"), -1)));
-        // Configuración
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[6], navMenuIcons.getResourceId(Integer.parseInt("6"), -1)));
-        // Logout
+        // Configuración
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[7], navMenuIcons.getResourceId(Integer.parseInt("7"), -1)));
+        // Logout
+        navDrawerItems.add(new NavDrawerItem(navMenuTitles[8], navMenuIcons.getResourceId(Integer.parseInt("8"), -1)));
 
 
         // Recycle the typed array
@@ -132,7 +137,9 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
 
         if (savedInstanceState == null) {
             // on first time display view for first nav item
-            displayView(0); //Seleccionar NOTIFICACIONES
+            //displayView(0); //Seleccionar NOTIFICACIONES
+            SharedPreferences Config = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+            displayView(Integer.parseInt(Config.getString("fragment_defecto", "1")));
         }
 
     }
@@ -190,27 +197,30 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new ListadoPublicacionesFragment();
-                break;
-            case 1:
                 fragment = new notificacionesFragment();
                 break;
+            case 1:
+                fragment = new ListadoPublicacionesFragment();
+                break;
             case 2:
-                fragment= new mensajesFragment();
+                fragment = new ExplorarPublicacionesFragment();
                 break;
             case 3:
-                fragment = new chatFragment();
+                fragment= new mensajesFragment();
                 break;
             case 4:
-                fragment = new nakamasFragment();
+                fragment = new chatFragment();
                 break;
             case 5:
-                fragment = new perfilFragment();
+                fragment = new nakamasFragment();
                 break;
             case 6:
-                fragment = new ConfigFragment();
+                fragment = new perfilFragment();
                 break;
             case 7:
+                fragment = new ConfigFragment();
+                break;
+            case 8:
                 oUsuarioSession.delUsuario();
                 oUsuarioSession.setLogin(false);
                 stopService(new Intent(this, NotifyService.class));

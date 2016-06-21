@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
+        <release version="0.3" versioncode="6" summary="Alpha" date="21/06/2016">
+            <change>Ver el tipo de reacción en las notificaciones.</change>
+            <change>Seleccionar la pestaña por defecto al iniciar la aplicación.</change>
+            <change>Nueva pestaña de "Explorar publicaciones".</change>
+        </release>
         <release version="0.2.4" versioncode="5" summary="Alpha" date="19/06/2016">
             <change>Agregar vídeo al publicar.</change>
             <change>Prueba de visualización de videos de las publicaciones.</change>

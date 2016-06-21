@@ -11,28 +11,24 @@
 
     <string name="alertaSpoiler">Advertencia, esta publicación podría contener spoiler. \n (click para ver)</string>
 
-    <!-- MENU -->
-    <string name="action_settings">Configuración</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="drawer_open">Se abrio el menu lateral</string>
-    <string name="drawer_close">Se cerro el menu lateral</string>
-
     <!-- Nombres de los items -->
     <string-array name="nav_drawer_items">
-        <item>Resumen</item>
-        <item>Notificaciones</item>
-        <item>Mensajes Privados</item>
-        <item>Chat global</item>
-        <item>Nakamas</item>
-        <item>Perfil</item>
-        <item>Configuración</item>
-        <item>Logout</item>
+        <item name="notificaciones">Notificaciones</item>
+        <item name="resumen">Resumen</item>
+        <item name="explorar">Explorar</item>
+        <item name="mensajes">Mensajes Privados</item>
+        <item name="chat_global">Chat global</item>
+        <item name="nakamas">Nakamas</item>
+        <item name="perfil">Perfil</item>
+        <item name="config">Configuración</item>
+        <item name="logout">Logout</item>
     </string-array>
 
     <!-- Iconos de los items -->
     <array name="nav_drawer_icons">
-        <item>@drawable/ic_whats_hot</item>
         <item>@drawable/ic_notifications_black_24dp</item>
+        <item>@drawable/ic_whats_hot</item>
+        <item>@drawable/ic_public_black_24dp</item>
         <item>@drawable/ic_email_black_24dp</item>
         <item>@drawable/ic_chat_bubble_outline_black_24dp</item>
         <item>@drawable/ic_group_black_24dp</item>
@@ -40,6 +36,20 @@
         <item>@drawable/ic_settings_black_24dp</item>
         <item>@drawable/ic_power_settings_new_black_24dp</item>
     </array>
+
+    <string-array name="nav_drawer_values">
+        <item name="notificaciones">0</item>
+        <item name="resumen">1</item>
+        <item name="explorar">2</item>
+        <item name="mensajes">3</item>
+        <item name="chat_global">4</item>
+        <item name="nakamas">5</item>
+        <item name="perfil">6</item>
+        <item name="config">7</item>
+        <item name="logout">8</item>
+    </string-array>
+
+    <string name="nav_drawer_values_defecto">1</string>
 
     <!-- Content Description -->
     <string name="desc_list_item_icon">Item Icon</string>

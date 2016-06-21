@@ -159,7 +159,7 @@ public class NotificacionListAdapter extends BaseAdapter {
         txtFecha.setText(oDate.DateDiff(oNotificacion.getFecha13(), System.currentTimeMillis()));
 
         if (!oNotificacion.getTipo().equalsIgnoreCase("REACT")) txtDescr.setText("@" + oNotificacion.user.getNombre() + " " + MSG_NOTIFICACION.get(oNotificacion.getTipo()));
-        else txtDescr.setText("@" + oNotificacion.user.getNombre() + " " + "ha reaccionado "+ "a tu publicación");
+        else txtDescr.setText("@" + oNotificacion.user.getNombre() + " ha reaccionado \""+ oNotificacion.getReactionString(context)+ "\" a tu publicación");
 
         return convertView;
     }

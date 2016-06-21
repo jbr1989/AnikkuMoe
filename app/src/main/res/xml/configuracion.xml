@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceScreen android:title="Aplicación">
+
+        <ListPreference
+            android:key="fragment_defecto"
+            android:title="Pestaña por defecto..."
+            android:summary="Pestaña que se abre por defecto"
+            android:dialogTitle="Pestañas"
+            android:entries="@array/nav_drawer_items"
+            android:entryValues="@array/nav_drawer_values"
+            android:defaultValue="@string/nav_drawer_values_defecto"/>
+
+    </PreferenceScreen>
+
     <PreferenceScreen android:title="Notificaciones">
 
         <CheckBoxPreference
