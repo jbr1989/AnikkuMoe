@@ -154,7 +154,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
         holder.txtComentarios.setText(oPublicacion.feed.stats.getComments());
 
-        holder.lytReplicas.setBackgroundColor((oPublicacion.getIs_replicated() ? context.getResources().getColor(R.color.btn_rep) : Color.TRANSPARENT));
+        holder.lytReplicas.setBackgroundColor((oPublicacion.getIs_replicated() ? context.getResources().getColor(R.color.btn_rep) : ((Integer.parseInt(oUsuarioSession.getId())!=oPublicacion.user.getId()) ? Color.TRANSPARENT : context.getResources().getColor(R.color.btn_dislike))));
         //holder.lytLikes.setBackgroundColor((oPublicacion.getMy_reaction() ? context.getResources().getColor(R.color.btn_like) : Color.TRANSPARENT));
 
         holder.lytReactionLike.setVisibility((oPublicacion.feed.stats.reactions.getLike()>0 ? View.VISIBLE : View.GONE));
@@ -240,11 +240,14 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             }
         });
 
-        holder.lytReplicas.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (!oPublicacion.getIs_replicated()) republicar(holder.lytReplicas, position, oPublicacion.feed.getId());
-            }
-        });
+        if (Integer.parseInt(oUsuarioSession.getId())!=oPublicacion.user.getId()) {
+            holder.lytReplicas.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (!oPublicacion.getIs_replicated())
+                        republicar(holder.lytReplicas, position, oPublicacion.feed.getId());
+                }
+            });
+        }
 
         holder.btnComentario.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

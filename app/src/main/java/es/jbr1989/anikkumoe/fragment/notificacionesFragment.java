@@ -29,6 +29,7 @@ import java.util.Map;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.NotificacionListAdapter;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.activity.PublicacionActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsNotificacion;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
@@ -133,8 +134,28 @@ public class notificacionesFragment extends Fragment implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // display view for selected nav drawer item
-        Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(oListadoNotificaciones.getUrl(position)));
-        startActivity(browserIntent1);
+
+        Intent i;
+
+        switch(oListadoNotificaciones.getTipo(position)){
+            case "url":
+                i = new Intent(Intent.ACTION_VIEW, Uri.parse(oListadoNotificaciones.getUrl(position)));
+                startActivity(i);
+                break;
+            case "publicacion":
+                i = new Intent(getActivity(), PublicacionActivity.class);
+                i.putExtra("id_publicacion", oListadoNotificaciones.getIdPublicacion(position));
+                i.putExtra("ver_comentarios", false);
+                startActivity(i);
+                break;
+            case "publicacion_comentario":
+                i = new Intent(getActivity(), PublicacionActivity.class);
+                i.putExtra("id_publicacion", oListadoNotificaciones.getIdPublicacion(position));
+                i.putExtra("ver_comentarios", true);
+                startActivity(i);
+                break;
+        }
+
     }
 
     @Override

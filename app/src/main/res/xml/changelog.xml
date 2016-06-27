@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
+        <release version="0.3.2" versioncode="7" summary="Alpha" date="28/06/2016">
+            <change>Visualizacion individual de una publicación dentro de la aplicación.</change>
+            <change>Corregido: Republicar las publicaciones propias.</change>
+        </release>
         <release version="0.3" versioncode="6" summary="Alpha" date="21/06/2016">
             <change>Ver el tipo de reacción en las notificaciones.</change>
             <change>Seleccionar la pestaña por defecto al iniciar la aplicación.</change>

@@ -119,9 +119,14 @@ public class NotificacionListAdapter extends BaseAdapter {
         return oNotificaciones.get(position);
     }
 
+
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public Integer getIdPublicacion(int position) {
+        return oNotificaciones.get(position).feed.getId();
     }
 
     @Override
@@ -185,6 +190,30 @@ public class NotificacionListAdapter extends BaseAdapter {
     public void clearNotificaciones(){
         oNotificaciones.clear();
         nuevos=0;
+    }
+
+    public String getTipo(Integer pos){
+        String tipo="url";
+        clsNotificacion oNotificacion = oNotificaciones.get(pos);
+
+        switch(oNotificacion.getTipo()){
+            case "MEGCOM": tipo="publicacion_comentario";break;
+            case "REPPUB": tipo="publicacion"; break;
+            case "MEGPUB": tipo="publicacion"; break;
+            case "USRSEG": tipo="url"; break;
+            case "COMPUB": tipo="publicacion_comentario"; break;
+            case "PUBMEN": tipo="publicacion"; break;
+            case "COMMEN": tipo="publicacion_comentario"; break;
+            case "MENPRIV": tipo="url"; break;
+            case "PUBGUA": tipo="publicacion"; break;
+            case "MEGRPUB": tipo="publicacion"; break;
+            case "COMRPUB": tipo="publicacion"; break;
+            case "PLUGMEGCOM": tipo="publicacion_comentario"; break;
+            case "PLUGPUBMEN": tipo="publicacion_comentario"; break;
+            case "REACT": tipo="publicacion";break;
+        }
+
+        return tipo;
     }
 
     public String getUrl(Integer pos){
