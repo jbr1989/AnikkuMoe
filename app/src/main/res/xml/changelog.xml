@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
+        <release version="0.3.3" versioncode="8" summary="Alpha" date="">
+            <change>Nueva pestaña "Perfil".</change>
+            <change>Ver perfiles de otros usuarios.</change>
+            <change>Ver si te sigue un usuario en su perfil.</change>
+            <change>Opción de seguir o dejar de seguir a un usuario en su perfil.</change>
+        </release>
         <release version="0.3.2" versioncode="7" summary="Alpha" date="28/06/2016">
             <change>Visualizacion individual de una publicación dentro de la aplicación.</change>
             <change>Corregido: Republicar las publicaciones propias.</change>

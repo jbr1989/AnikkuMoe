@@ -1,9 +1,9 @@
 package es.jbr1989.anikkumoe.ListAdapter;
 
+import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +25,8 @@ import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.activity.homeActivity;
+import es.jbr1989.anikkumoe.fragment.perfilFragment;
 import es.jbr1989.anikkumoe.object.clsChatPrivado;
 import es.jbr1989.anikkumoe.object.clsUsuario;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
@@ -137,15 +139,13 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
 
         viewHolder.txtUsuario.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+oUsuario.getUrlUser()));
-                v.getContext().startActivity(browserIntent1);
+                cargar_perfil(oUsuario.getUsuario());
             }
         });
 
         viewHolder.imgAvatar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+oUsuario.getUrlUser()));
-                v.getContext().startActivity(browserIntent1);
+                cargar_perfil(oUsuario.getUsuario());
             }
         });
 
@@ -183,6 +183,19 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
 
         }
     }
+
+    public void cargar_perfil(String usuario){
+        Bundle arguments = new Bundle();
+        arguments.putString("usuario", usuario);
+
+        Fragment fragment = perfilFragment.newInstance(arguments);
+
+        if (context instanceof homeActivity) {
+            homeActivity feeds = (homeActivity) context;
+            feeds.switchContent(fragment);
+        }
+    }
+
 
     public boolean isMe(String id_usuario){
         return (oUsuarioSession.getId().equals(id_usuario));

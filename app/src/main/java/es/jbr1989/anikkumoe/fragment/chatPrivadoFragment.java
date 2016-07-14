@@ -138,6 +138,8 @@ public class chatPrivadoFragment extends Fragment {
 
     }
 
+
+
     // region CHATS
 
     public void cargar_chats(){

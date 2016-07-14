@@ -195,6 +195,8 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     private void displayView(int position) {
         // update the main content by replacing fragments
         Fragment fragment = null;
+        Bundle arguments = new Bundle();
+
         switch (position) {
             case 0:
                 fragment = new notificacionesFragment();
@@ -215,7 +217,8 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
                 fragment = new nakamasFragment();
                 break;
             case 6:
-                fragment = new perfilFragment();
+                arguments.putString("usuario", oUsuarioSession.getUsuario());
+                fragment = perfilFragment.newInstance(arguments);
                 break;
             case 7:
                 fragment = new ConfigFragment();
@@ -297,6 +300,11 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void switchContent(Fragment fragment) {
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
     }
 
 }

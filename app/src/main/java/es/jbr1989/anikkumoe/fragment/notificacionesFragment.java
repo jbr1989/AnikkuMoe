@@ -2,6 +2,7 @@ package es.jbr1989.anikkumoe.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -153,6 +154,16 @@ public class notificacionesFragment extends Fragment implements AdapterView.OnIt
                 i.putExtra("id_publicacion", oListadoNotificaciones.getIdPublicacion(position));
                 i.putExtra("ver_comentarios", true);
                 startActivity(i);
+                break;
+            case "perfil":
+
+                Bundle arguments = new Bundle();
+                arguments.putString("usuario", oListadoNotificaciones.getUserName(position));
+
+                Fragment fragment =perfilFragment.newInstance(arguments);
+
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
                 break;
         }
 

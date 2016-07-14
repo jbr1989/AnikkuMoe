@@ -28,4 +28,8 @@
     <color name="btn_rep">#A4FFA9</color>
     <color name="btn_like">#96B0FF</color>
     <color name="btn_dislike">#FFA5A5</color>
+
+    <!-- BOTONES PERFIL -->
+    <color name="perfil_add">#57D66C</color>
+    <color name="perfil_del">#E85F5F</color>
 </resources>

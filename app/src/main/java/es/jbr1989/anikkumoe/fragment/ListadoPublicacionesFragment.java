@@ -36,6 +36,7 @@ import java.util.Map;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.PublicacionListAdapter;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.activity.MainActivity;
 import es.jbr1989.anikkumoe.activity.NuevaPublicacionActivity;
 import es.jbr1989.anikkumoe.activity.ReactionActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
@@ -220,8 +221,18 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-                cargar_publicaciones();
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    oUsuarioSession.delUsuario();
+                    oUsuarioSession.setLogin(false);
+
+                    Intent i = new Intent(getActivity(), MainActivity.class);
+                    startActivity(i);
+
+                    getActivity().finish();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    cargar_publicaciones();
+                }
             }
         },ROOT_URL+"api/user/activity?page=0");
 

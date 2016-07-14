@@ -129,6 +129,10 @@ public class NotificacionListAdapter extends BaseAdapter {
         return oNotificaciones.get(position).feed.getId();
     }
 
+    public String getUserName(int position) {
+        return oNotificaciones.get(position).user.getUsuario();
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -200,7 +204,7 @@ public class NotificacionListAdapter extends BaseAdapter {
             case "MEGCOM": tipo="publicacion_comentario";break;
             case "REPPUB": tipo="publicacion"; break;
             case "MEGPUB": tipo="publicacion"; break;
-            case "USRSEG": tipo="url"; break;
+            case "USRSEG": tipo="perfil"; break;
             case "COMPUB": tipo="publicacion_comentario"; break;
             case "PUBMEN": tipo="publicacion"; break;
             case "COMMEN": tipo="publicacion_comentario"; break;

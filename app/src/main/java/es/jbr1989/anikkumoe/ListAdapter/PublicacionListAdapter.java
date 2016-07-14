@@ -1,11 +1,13 @@
 package es.jbr1989.anikkumoe.ListAdapter;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -40,6 +42,8 @@ import java.util.Map;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.ReactionActivity;
+import es.jbr1989.anikkumoe.activity.homeActivity;
+import es.jbr1989.anikkumoe.fragment.perfilFragment;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
@@ -178,29 +182,33 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
         holder.txtNombre.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(oPublicacion.getUrlUser(ROOT_URL)));
-                v.getContext().startActivity(browserIntent1);
+                if (oPublicacion.getType().equalsIgnoreCase("REP")==Boolean.FALSE) {
+                    cargar_perfil(oPublicacion.user.getUsuario());
+                }else{
+                    cargar_perfil(oPublicacion.user_original.getUsuario());
+                }
             }
         });
 
         holder.imgAvatar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(oPublicacion.getUrlUser(ROOT_URL)));
-                v.getContext().startActivity(browserIntent1);
+                if (oPublicacion.getType().equalsIgnoreCase("REP")==Boolean.FALSE) {
+                    cargar_perfil(oPublicacion.user.getUsuario());
+                }else{
+                    cargar_perfil(oPublicacion.user_original.getUsuario());
+                }
             }
         });
 
         holder.txtNombreOri.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+"user/" + oPublicacion.user_original.getUsuario()));
-                v.getContext().startActivity(browserIntent1);
+                    cargar_perfil(oPublicacion.user.getUsuario());
             }
         });
 
         holder.imgAvatarOri.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+"user/" + oPublicacion.user_original.getUsuario()));
-                v.getContext().startActivity(browserIntent1);
+            cargar_perfil(oPublicacion.user.getUsuario());
             }
         });
 
@@ -288,6 +296,18 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
 
 
+    }
+
+    public void cargar_perfil(String usuario){
+        Bundle arguments = new Bundle();
+        arguments.putString("usuario", usuario);
+
+        Fragment fragment = perfilFragment.newInstance(arguments);
+
+        if (context instanceof homeActivity) {
+            homeActivity feeds = (homeActivity) context;
+            feeds.switchContent(fragment);
+        }
     }
 
     @Override
