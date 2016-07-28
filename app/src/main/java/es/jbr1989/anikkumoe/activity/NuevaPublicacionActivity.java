@@ -173,10 +173,10 @@ public class NuevaPublicacionActivity extends Activity {
         btnAddPublicacion.setEnabled(false);
 
         Integer tipo =0;
-        loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
+        //loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
         String video = lblNewVideo.getText().toString();
 
-        if (!video.isEmpty()) tipo=3;
+
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
@@ -184,7 +184,7 @@ public class NuevaPublicacionActivity extends Activity {
         headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
-
+/*
         if(magicalCamera.getMyPhoto()!=null){
 
             loading.setMessage("Convirtiendo a bytes");
@@ -201,6 +201,8 @@ public class NuevaPublicacionActivity extends Activity {
 
             tipo=2;
         }
+*/
+        if (!video.isEmpty()){ tipo=3; params.put("video", video);}
 
         params.put("texto", publicacionText);
         params.put("spoiler", String.valueOf(chkSpoiler.isChecked()));
@@ -208,7 +210,7 @@ public class NuevaPublicacionActivity extends Activity {
         //params.put("file", getStringImage(magicalCamera.getMyPhoto()));
         //params.put("tags", "1");
         //params.put("usus", "1");
-        params.put("video", video);
+
         //params.put("id_serie", "1");
 
         request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {

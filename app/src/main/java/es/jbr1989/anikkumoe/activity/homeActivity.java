@@ -12,6 +12,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -59,6 +60,8 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList navDrawerItems;
     private NavDrawerListAdapter adapter;
 
+    private Menu optionsMenu;
+    public Integer id_menu=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,16 +158,19 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /*
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.my, menu);
+        this.optionsMenu = menu;
+        if (id_menu!=0) getMenuInflater().inflate(id_menu, menu);
         return true;
     }
 
-    */
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        id_menu=0;
+
         // toggle nav drawer on selecting action bar app icon/title
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
@@ -307,4 +313,19 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
     }
 
+
+    //MENU
+
+    public void setRefreshActionButtonState(final boolean refreshing) {
+        if (optionsMenu != null) {
+            final MenuItem refreshItem = optionsMenu.findItem(R.id.airport_menuRefresh);
+            if (refreshItem != null) {
+                if (refreshing) {
+                    refreshItem.setActionView(R.layout.actionbar_indeterminate_progress);
+                } else {
+                    refreshItem.setActionView(null);
+                }
+            }
+        }
+    }
 }

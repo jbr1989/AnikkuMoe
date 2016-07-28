@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
-        <release version="0.3.3" versioncode="8" summary="Alpha" date="">
+        <release version="0.3.4" versioncode="9" summary="Alpha" date="28/07/2016">
+            <change>Nueva pestaña "Chat global"</change>
+            <change>Poder enviar mensajes al chat global</change>
+            <change>Corregido: Al crear publicacion insertaba video vacío (Gracias @SEDO)</change>
+        </release>
+        <release version="0.3.3" versioncode="8" summary="Alpha" date="14/07/2016">
             <change>Nueva pestaña "Perfil".</change>
             <change>Ver perfiles de otros usuarios.</change>
             <change>Ver si te sigue un usuario en su perfil.</change>
@@ -33,7 +38,7 @@
             <change>Replicar publicaciones.</change>
             <change>Ver y comentar publicaciones.</change>
         </release>
-        <release version="0.1" versioncode="1" date="Durante 2015">
+        <release version="0.1" versioncode="1" summary="Alpha" date="Durante 2015">
             <change>Primeros pasos de la aplicación.</change>
         </release>
     </changelog>

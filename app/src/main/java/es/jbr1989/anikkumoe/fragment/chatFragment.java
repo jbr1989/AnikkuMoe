@@ -29,6 +29,7 @@ import java.util.Map;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.ChatListAdapter;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
@@ -59,6 +60,8 @@ public class chatFragment extends Fragment {
 
     Long intervalo;
 
+    private homeActivity home;
+
     private FragmentIterationListener mCallback = null;
     public interface FragmentIterationListener{
         public void onFragmentIteration(Bundle parameters);
@@ -76,6 +79,9 @@ public class chatFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.chat, container, false);
         cargar_preferencias(rootView);
+
+        home = (homeActivity) rootView.getContext();
+        home.id_menu=R.menu.chat_menu;
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
@@ -123,12 +129,10 @@ public class chatFragment extends Fragment {
     private Runnable onEverySecond=new Runnable() {
         public void run() {
             // do real work here
-            Toast.makeText(getActivity(), "Buscando nuevos mensajes...", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Buscando nuevos mensajes...", Toast.LENGTH_SHORT).show();
 
             if (oListadoChats.get_UltimaFecha()!=null) cargar_nuevos_chats();
             else cargar_chats();
-
-            //timerHandler.postDelayed(onEverySecond, intervalo*1000);
         }
     };
 
@@ -142,6 +146,8 @@ public class chatFragment extends Fragment {
     // region CHATS
 
     public void cargar_chats(){
+
+        home.setRefreshActionButtonState(true);
 
         oListadoChats.clearPublicaciones();
 
@@ -159,12 +165,14 @@ public class chatFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 oListadoChats.setChats(response);
                 oListadoChats.notifyDataSetChanged();
+                home.setRefreshActionButtonState(false);
 
                 if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                home.setRefreshActionButtonState(false);
                 Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
 
                 if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
@@ -175,6 +183,8 @@ public class chatFragment extends Fragment {
     }
 
     public void cargar_nuevos_chats(){
+
+        home.setRefreshActionButtonState(true);
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
@@ -191,10 +201,12 @@ public class chatFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 if (oListadoChats.setNewChats(response)) oListadoChats.notifyDataSetChanged();
                 if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
+                home.setRefreshActionButtonState(false);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                home.setRefreshActionButtonState(false);
                 Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
                 if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
             }
@@ -204,6 +216,8 @@ public class chatFragment extends Fragment {
     }
 
     public void cargar_anteriores_chats(long tiempo){
+
+        home.setRefreshActionButtonState(true);
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
@@ -219,10 +233,12 @@ public class chatFragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 if (oListadoChats.setOlderChats(response)) oListadoChats.notifyDataSetChanged();
+                home.setRefreshActionButtonState(false);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                home.setRefreshActionButtonState(false);
                 Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
             }
         }, API_OLD_URL);

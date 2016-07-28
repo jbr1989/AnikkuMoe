@@ -117,11 +117,6 @@ public class ChatListAdapter extends BaseAdapter {
 
         ViewHolder viewHolder;
 
-        NetworkImageView imgAvatar;
-        LinearLayout lytBody;
-        TextView  txtUsuario, txtFecha;
-        WebView webBody;
-
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.chat_item, parent, false);
             viewHolder =new ViewHolder(convertView);
@@ -160,6 +155,7 @@ public class ChatListAdapter extends BaseAdapter {
     private void setAlignment(ViewHolder holder, boolean isMe) {
         if (isMe) {
             holder.lytBody.setBackgroundResource(R.drawable.in_message_bg);
+            //holder.lytBody.setBackgroundColor(Color.RED);
 
             RelativeLayout.LayoutParams lp =(RelativeLayout.LayoutParams) holder.imgAvatar.getLayoutParams();
             lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
@@ -172,6 +168,7 @@ public class ChatListAdapter extends BaseAdapter {
 
         } else {
             holder.lytBody.setBackgroundResource(R.drawable.out_message_bg);
+            //holder.lytBody.setBackgroundColor(Color.BLUE);
 
             RelativeLayout.LayoutParams lp =(RelativeLayout.LayoutParams) holder.imgAvatar.getLayoutParams();
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);

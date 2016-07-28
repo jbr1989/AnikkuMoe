@@ -90,7 +90,7 @@ public class ChangeLogDialog {
 
     //Parse a the release tag and appends it to the changelog builder
     private void parseReleaseTag(final StringBuilder changelogBuilder, final XmlPullParser resourceParser) throws XmlPullParserException, IOException {
-        changelogBuilder.append("<h1>Release: ").append(resourceParser.getAttributeValue(null, "version")).append("</h1>");
+        changelogBuilder.append("<h1>Versión ").append(resourceParser.getAttributeValue(null, "version")).append("</h1>");
 
         //Add date if available
         if (resourceParser.getAttributeValue(null, "date") != null) {
@@ -202,7 +202,7 @@ public class ChangeLogDialog {
 
         //Get dialog title	        	
         String title = resources.getString(R.string.title_changelog);
-        title = String.format("%s v%s", title, getAppVersion());
+        //title = String.format("%s v%s", title, getAppVersion());
 
         //Create html change log
         final String htmlChangelog = getHTMLChangelog(R.xml.changelog, resources, version);
