@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -530,21 +531,23 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             holder.lytSpoiler.setVisibility(View.GONE);
             holder.lytBody.setVisibility(View.VISIBLE);
 
-            holder.txtBody.setText(oPublicacion.feed.getHTMLTexto());
+            holder.txtBody.setText(oPublicacion.feed.getTextoHtml());
+            holder.txtBody.setMovementMethod(LinkMovementMethod.getInstance());
             holder.webBody.setVisibility((!oPublicacion.feed.getImagen().equalsIgnoreCase("") || !oPublicacion.feed.getVideo().equalsIgnoreCase("") ? View.VISIBLE : View.GONE));
 
-            if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) {
-                String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\"></body></html>";
-                holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
-                holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-            }else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")){
-                String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><a href=\""+oPublicacion.feed.getVideo()+"\"><iframe src=\"http://www.youtube.com/embed/"+oPublicacion.feed.getIdVideo()+"\" type=\"text/html\" width=\"100%\"></iframe></a></body></html>";
-                holder.webBody.getSettings().setPluginState(WebSettings.PluginState.ON);
-                holder.webBody.getSettings().setJavaScriptEnabled(true);
-                //holder.webBody.getSettings().setUseWideViewPort(true);
-                holder.webBody.getSettings().setLoadWithOverviewMode(true);
-                holder.webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
-            }
+            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\">";
+
+            if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) html+= "<img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\">";
+            else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")) html+= "<a href=\""+oPublicacion.feed.getVideo()+"\"><iframe src=\"http://www.youtube.com/embed/"+oPublicacion.feed.getIdVideo()+"\" type=\"text/html\" width=\"100%\"></iframe></a>";
+
+            html+="</body></html>";
+
+            holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            holder.webBody.getSettings().setJavaScriptEnabled(true);
+            holder.webBody.getSettings().setLoadWithOverviewMode(true);
+            holder.webBody.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
+
+
         }else{
             holder.lytBody.setVisibility(View.GONE);
             holder.lytSpoiler.setVisibility(View.VISIBLE);

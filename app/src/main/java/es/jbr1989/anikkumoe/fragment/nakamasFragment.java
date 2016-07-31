@@ -29,6 +29,7 @@ import java.util.Map;
 import es.jbr1989.anikkumoe.ListAdapter.NakamaListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.http.CustomRequest;
+import es.jbr1989.anikkumoe.object.clsNakama;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
 /**
@@ -182,8 +183,11 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        clsNakama oNakama = (clsNakama) oListadoNakamas.getItem(position);
+
         Bundle arguments = new Bundle();
-        arguments.putString("id", oListadoNakamas.getId(position));
+        arguments.putString("id", oNakama.getId().toString());
+        arguments.putString("name", oNakama.getNombre());
 
         Fragment fragment = chatPrivadoFragment.newInstance(arguments);
         getFragmentManager().beginTransaction().replace(R.id.frame_container, fragment).commit();

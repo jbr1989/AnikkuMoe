@@ -120,7 +120,7 @@ public class MensajeListAdapter extends BaseAdapter {
 
         imgAvatar.setImageUrl(ROOT_URL+"static-img/"+oMensaje.getAvatar(), imageLoader);
         txtUsuario.setText(oMensaje.getUsuario());
-        txtDescr.setText(oMensaje.getTexto());
+        txtDescr.setText(oMensaje.getTextoHTML());
         txtFecha.setText(oDate.DateDiff(oMensaje.getFecha(), System.currentTimeMillis()));
 
         return convertView;

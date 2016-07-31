@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,6 +117,7 @@ public class ComentariosListAdapter extends BaseAdapter {
 
         viewHolder.txtFecha.setText(oDate.DateDiff(oComentario.getFecha(), System.currentTimeMillis()));
         viewHolder.txtBody.setText(oComentario.getHTMLTexto());
+        viewHolder.txtBody.setMovementMethod(LinkMovementMethod.getInstance());
         //viewHolder.webBody.loadDataWithBaseURL(null, oComentario.getHTMLTexto(), "text/html", "UTF-8", null);
         //viewHolder.webBody.setBackgroundColor(0x00000000);
 

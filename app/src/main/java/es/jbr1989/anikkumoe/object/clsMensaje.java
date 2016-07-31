@@ -1,7 +1,12 @@
 package es.jbr1989.anikkumoe.object;
 
+import android.text.Html;
+import android.text.Spanned;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import es.jbr1989.anikkumoe.other.clsTexto;
 
 /**
  * Created by jbr1989 on 26/05/2016.
@@ -15,6 +20,7 @@ public class clsMensaje {
     private String nombre;
     private String avatar;
     private String texto;
+    private String texto_html;
 
     private Long fecha;
     private String last_creator;
@@ -37,7 +43,7 @@ public class clsMensaje {
         try {this.avatar=jPub.getString("avatar");}
         catch (JSONException ex){ex.printStackTrace();}
 
-        try {this.texto=jPub.getString("texto");}
+        try {this.texto=jPub.getString("texto"); this.texto_html= clsTexto.toHTML(this.texto);}
         catch (JSONException ex){ex.printStackTrace();}
 
         try {this.fecha= jPub.getLong("fecha");}
@@ -69,6 +75,8 @@ public class clsMensaje {
     public String getTexto() {
         return texto;
     }
+
+    public Spanned getTextoHTML(){ return Html.fromHtml(texto_html);}
 
     public Long getFecha() {
         return fecha;

@@ -16,10 +16,9 @@ public class clsChat {
     private String usuario;
     private String nombre;
     private String mensaje;
+    private String mensaje_html;
     private long enviado13;
     private String avatar;
-
-    private clsTexto oTexto = new clsTexto();
     //endregion
 
     //region CONSTRUCTOR
@@ -39,7 +38,7 @@ public class clsChat {
         try {this.nombre= jPub.getString("nombre");}
         catch (JSONException ex){ex.printStackTrace();}
 
-        try {this.mensaje= jPub.getString("mensaje");}
+        try {this.mensaje= jPub.getString("mensaje"); this.mensaje_html=clsTexto.toHTML(this.mensaje);}
         catch (JSONException ex){ex.printStackTrace();}
 
         try {this.avatar= jPub.getString("avatar");}
@@ -104,7 +103,7 @@ public class clsChat {
     }
 
     public String getHTMLMensaje() {
-        return oTexto.bbcode(mensaje);
+        return mensaje_html;
     }
 
     //endregion

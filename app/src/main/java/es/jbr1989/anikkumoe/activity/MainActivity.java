@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,8 +58,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("LOAD", "HOLA");
-
         txtUser = (EditText) findViewById(R.id.txtUser);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         lblRecuperar = (TextView) findViewById(R.id.lblRecuperar);
@@ -79,12 +76,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick (View v){
         switch(v.getId()){
             case R.id.btnLogin:
-                Log.d("CLICK", "HOLA");
-
                 user = txtUser.getText().toString();
                 password = txtPassword.getText().toString();
 
-                //new AttemptLogin().execute();
                 login();
 
                 break;

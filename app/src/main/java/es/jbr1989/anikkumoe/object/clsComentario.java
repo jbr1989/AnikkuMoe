@@ -18,6 +18,7 @@ public class clsComentario {
     private Integer id;
     private String id_publicacion;
     private String texto;
+    private String texto_html;
     private Long fecha;
 
     private Integer like_count;
@@ -37,7 +38,7 @@ public class clsComentario {
         try {this.id_publicacion=jNotif.getString("id_publicacion");}
         catch (JSONException ex){ex.printStackTrace();}
 
-        try {this.texto=jNotif.getString("texto");}
+        try {this.texto=jNotif.getString("texto"); this.texto_html=clsTexto.toHTML(this.texto);}
         catch (JSONException ex){ex.printStackTrace();}
 
         try {this.fecha= jNotif.getLong("fecha");}
@@ -119,7 +120,7 @@ public class clsComentario {
     }
 
     public Spanned getHTMLTexto() {
-        return Html.fromHtml(clsTexto.bbcode(texto));
+        return Html.fromHtml(texto_html);
     }
 
     public Long getFecha() {

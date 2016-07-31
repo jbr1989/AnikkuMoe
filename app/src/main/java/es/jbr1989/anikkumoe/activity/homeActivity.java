@@ -60,7 +60,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList navDrawerItems;
     private NavDrawerListAdapter adapter;
 
-    private Menu optionsMenu;
+    public Menu optionsMenu;
     public Integer id_menu=0;
 
     @Override
@@ -154,6 +154,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onItemClick(AdapterView parent, View view, int position,long id) {
             // display view for selected nav drawer item
+            id_menu=0;
             displayView(position);
         }
     }
@@ -166,10 +167,10 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-
+ /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        id_menu=0;
+
 
         // toggle nav drawer on selecting action bar app icon/title
         if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -184,7 +185,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /*
+
     // Called when invalidateOptionsMenu() is triggered
 
     @Override

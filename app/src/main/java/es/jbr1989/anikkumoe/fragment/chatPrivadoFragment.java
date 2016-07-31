@@ -58,6 +58,7 @@ public class chatPrivadoFragment extends Fragment {
 
     public static final String SP_NAME = "Chats";
     public static String id;
+    public static String name;
 
     Long intervalo;
 
@@ -83,6 +84,8 @@ public class chatPrivadoFragment extends Fragment {
 
         home = (homeActivity) rootView.getContext();
         home.id_menu=R.menu.chat_menu;
+        home.onCreateOptionsMenu(home.optionsMenu);
+        home.setTitle(name);
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
@@ -138,7 +141,7 @@ public class chatPrivadoFragment extends Fragment {
         intervalo=Long.parseLong(ChatsConfig.getString("chat_intervalo", "10"));
 
         id= getArguments().getString("id");
-
+        name = getArguments().getString("name");
     }
 
     // region CHATS

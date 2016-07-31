@@ -90,7 +90,7 @@ public class clsPublicacion {
             try {this.feed.spoiler= feed.getBoolean("spoiler");}
             catch (JSONException ex){ex.printStackTrace();}
 
-            try {this.feed.texto= feed.getString("texto");}
+            try {this.feed.texto= feed.getString("texto"); this.feed.texto_html = clsTexto.toHTML(this.feed.texto);}
             catch (JSONException ex){ex.printStackTrace();}
 
             try {this.feed.imagen= feed.getString("imagen"); if(this.feed.imagen.equalsIgnoreCase("null"))this.feed.imagen="";}
@@ -229,6 +229,7 @@ public class clsPublicacion {
         private Integer id;
         private Boolean spoiler;
         private String texto;
+        private String texto_html;
         private String imagen="";
         private String video="";
         private Long fecha;
@@ -247,6 +248,8 @@ public class clsPublicacion {
         public String getTexto() {
             return texto;
         }
+
+        public Spanned getTextoHtml(){ return Html.fromHtml(texto_html);}
 
         public String getImagen() {
             return imagen;
