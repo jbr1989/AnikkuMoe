@@ -11,17 +11,28 @@
 
     <string name="alertaSpoiler">Advertencia, esta publicación podría contener spoiler. \n (click para ver)</string>
 
+    <!-- FRAGMENTS -->
+    <string name="FragmentNotificacion">Notificaciones</string>
+    <string name="FragmentResumen">Resumen</string>
+    <string name="FragmentExplorar">Explorar</string>
+    <string name="FragmentMensajes">Mensajes</string>
+    <string name="FragmentChatGlobal">Chat global</string>
+    <string name="FragmentNakamas">Nakamas</string>
+    <string name="FragmentPerfil">Perfil</string>
+    <string name="FragmentConfig">Configuración</string>
+    <string name="FragmentLogout">Salir</string>
+
     <!-- Nombres de los items -->
     <string-array name="nav_drawer_items">
-        <item name="notificaciones">Notificaciones</item>
-        <item name="resumen">Resumen</item>
-        <item name="explorar">Explorar</item>
-        <item name="mensajes">Mensajes Privados</item>
-        <item name="chat_global">Chat global</item>
-        <item name="nakamas">Nakamas</item>
-        <item name="perfil">Perfil</item>
-        <item name="config">Configuración</item>
-        <item name="logout">Logout</item>
+        <item name="notificaciones">@string/FragmentNotificacion</item>
+        <item name="resumen">@string/FragmentResumen</item>
+        <item name="explorar">@string/FragmentExplorar</item>
+        <item name="mensajes">@string/FragmentMensajes</item>
+        <item name="chat_global">@string/FragmentChatGlobal</item>
+        <item name="nakamas">@string/FragmentNakamas</item>
+        <item name="perfil">@string/FragmentPerfil</item>
+        <item name="config">@string/FragmentConfig</item>
+        <item name="logout">@string/FragmentLogout</item>
     </string-array>
 
     <!-- Iconos de los items -->

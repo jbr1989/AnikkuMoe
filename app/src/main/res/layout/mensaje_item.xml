@@ -31,7 +31,10 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Medium Text"
                 android:id="@+id/txtUsuario"
-                android:layout_gravity="left|center_horizontal" />
+                android:layout_gravity="left|center_horizontal"
+                android:textColor="#46B0FB"
+                android:textStyle="bold"
+                android:clickable="true" />
 
             <TextView
                 android:layout_width="wrap_content"

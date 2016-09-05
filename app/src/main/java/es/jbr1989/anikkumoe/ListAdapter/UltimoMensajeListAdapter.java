@@ -13,22 +13,21 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
-import es.jbr1989.anikkumoe.object.clsMensaje;
-import es.jbr1989.anikkumoe.object.clsMensajes;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
+import es.jbr1989.anikkumoe.object.clsUltimoMensaje;
 import es.jbr1989.anikkumoe.other.clsDate;
 
 /**
  * Created by jbr1989 on 26/05/2016.
  */
-public class MensajeListAdapter extends BaseAdapter {
+public class UltimoMensajeListAdapter extends BaseAdapter {
 
     //region VARIABLES
 
@@ -36,13 +35,11 @@ public class MensajeListAdapter extends BaseAdapter {
     public static final String SP_NAME = "Mensajes";
 
     private Context context;
-    private clsMensajes oMensajes;
+    private ArrayList<clsUltimoMensaje> oMensajes ;
     private Map<String, String> MSG_NOTIFICACION;
 
     private clsDate oDate = new clsDate();
     private Integer nuevos;
-
-    private clsUsuarioSession oUsuarioSession;
 
     private SharedPreferences MensajesConfig;
     private SharedPreferences.Editor MensajesConfigEditor;
@@ -55,23 +52,22 @@ public class MensajeListAdapter extends BaseAdapter {
 
     //region CONSTRUCTOR
 
-    public MensajeListAdapter(Context context){
+    public UltimoMensajeListAdapter(Context context){
         this.context = context;
 
-        oUsuarioSession = new clsUsuarioSession(context);
-
-        oMensajes=new clsMensajes();
+        this.oMensajes=new ArrayList<clsUltimoMensaje>();
         nuevos=0;
 
         MensajesConfig = context.getSharedPreferences(SP_NAME, 0);
         MensajesConfigEditor = MensajesConfig.edit();
+
     }
 
     //endregion
 
     @Override
     public int getCount() {
-        return oMensajes.oMensajes.size();
+        return oMensajes.size();
     }
 
     public int getNewsCount(){
@@ -82,7 +78,7 @@ public class MensajeListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return oMensajes.oMensajes.get(position);
+        return oMensajes.get(position);
     }
 
     @Override
@@ -117,29 +113,39 @@ public class MensajeListAdapter extends BaseAdapter {
             txtFecha = viewHolder.txtFecha;
         }
 
-        clsMensaje oMensaje = oMensajes.oMensajes.get(position);
+        clsUltimoMensaje oMensaje = oMensajes.get(position);
 
         //if (oNotificacion.nuevo()==Boolean.TRUE) lytNotificacion.setBackgroundColor(context.getResources().getColor(R.color.notification_new));
         //else lytNotificacion.setBackgroundColor(Color.TRANSPARENT);
 
-        imgAvatar.setImageUrl(ROOT_URL+"static-img/"+ (oMensaje.getCreador().equals(oMensajes.user.getId()) ? oMensajes.user.getAvatar() : oUsuarioSession.getAvatar()), imageLoader);
-        txtUsuario.setText((oMensaje.getCreador().equals(oMensajes.user.getId()) ? oMensajes.user.getNombre() : oUsuarioSession.getNombre()));
+        imgAvatar.setImageUrl(ROOT_URL+"static-img/"+oMensaje.getAvatar(), imageLoader);
+        txtUsuario.setText(oMensaje.getUsuario());
         txtDescr.setText(oMensaje.getTextoHTML());
-        txtFecha.setText((oMensaje.getCreador().equals(oMensajes.user.getId()) ? "Recibido " : "Enviado ")+oDate.DateDiff(oMensaje.getFecha(), System.currentTimeMillis()));
+        txtFecha.setText((oMensaje.getLast_creator().equals("user") ? "Recibido " : "Enviado ")+oDate.DateDiff(oMensaje.getFecha(), System.currentTimeMillis()));
 
         return convertView;
     }
 
-    public void setMensajes(JSONObject response){
-        oMensajes=new clsMensajes(response);
-    }
+    public void setMensajes(JSONArray response){
 
-    public void addMensaje(JSONObject response){
-        oMensajes.oMensajes.add(new clsMensaje(response));
+        clsUltimoMensaje oMensaje;
+
+        try {
+            //JSONArray jNotificaciones=response.getJSONArray("data");
+
+            int num = response.length();
+            for (int i=0; i<num;i++){
+                oMensaje= new clsUltimoMensaje(response.getJSONObject(i));
+                oMensajes.add(oMensaje);
+                //if(oNotificacion.nuevo()) nuevos+=1;
+            }
+
+        }catch (JSONException ex){ex.printStackTrace();}
+
     }
 
     public void clearMensajes(){
-        oMensajes.oMensajes=new ArrayList<clsMensaje>();
+        oMensajes.clear();
         nuevos=0;
     }
 

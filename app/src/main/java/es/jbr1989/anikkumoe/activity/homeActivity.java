@@ -26,8 +26,8 @@ import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.fragment.ConfigFragment;
 import es.jbr1989.anikkumoe.fragment.ExplorarPublicacionesFragment;
 import es.jbr1989.anikkumoe.fragment.ListadoPublicacionesFragment;
+import es.jbr1989.anikkumoe.fragment.UltimosMensajesFragment;
 import es.jbr1989.anikkumoe.fragment.chatFragment;
-import es.jbr1989.anikkumoe.fragment.mensajesFragment;
 import es.jbr1989.anikkumoe.fragment.nakamasFragment;
 import es.jbr1989.anikkumoe.fragment.notificacionesFragment;
 import es.jbr1989.anikkumoe.fragment.perfilFragment;
@@ -60,6 +60,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList navDrawerItems;
     private NavDrawerListAdapter adapter;
 
+    public FragmentManager fragmentManager;
     public Menu optionsMenu;
     public Integer id_menu=0;
 
@@ -72,6 +73,8 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         oListadoNotificaciones= new NotificacionListAdapter(this);
 
         mTitle = mDrawerTitle = getTitle();
+
+        fragmentManager = getFragmentManager();
 
         // load slide menu items
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
@@ -215,7 +218,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
                 fragment = new ExplorarPublicacionesFragment();
                 break;
             case 3:
-                fragment= new mensajesFragment();
+                fragment= new UltimosMensajesFragment();
                 break;
             case 4:
                 fragment = new chatFragment();
@@ -246,8 +249,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (fragment != null) {
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null).commit();
 
             // update selected item and title, then close the drawer
             mDrawerList.setItemChecked(position, true);
@@ -302,18 +304,20 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0 ){
-            getFragmentManager().popBackStack();
+        if (fragmentManager.getBackStackEntryCount() > 0 ){
+            fragmentManager.popBackStack();
         } else {
             super.onBackPressed();
         }
     }
 
     public void switchContent(Fragment fragment) {
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null).commit();
     }
 
+    public void FragmentAnt(){
+        if (fragmentManager.getBackStackEntryCount() > 0 ) fragmentManager.popBackStack();
+    }
 
     //MENU
 
@@ -329,4 +333,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
+    //REACTIONS
+
 }

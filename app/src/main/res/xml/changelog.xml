@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
-        <release version="0.3.5" versioncode="10" summary="Alpha" date="">
+        <release version="0.3.6" versioncode="11" summary="Alpha" date="05/09/2016">
+            <change>Nueva pestaña "Mensajes privados".</change>
+            <change>Ver mensajes enviados y recibidos.</change>
+            <change>Enviar mensajes privados.</change>
+            <change>Poder volver a la página anterior con el botón.</change>
+            <change>Interpretación del lenguaje BBCode.</change>
+        </release>
+        <release version="0.3.5" versioncode="10" summary="Alpha" date="31/07/2016">
             <change>Nueva pestaña "Nakamas".</change>
             <change>Ver y recibir mensajes de los nakamas.</change>
             <change>Ahora se puede hacer click a los hashtags (#) y a las menciones de usuarios (@) (De momento abre el navegador).</change>

@@ -14,7 +14,7 @@
 
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="Notificaciones">
+    <PreferenceScreen android:title="Notificaciones" android:enabled="false">
 
         <CheckBoxPreference
             android:key="notificacion_activo"

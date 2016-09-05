@@ -1,16 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/srlContainer"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/lstMensajes"
+    <RelativeLayout
+        android:id="@+id/container"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:listSelector="@drawable/list_row_selector">
-    </ListView>
+        android:orientation="vertical">
 
-</android.support.v4.widget.SwipeRefreshLayout>
+        <ImageButton
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:id="@+id/btnMensajeKamoji"
+            android:background="@drawable/icon_kamoji"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="5sp"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/txtMensajeMensaje"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/btnComentario"
+            android:layout_toRightOf="@+id/pubKamojiButton"
+            android:autoText="true"
+            android:hint="mensaje" />
+
+
+        <ImageButton
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:id="@+id/btnMensajeMensaje"
+            android:background="@android:drawable/ic_menu_send"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="5sp" />
+
+        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/lstMensajes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:transcriptMode="alwaysScroll"
+            android:listSelector="@drawable/list_row_selector"
+            android:layout_above="@+id/btnMensajeMensaje">
+        </ListView>
+
+    </RelativeLayout>

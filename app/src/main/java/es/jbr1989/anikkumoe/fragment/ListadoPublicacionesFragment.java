@@ -39,6 +39,7 @@ import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.MainActivity;
 import es.jbr1989.anikkumoe.activity.NuevaPublicacionActivity;
 import es.jbr1989.anikkumoe.activity.ReactionActivity;
+import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
@@ -64,12 +65,17 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
     public RequestQueue requestQueue;
     public CustomRequest request;
 
+    private homeActivity home;
+
 
     //El Fragment va a cargar su layout, el cual debemos especificar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.listado_publicaciones, container, false);
+
+        home = (homeActivity) rootView.getContext();
+        home.setTitle(R.string.FragmentResumen);
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());

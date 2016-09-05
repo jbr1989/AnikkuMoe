@@ -141,5 +141,14 @@ public class clsUsuarioSession {
         return UsuarioSession.getString("usuario","");
     }
 
+    public String getNombre(){
+        if (!UsuarioSession.getBoolean("login", false)) return null;
+        return UsuarioSession.getString("nombre","");
+    }
+
+    public String getAvatar(){
+        if (!UsuarioSession.getBoolean("login", false)) return null;
+        return UsuarioSession.getString("avatar","");
+    }
 
 }

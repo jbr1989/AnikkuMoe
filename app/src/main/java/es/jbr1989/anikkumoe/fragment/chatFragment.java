@@ -82,6 +82,7 @@ public class chatFragment extends Fragment {
 
         home = (homeActivity) rootView.getContext();
         home.id_menu=R.menu.chat_menu;
+        home.setTitle(R.string.FragmentChatGlobal);
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
@@ -316,6 +317,7 @@ public class chatFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
     }
 

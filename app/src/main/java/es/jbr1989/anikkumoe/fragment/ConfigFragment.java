@@ -19,6 +19,8 @@ public class ConfigFragment extends PreferenceFragment implements SharedPreferen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setTitle(R.string.FragmentConfig);
+
         addPreferencesFromResource(R.xml.configuracion);
 
         Preference changelog = (Preference) findPreference("changelog");

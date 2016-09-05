@@ -20,59 +20,62 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
-import es.jbr1989.anikkumoe.ListAdapter.MensajeListAdapter;
+import es.jbr1989.anikkumoe.ListAdapter.UltimoMensajeListAdapter;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
-import es.jbr1989.anikkumoe.object.clsMensaje;
+import es.jbr1989.anikkumoe.object.clsUltimoMensaje;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
 /**
  * Created by jbr1989 on 26/05/2016.
  */
-public class mensajesFragment extends Fragment implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class UltimosMensajesFragment extends Fragment implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
     private clsUsuarioSession oUsuarioSession;
 
-    private MensajeListAdapter oListadoMensajes;
+    private UltimoMensajeListAdapter oListadoMensajes;
 
     private ListView lstMensajes;
-    private ArrayList<clsMensaje> oMensajes = new ArrayList<clsMensaje>();
 
     public RequestQueue requestQueue;
     public CustomRequest2 request;
 
     private SwipeRefreshLayout swipeContainer;
 
+    private homeActivity home;
+
     public static final String TAG = "ExampleFragment";
     private FragmentIterationListener mCallback = null;
     public interface FragmentIterationListener{
         public void onFragmentIteration(Bundle parameters);
     }
-    public static mensajesFragment newInstance(Bundle arguments){
-        mensajesFragment f = new mensajesFragment();
+    public static UltimosMensajesFragment newInstance(Bundle arguments){
+        UltimosMensajesFragment f = new UltimosMensajesFragment();
         if(arguments != null) f.setArguments(arguments);
         return f;
     }
-    public mensajesFragment(){}
+    public UltimosMensajesFragment(){}
 
 
     //El Fragment va a cargar su layout, el cual debemos especificar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.listado_mensajes, container, false);
+        View rootView = inflater.inflate(R.layout.ultimos_mensajes, container, false);
+        home = (homeActivity) rootView.getContext();
+        home.setTitle(R.string.FragmentMensajes);
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
 
-        oListadoMensajes= new MensajeListAdapter(rootView.getContext());
+        oListadoMensajes= new UltimoMensajeListAdapter(rootView.getContext());
 
         lstMensajes = (ListView) rootView.findViewById(R.id.lstMensajes);
         lstMensajes.setOnItemClickListener(this);
@@ -94,6 +97,7 @@ public class mensajesFragment extends Fragment implements AdapterView.OnItemClic
         cargar_mensajes();
     }
 
+    /* Listado de todos los mensajes */
     public void cargar_mensajes(){
 
         oListadoMensajes.clearMensajes();
@@ -130,9 +134,16 @@ public class mensajesFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // display view for selected nav drawer item
-        //Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(oListadoMensajes.getUrl(position)));
-        //startActivity(browserIntent1);
+
+        clsUltimoMensaje oMensaje = (clsUltimoMensaje) oListadoMensajes.getItem(position);
+
+        Bundle arguments = new Bundle();
+        arguments.putString("id", oMensaje.getId().toString());
+        arguments.putString("name", oMensaje.getUsuario());
+
+        Fragment fragment = MensajesPrivadosFragment.newInstance(arguments);
+        getFragmentManager().beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null).commit();
+
     }
 
     @Override

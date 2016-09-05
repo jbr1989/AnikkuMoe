@@ -73,6 +73,8 @@ public class notificacionesFragment extends Fragment implements AdapterView.OnIt
 
         View rootView = inflater.inflate(R.layout.notificaciones, container, false);
 
+        getActivity().setTitle(R.string.FragmentNotificacion);
+
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
 

@@ -10,6 +10,11 @@ public class clsTexto {
 
     public clsTexto(){}
 
+    public static String recortar(String text, int pos){
+        if (text.length()>pos) text=text.substring(0,pos)+"...";
+        return text;
+    }
+
     public static String bbcode(String text) {
         String html = text;
 
@@ -57,7 +62,7 @@ public class clsTexto {
         html=html.replaceAll("(\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,6})","<a href=\"mailto:$1\">$1</a>");
         html=html.replaceAll("(?:\r\n|\r|\n)", "<br />");
 
-        return html;
+        return bbcode(html);
     }
 
 }

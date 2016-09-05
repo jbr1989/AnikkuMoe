@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
-import es.jbr1989.anikkumoe.NotifyService;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsUsuario;
@@ -168,8 +167,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 finish();
                 startActivity(i);
 
-                if (Config.getBoolean("notificacion_activo",true))
-                    startService(new Intent(MainActivity.this, NotifyService.class));
+                //if (Config.getBoolean("notificacion_activo",true))
+                    //startService(new Intent(MainActivity.this, NotifyService.class));
 
                 pDialog.dismiss();
             }

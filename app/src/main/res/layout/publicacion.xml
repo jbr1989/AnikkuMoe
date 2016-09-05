@@ -80,7 +80,7 @@
                     android:textColor="#46B0FB"
                     android:singleLine="true"
                     android:textStyle="bold"
-                    android:textIsSelectable="true"
+                    android:textIsSelectable="false"
                     android:clickable="true"
                     android:contextClickable="false" />
 

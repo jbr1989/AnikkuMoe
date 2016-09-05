@@ -71,6 +71,8 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.nakamas, container, false);
+
+        getActivity().setTitle(R.string.FragmentNakamas);
         cargar_preferencias(rootView);
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
