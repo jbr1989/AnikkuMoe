@@ -18,7 +18,7 @@
     <string name="FragmentMensajes">Mensajes</string>
     <string name="FragmentChatGlobal">Chat global</string>
     <string name="FragmentNakamas">Nakamas</string>
-    <string name="FragmentPerfil">Perfil</string>
+    <string name="FragmentPerfil">Mi perfil</string>
     <string name="FragmentConfig">Configuración</string>
     <string name="FragmentLogout">Salir</string>
 

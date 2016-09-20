@@ -86,7 +86,7 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
 
         //cargando_start(rootView.getContext(), "Cargando...");
 
-        if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
+        //if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
 
         return rootView;
     }
@@ -139,7 +139,7 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
                 //oListadoNakamas.clearNakamas();
                 if (oListadoNakamas.setNakamas(response)) {
                     oListadoNakamas.notifyDataSetChanged();
-                    cargar_nakamas_online();
+                    //cargar_nakamas_online();
                 }
             }
         }, new Response.ErrorListener() {

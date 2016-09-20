@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
+        <release version="0.3.7" versioncode="12" summary="Alpha" date="18/09/2016">
+            <change>Ver listado de publicaciones de hashtag en la aplicación.</change>
+            <change>Ver las imagenes incrustadas en el texto de las publicaciones. (Método @mechafruit)</change>
+            <change>FIX: Al volver a la pantalla anterior continuaba mostrando información de la pantalla.</change>
+        </release>
         <release version="0.3.6" versioncode="11" summary="Alpha" date="05/09/2016">
             <change>Nueva pestaña "Mensajes privados".</change>
             <change>Ver mensajes enviados y recibidos.</change>
@@ -15,7 +20,7 @@
         <release version="0.3.4" versioncode="9" summary="Alpha" date="28/07/2016">
             <change>Nueva pestaña "Chat global"</change>
             <change>Poder enviar mensajes al chat global</change>
-            <change>Corregido: Al crear publicación insertaba vídeo vacío (Gracias @SEDO)</change>
+            <change>FIX: Al crear publicación insertaba vídeo vacío (Gracias @SEDO)</change>
         </release>
         <release version="0.3.3" versioncode="8" summary="Alpha" date="14/07/2016">
             <change>Nueva pestaña "Perfil".</change>
@@ -25,7 +30,7 @@
         </release>
         <release version="0.3.2" versioncode="7" summary="Alpha" date="28/06/2016">
             <change>Visualizacion individual de una publicación dentro de la aplicación.</change>
-            <change>Corregido: Republicar las publicaciones propias.</change>
+            <change>FIX: Republicar las publicaciones propias.</change>
         </release>
         <release version="0.3" versioncode="6" summary="Alpha" date="21/06/2016">
             <change>Ver el tipo de reacción en las notificaciones.</change>

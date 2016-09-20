@@ -24,13 +24,13 @@ import es.jbr1989.anikkumoe.ListAdapter.NotificacionListAdapter;
 import es.jbr1989.anikkumoe.NotifyService;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.fragment.ConfigFragment;
-import es.jbr1989.anikkumoe.fragment.ExplorarPublicacionesFragment;
 import es.jbr1989.anikkumoe.fragment.ListadoPublicacionesFragment;
 import es.jbr1989.anikkumoe.fragment.UltimosMensajesFragment;
 import es.jbr1989.anikkumoe.fragment.chatFragment;
 import es.jbr1989.anikkumoe.fragment.nakamasFragment;
 import es.jbr1989.anikkumoe.fragment.notificacionesFragment;
 import es.jbr1989.anikkumoe.fragment.perfilFragment;
+import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.menu.NavDrawerItem;
 import es.jbr1989.anikkumoe.menu.NavDrawerListAdapter;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
@@ -64,6 +64,8 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     public Menu optionsMenu;
     public Integer id_menu=0;
 
+    public MyWebClient webClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
         mTitle = mDrawerTitle = getTitle();
 
         fragmentManager = getFragmentManager();
+        webClient = new MyWebClient(fragmentManager);
 
         // load slide menu items
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
@@ -212,10 +215,12 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
                 fragment = new notificacionesFragment();
                 break;
             case 1:
-                fragment = new ListadoPublicacionesFragment();
+                arguments.putString("tipo", "resumen");
+                fragment = ListadoPublicacionesFragment.newInstance(arguments);
                 break;
             case 2:
-                fragment = new ExplorarPublicacionesFragment();
+                arguments.putString("tipo", "explorar");
+                fragment = ListadoPublicacionesFragment.newInstance(arguments);
                 break;
             case 3:
                 fragment= new UltimosMensajesFragment();
@@ -288,12 +293,8 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     @Override
     public void onClick (View v){
-        switch(v.getId()){
-
-        }
     }
 
 
@@ -305,7 +306,7 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         if (fragmentManager.getBackStackEntryCount() > 0 ){
-            fragmentManager.popBackStack();
+            fragmentManager.popBackStackImmediate();
         } else {
             super.onBackPressed();
         }
@@ -313,10 +314,6 @@ public class homeActivity extends AppCompatActivity implements View.OnClickListe
 
     public void switchContent(Fragment fragment) {
         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null).commit();
-    }
-
-    public void FragmentAnt(){
-        if (fragmentManager.getBackStackEntryCount() > 0 ) fragmentManager.popBackStack();
     }
 
     //MENU

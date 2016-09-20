@@ -249,7 +249,7 @@ public class clsPublicacion {
             return texto;
         }
 
-        public Spanned getTextoHtml(){ return Html.fromHtml(texto_html);}
+        public String getTextoHtml(){ return texto_html;}
 
         public String getImagen() {
             return imagen;

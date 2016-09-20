@@ -112,14 +112,6 @@
         android:background="@drawable/layout_titulo_body"
         android:layout_margin="1sp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/txtBody"
-            android:background="@drawable/text_border"
-            android:gravity="left"
-            android:layout_marginBottom="5dip" />
-
         <WebView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

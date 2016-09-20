@@ -140,7 +140,7 @@ public class NuevaPublicacionActivity extends Activity {
         if (data!=null) {
             if (requestCode != 2) {
                 //call this method ever
-                magicalCamera.resultPhoto(requestCode, resultCode, data);
+                //magicalCamera.resultPhoto(requestCode, resultCode, data,true);
 
                 imgNewImagen.setImageBitmap(magicalCamera.getMyPhoto());
                 lytMultimedia.setVisibility(View.VISIBLE);
@@ -176,19 +176,17 @@ public class NuevaPublicacionActivity extends Activity {
         //loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
         String video = lblNewVideo.getText().toString();
 
-
-
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
         headers.put("Content-Disposition", "form-data");
         headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
-/*
+
         if(magicalCamera.getMyPhoto()!=null){
 
             loading.setMessage("Convirtiendo a bytes");
-            byte[] bites = MagicalCamera.bitmapToBytes(magicalCamera.getMyPhoto(),MagicalCamera.PNG);
+            byte[] bites = MagicalCamera.bitmapToBytes(magicalCamera.getMyPhoto(),MagicalCamera.JPEG);
             loading.setMessage("Convirtiendo a base64");
             String base64 = MagicalCamera.bytesToStringBase64(bites);
 
@@ -201,7 +199,7 @@ public class NuevaPublicacionActivity extends Activity {
 
             tipo=2;
         }
-*/
+
         if (!video.isEmpty()){ tipo=3; params.put("video", video);}
 
         params.put("texto", publicacionText);

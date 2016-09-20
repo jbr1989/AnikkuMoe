@@ -67,6 +67,16 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
     private homeActivity home;
 
+    private String tipo;
+    private String valor;
+
+    public ListadoPublicacionesFragment(){}
+
+    public static ListadoPublicacionesFragment newInstance(Bundle arguments){
+        ListadoPublicacionesFragment f = new ListadoPublicacionesFragment();
+        if(arguments != null) f.setArguments(arguments);
+        return f;
+    }
 
     //El Fragment va a cargar su layout, el cual debemos especificar
     @Override
@@ -75,24 +85,34 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
         View rootView = inflater.inflate(R.layout.listado_publicaciones, container, false);
 
         home = (homeActivity) rootView.getContext();
-        home.setTitle(R.string.FragmentResumen);
+
+        if (getArguments()!=null){
+            tipo= getArguments().getString("tipo");
+            valor = getArguments().getString("valor");
+
+            switch (tipo){
+                case "resumen": home.setTitle(R.string.FragmentResumen);break;
+                case "explorar": home.setTitle(R.string.FragmentExplorar);break;
+                case "hashtag": home.setTitle("#"+valor); break;
+                case "user": home.setTitle(valor);break;
+            }
+        }
+
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
 
         ArrayList<clsPublicacion> list = new ArrayList<>();
-        mAdapter = new PublicacionListAdapter(rootView.getContext(),list);
+        mAdapter = new PublicacionListAdapter(rootView.getContext(),list,home.webClient);
 
         mRecycler = (SuperRecyclerView) rootView.findViewById(R.id.list);
         mLayoutManager = new LinearLayoutManager(rootView.getContext());
         mRecycler.setLayoutManager(mLayoutManager);
         // mRecycler.addItemDecoration(new PaddingItemDecoration());
 
-
         mRecycler.setupSwipeToDismiss(this);
         mSparseAnimator = new SparseItemRemoveAnimator();
         mRecycler.getRecyclerView().setItemAnimator(mSparseAnimator);
-
 
         mHandler = new Handler(Looper.getMainLooper());
 /*
@@ -202,9 +222,32 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cargar_publicaciones();
+
     }
 
+    //region PUBLICACIONES
+
     public void cargar_publicaciones(){
+        switch(tipo){
+            case "resumen": resumen_publicaciones();break;
+            case "explorar": explorar_publicaciones();break;
+            case "hashtag": hashtag_publicaciones(); break;
+            case "user": usuario_publicaciones();break;
+        }
+    }
+
+    public void cargar_nuevas_publicaciones(){
+        switch(tipo){
+            case "resumen": resumen_nuevas_publicaciones();break;
+            case "explorar": explorar_nuevas_publicaciones();break;
+            case "hashtag": hashtag_nuevas_publicaciones(); break;
+            case "user": usuario_nuevas_publicaciones();break;
+        }
+    }
+
+    //region RESUMEN
+
+    public void resumen_publicaciones(){
 
         mAdapter.clearPublicaciones();
 
@@ -213,10 +256,6 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
         headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
-        //params.put("mdl", "publicaciones");
-        //params.put("acc", "resumen");
-        //params.put("publicacion", "0");
-        //params.put("uid", "0");
 
         request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
@@ -237,7 +276,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
                     getActivity().finish();
                 }else{
                     Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-                    cargar_publicaciones();
+                    resumen_publicaciones();
                 }
             }
         },ROOT_URL+"api/user/activity?page=0");
@@ -245,17 +284,13 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
         requestQueue.add(request);
     }
 
-    public void cargar_nuevas_publicaciones(){
+    public void resumen_nuevas_publicaciones(){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
         headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
-        //params.put("mdl", "publicaciones");
-        //params.put("acc", "resumen");
-        //params.put("publicacion", mAdapter.get_UltimaFecha().toString());
-        //params.put("uid", "0");
 
         request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
@@ -272,6 +307,175 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
         requestQueue.add(request);
     }
+
+    //endregion
+
+    //region EXPLORAR
+
+    public void explorar_publicaciones(){
+
+        mAdapter.clearPublicaciones();
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                cargar_publicaciones();
+            }
+        },ROOT_URL+"api/user/browse?page=0");
+
+        requestQueue.add(request);
+    }
+
+    public void explorar_nuevas_publicaciones(){
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        },ROOT_URL+"api/user/browse?page="+mAdapter.get_UltimaFecha().toString());
+
+        requestQueue.add(request);
+    }
+
+    //endregion
+
+    //region HASHTAG
+
+    public void hashtag_publicaciones(){
+
+        mAdapter.clearPublicaciones();
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                cargar_publicaciones();
+            }
+        },ROOT_URL+"api/user/hashtag/"+valor+"?page=0");
+
+        requestQueue.add(request);
+    }
+
+    public void hashtag_nuevas_publicaciones(){
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        },ROOT_URL+"api/user/hashtag/"+valor+"?page="+mAdapter.get_UltimaFecha().toString());
+
+        requestQueue.add(request);
+    }
+
+    //endregion
+
+    //region USUARIO
+
+    public void usuario_publicaciones(){
+
+        mAdapter.clearPublicaciones();
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                cargar_publicaciones();
+            }
+        },ROOT_URL+"api/user/browse?page=0");
+
+        requestQueue.add(request);
+    }
+
+    public void usuario_nuevas_publicaciones(){
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        },ROOT_URL+"api/user/browse?page="+mAdapter.get_UltimaFecha().toString());
+
+        requestQueue.add(request);
+    }
+
+    //endregion
+
+    //endregion
 
     /**
      * Slide menu item click listener

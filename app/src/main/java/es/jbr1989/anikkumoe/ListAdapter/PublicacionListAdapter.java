@@ -10,11 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -47,6 +45,7 @@ import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.fragment.perfilFragment;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
+import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.ExpandedListView;
@@ -85,6 +84,8 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
     public CustomRequest request;
     public CustomRequest2 request2;
 
+    public MyWebClient webClient;
+
     //endregion
 
     //region CONSTRUCTOR
@@ -100,10 +101,9 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
         PublicacionesConfig = context.getSharedPreferences(SP_NAME, 0);
         PublicacionesConfigEditor = PublicacionesConfig.edit();
-
     }
 
-    public PublicacionListAdapter(Context context, ArrayList<clsPublicacion> oPublicaciones) {
+    public PublicacionListAdapter(Context context, ArrayList<clsPublicacion> oPublicaciones, MyWebClient webClient) {
         this.context = context;
 
         oUsuarioSession = new clsUsuarioSession(context);
@@ -116,6 +116,8 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         PublicacionesConfigEditor = PublicacionesConfig.edit();
 
         oListadoComentarios= new ComentariosListAdapter(context);
+
+        this.webClient=webClient;
 
     }
     //endregion
@@ -395,7 +397,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         public final NetworkImageView imgAvatar,imgAvatarOri,imgAnime;
         public final ImageView imgLike;
         public final WebView webBody;
-        public final TextView txtNombre, txtFecha, txtUsuario, txtNombreOri, txtBody, txtAnime, txtComentarios, txtReactionLike, txtReactionLove, txtReactionHaha, txtReactionWow, txtReactionSorry, txtReactionAnger, txtReactionReplicas, txtLike, txtMessage;
+        public final TextView txtNombre, txtFecha, txtUsuario, txtNombreOri, txtAnime, txtComentarios, txtReactionLike, txtReactionLove, txtReactionHaha, txtReactionWow, txtReactionSorry, txtReactionAnger, txtReactionReplicas, txtLike, txtMessage;
         public final ExpandedListView lstComentarios;
         public final ImageButton btnComentario;
 
@@ -418,7 +420,6 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             this.txtFecha = (TextView) itemView.findViewById(R.id.txtFecha);
             this.txtUsuario = (TextView) itemView.findViewById(R.id.txtUsuario);
             this.txtNombreOri = (TextView) itemView.findViewById(R.id.txtNombreOri);
-            this.txtBody = (TextView) itemView.findViewById(R.id.txtBody);
 
             this.imgAnime = (NetworkImageView) itemView.findViewById(R.id.imgAnime);
             this.txtAnime=(TextView) itemView.findViewById(R.id.txtAnime);
@@ -531,20 +532,19 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             holder.lytSpoiler.setVisibility(View.GONE);
             holder.lytBody.setVisibility(View.VISIBLE);
 
-            holder.txtBody.setText(oPublicacion.feed.getTextoHtml());
-            holder.txtBody.setMovementMethod(LinkMovementMethod.getInstance());
-            holder.webBody.setVisibility((!oPublicacion.feed.getImagen().equalsIgnoreCase("") || !oPublicacion.feed.getVideo().equalsIgnoreCase("") ? View.VISIBLE : View.GONE));
+            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><style>img{max-width:100%;}</style>";
 
-            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\">";
+            html+="<div style=\"text-align:left;border-left: 2px solid #026acb;margin: 10px 0;padding: 0 10px 0 5px;\">"+oPublicacion.feed.getTextoHtml()+"</div>";
 
             if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) html+= "<img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\">";
             else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")) html+= "<a href=\""+oPublicacion.feed.getVideo()+"\"><iframe src=\"http://www.youtube.com/embed/"+oPublicacion.feed.getIdVideo()+"\" type=\"text/html\" width=\"100%\"></iframe></a>";
 
             html+="</body></html>";
 
-            holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            holder.webBody.setWebViewClient(webClient);
+            //holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
             holder.webBody.getSettings().setJavaScriptEnabled(true);
-            holder.webBody.getSettings().setLoadWithOverviewMode(true);
+            //holder.webBody.getSettings().setLoadWithOverviewMode(true);
             holder.webBody.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
 
