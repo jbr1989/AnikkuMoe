@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="es.jbr1989.anikkumoe"
-    android:versionCode="12"
-    android:versionName="0.3.7">
+    android:versionCode="13"
+    android:versionName="0.4">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -19,13 +19,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity" android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.homeActivity" android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity android:name=".activity.homeActivity" android:theme="@style/AppTheme.NoActionBar" android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".activity.chatActivity" />
         <activity android:name=".activity.NuevaPublicacionActivity" android:theme="@android:style/Theme.DeviceDefault.Light.DarkActionBar" android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name=".activity.ReactionActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" android:noHistory="true" android:label="Puntuar" />

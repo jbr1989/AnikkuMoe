@@ -12,13 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
@@ -26,6 +30,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.ChatPrivadoListAdapter;
 import es.jbr1989.anikkumoe.R;
@@ -38,7 +44,9 @@ import es.jbr1989.anikkumoe.object.clsUsuarioSession;
  */
 public class chatPrivadoFragment extends Fragment {
 
+    private static final String ROOT_URL = AppController.getInstance().getUrl();
     private static final String API_OLD_URL = AppController.getInstance().getApiOld();
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public static final String TAG = "chatFragment";
     ProgressDialog pDialog;
@@ -63,6 +71,11 @@ public class chatPrivadoFragment extends Fragment {
     Long intervalo;
 
     private homeActivity home;
+    @Bind(R.id.navigation) LinearLayout mNavigation;
+    @Bind(R.id.avatar) NetworkImageView mAvatar;
+    @Bind(R.id.title) TextView mTitle;
+
+    //region CONSTRUCTOR
 
     private FragmentIterationListener mCallback = null;
     public interface FragmentIterationListener{
@@ -75,6 +88,8 @@ public class chatPrivadoFragment extends Fragment {
     }
     public chatPrivadoFragment(){}
 
+    //endregion
+
     //El Fragment va a cargar su layout, el cual debemos especificar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -82,10 +97,15 @@ public class chatPrivadoFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.chat, container, false);
         cargar_preferencias(rootView);
 
+        ButterKnife.bind(this, rootView);
         home = (homeActivity) rootView.getContext();
-        home.id_menu=R.menu.chat_menu;
-        home.onCreateOptionsMenu(home.optionsMenu);
-        home.setTitle(name);
+        mNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                home.toggleDrawer();
+            }
+        });
+        mTitle.setText(name);
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
@@ -168,6 +188,9 @@ public class chatPrivadoFragment extends Fragment {
                 oListadoChats.setChats(response);
                 oListadoChats.notifyDataSetChanged();
                 home.setRefreshActionButtonState(false);
+
+                String url=ROOT_URL+"static-img/"+oListadoChats.getAvatar();
+                mAvatar.setImageUrl(url, imageLoader);
 
                 if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
             }

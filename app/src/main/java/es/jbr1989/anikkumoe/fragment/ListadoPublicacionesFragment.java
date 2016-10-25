@@ -14,7 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.PublicacionListAdapter;
 import es.jbr1989.anikkumoe.R;
@@ -61,14 +65,17 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
     private RecyclerView.LayoutManager mLayoutManager;
     private Handler                    mHandler;
 
-
     public RequestQueue requestQueue;
     public CustomRequest request;
 
-    private homeActivity home;
-
     private String tipo;
     private String valor;
+
+    private homeActivity home;
+    @Bind(R.id.navigation) LinearLayout mNavigation;
+    @Bind(R.id.title) TextView mTitle;
+
+    //region CONSTRUCTOR
 
     public ListadoPublicacionesFragment(){}
 
@@ -78,23 +85,31 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
         return f;
     }
 
+    //endregion
+
     //El Fragment va a cargar su layout, el cual debemos especificar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.listado_publicaciones, container, false);
-
+        ButterKnife.bind(this, rootView);
         home = (homeActivity) rootView.getContext();
+        mNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                home.toggleDrawer();
+            }
+        });
 
         if (getArguments()!=null){
             tipo= getArguments().getString("tipo");
             valor = getArguments().getString("valor");
 
             switch (tipo){
-                case "resumen": home.setTitle(R.string.FragmentResumen);break;
-                case "explorar": home.setTitle(R.string.FragmentExplorar);break;
-                case "hashtag": home.setTitle("#"+valor); break;
-                case "user": home.setTitle(valor);break;
+                case "resumen": mTitle.setText(R.string.FragmentResumen);break;
+                case "explorar": mTitle.setText(R.string.FragmentExplorar);break;
+                case "hashtag": mTitle.setText("#"+valor); break;
+                case "user": mTitle.setText(valor);break;
             }
         }
 
@@ -110,9 +125,9 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
         mRecycler.setLayoutManager(mLayoutManager);
         // mRecycler.addItemDecoration(new PaddingItemDecoration());
 
-        mRecycler.setupSwipeToDismiss(this);
-        mSparseAnimator = new SparseItemRemoveAnimator();
-        mRecycler.getRecyclerView().setItemAnimator(mSparseAnimator);
+        //mRecycler.setupSwipeToDismiss(this);
+        //mSparseAnimator = new SparseItemRemoveAnimator();
+        //mRecycler.getRecyclerView().setItemAnimator(mSparseAnimator);
 
         mHandler = new Handler(Looper.getMainLooper());
 /*
@@ -150,7 +165,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
         thread.start();
 
 */
-        mRecycler.setAdapter(mAdapter);
+
         //cargar_publicaciones();
 
         mRecycler.setRefreshListener(this);
@@ -262,6 +277,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -327,6 +343,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -382,6 +399,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -437,6 +455,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
             }
         }, new Response.ErrorListener() {
             @Override

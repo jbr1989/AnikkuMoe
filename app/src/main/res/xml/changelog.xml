@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
+        <release version="0.4" versioncode="13" summary="Alpha" date="">
+            <change>NUEVO DISEÑO de la aplicación (Dedicado a @Sharon-chan).</change>
+            <!--<change>Ver publicaciones, nakamas, siguiendo y seguidores en el perfil de usuario.</change>-->
+            <change>FIX: Ahora muestra animación durante la carga de datos.</change>
+            <change>FIX: Ya no se pueden quitar elementos del listado de publicaciones arrastrando al lateral. </change>
+        </release>
         <release version="0.3.7" versioncode="12" summary="Alpha" date="18/09/2016">
             <change>Ver listado de publicaciones de hashtag en la aplicación.</change>
             <change>Ver las imagenes incrustadas en el texto de las publicaciones. (Método @mechafruit)</change>

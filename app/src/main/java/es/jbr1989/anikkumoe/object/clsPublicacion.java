@@ -44,39 +44,13 @@ public class clsPublicacion {
 
         try {
             JSONObject user=jPub.getJSONObject("user");
-            this.user= new clsUser();
-
-            try {this.user.setId(user.getInt("id"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
-            try {this.user.setUsuario(user.getString("usuario"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
-            try {this.user.setNombre(user.getString("nombre"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
-            try {this.user.setAvatar(user.getString("avatar"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
+            this.user= new clsUser(user);
         }
         catch (JSONException ex){ex.printStackTrace();}
 
         try {
             JSONObject user_original=jPub.getJSONObject("user_original");
-            this.user_original= new clsUser();
-
-            try {this.user_original.setId(user_original.getInt("id"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
-            try {this.user_original.setUsuario(user_original.getString("usuario"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
-            try {this.user_original.setNombre(user_original.getString("nombre"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
-            try {this.user_original.setAvatar(user_original.getString("avatar"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
+            this.user_original= new clsUser(user_original);
         }
         catch (JSONException ex){ex.printStackTrace();}
 

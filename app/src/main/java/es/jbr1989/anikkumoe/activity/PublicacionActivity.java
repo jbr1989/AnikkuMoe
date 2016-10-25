@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,6 +38,7 @@ import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.fragment.perfilFragment;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
+import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.ExpandedListView;
@@ -74,6 +74,9 @@ public class PublicacionActivity extends Activity {
     public ExpandedListView lstComentarios;
     public ImageButton btnComentario;
 
+    public FragmentManager fragmentManager;
+    public MyWebClient webClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +85,9 @@ public class PublicacionActivity extends Activity {
 
         oUsuarioSession = new clsUsuarioSession(this);
         requestQueue = Volley.newRequestQueue(this);
+
+        fragmentManager = getFragmentManager();
+        webClient = new MyWebClient(fragmentManager);
 
         Intent i= getIntent();
         Bundle extras = i.getExtras();
@@ -296,7 +302,7 @@ public class PublicacionActivity extends Activity {
 
     public void ver_comentarios(){
         if(lytComentarios.getVisibility()!=View.VISIBLE){
-            oListadoComentarios= new ComentariosListAdapter(getBaseContext());
+            oListadoComentarios= new ComentariosListAdapter(getBaseContext(),webClient);
             lstComentarios.setAdapter(oListadoComentarios);
             cargar_comentarios();
             lytComentarios.setVisibility(View.VISIBLE);
@@ -341,7 +347,7 @@ public class PublicacionActivity extends Activity {
         Fragment fragment = perfilFragment.newInstance(arguments);
 
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
     }
 
     public void cargar_comentarios(){
@@ -414,21 +420,22 @@ public class PublicacionActivity extends Activity {
             lytSpoiler.setVisibility(View.GONE);
             lytBody.setVisibility(View.VISIBLE);
 
-            txtBody.setText(oPublicacion.feed.getHTMLTexto());
-            webBody.setVisibility((!oPublicacion.feed.getImagen().equalsIgnoreCase("") || !oPublicacion.feed.getVideo().equalsIgnoreCase("") ? View.VISIBLE : View.GONE));
+            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><style>img{max-width:100%;}</style>";
 
-            if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) {
-                String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\"></body></html>";
-                webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
-                webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-            }else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")){
-                String htnlString = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><a href=\""+oPublicacion.feed.getVideo()+"\"><iframe src=\"http://www.youtube.com/embed/"+oPublicacion.feed.getIdVideo()+"\" type=\"text/html\" width=\"100%\"></iframe></a></body></html>";
-                webBody.getSettings().setPluginState(WebSettings.PluginState.ON);
-                webBody.getSettings().setJavaScriptEnabled(true);
-                //webBody.getSettings().setUseWideViewPort(true);
-                webBody.getSettings().setLoadWithOverviewMode(true);
-                webBody.loadDataWithBaseURL(null, htnlString, "text/html", "UTF-8", null);
-            }
+            html+="<div style=\"text-align:left;border-left: 2px solid #026acb;margin: 10px 0;padding: 0 10px 0 5px;\">"+oPublicacion.feed.getTextoHtml()+"</div>";
+
+            if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) html+= "<img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\">";
+            else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")) html+= "<a href=\""+oPublicacion.feed.getVideo()+"\"><iframe src=\"http://www.youtube.com/embed/"+oPublicacion.feed.getIdVideo()+"\" type=\"text/html\" width=\"100%\"></iframe></a>";
+
+            html+="</body></html>";
+
+            webBody.setWebViewClient(webClient);
+            //holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            webBody.getSettings().setJavaScriptEnabled(true);
+            //holder.webBody.getSettings().setLoadWithOverviewMode(true);
+            webBody.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
+
+
         }else{
             lytBody.setVisibility(View.GONE);
             lytSpoiler.setVisibility(View.VISIBLE);

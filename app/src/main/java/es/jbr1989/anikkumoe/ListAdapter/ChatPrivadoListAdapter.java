@@ -91,6 +91,8 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
         return ultima_fecha;
     }
 
+    public String getAvatar(){ return oUsuarios.get(0).getAvatar();}
+
     //endregion
 
     @Override

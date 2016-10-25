@@ -26,20 +26,7 @@ public class clsMensajes {
 
         try {
             JSONObject user=jData.getJSONObject("user");
-            this.user= new clsUser();
-
-            try {this.user.setId(user.getInt("id"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
-            try {this.user.setUsuario(user.getString("usuario"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
-            try {this.user.setNombre(user.getString("nombre"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
-            try {this.user.setAvatar(user.getString("avatar"));}
-            catch (JSONException ex){ex.printStackTrace();}
-
+            this.user= new clsUser(user);
         }
         catch (JSONException ex){ex.printStackTrace();}
 

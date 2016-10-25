@@ -9,6 +9,8 @@
     <string name="lblSeguidores">Seguidores</string>
     <string name="lblPublicaciones">Publicaciones</string>
 
+    <string name="action_settings">Settings</string>
+
     <string name="alertaSpoiler">Advertencia, esta publicación podría contener spoiler. \n (click para ver)</string>
 
     <!-- FRAGMENTS -->

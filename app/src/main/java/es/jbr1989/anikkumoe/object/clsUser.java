@@ -3,6 +3,9 @@ package es.jbr1989.anikkumoe.object;
 import android.text.Html;
 import android.text.Spanned;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by jbr1989 on 13/04/2016.
  */
@@ -11,6 +14,22 @@ public class clsUser {
     private String usuario;
     private String nombre;
     private String avatar;
+
+    public clsUser(JSONObject jUser){
+
+        try {this.id=jUser.getInt("id");}
+        catch (JSONException ex){ex.printStackTrace();}
+
+        try {this.usuario= jUser.getString("usuario");}
+        catch (JSONException ex){ex.printStackTrace();}
+
+        try {this.nombre= jUser.getString("nombre");}
+        catch (JSONException ex){ex.printStackTrace();}
+
+        try {this.avatar= jUser.getString("avatar");}
+        catch (JSONException ex){ex.printStackTrace();}
+
+    }
 
     //region SETTERS
 

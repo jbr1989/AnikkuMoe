@@ -10,13 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
@@ -24,12 +28,13 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.MensajeListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
-import es.jbr1989.anikkumoe.object.clsMensajes;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
 /**
@@ -38,13 +43,13 @@ import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 public class MensajesPrivadosFragment extends Fragment {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     private clsUsuarioSession oUsuarioSession;
 
     private MensajeListAdapter oListadoMensajes;
 
     private ListView lstMensajes;
-    private clsMensajes oMensajes;
 
     public RequestQueue requestQueue;
     public CustomRequest request;
@@ -52,11 +57,17 @@ public class MensajesPrivadosFragment extends Fragment {
     private SwipeRefreshLayout swipeContainer;
 
     private homeActivity home;
+    @Bind(R.id.navigation) LinearLayout mNavigation;
+    @Bind(R.id.avatar) NetworkImageView mAvatar;
+    @Bind(R.id.title) TextView mTitle;
+
     public static String id;
     public static String name;
 
     private EditText messageET;
     private ImageButton sendBtn;
+
+    //region CONSTRUCTOR
 
     public static final String TAG = "ExampleFragment";
     private FragmentIterationListener mCallback = null;
@@ -70,13 +81,21 @@ public class MensajesPrivadosFragment extends Fragment {
     }
     public MensajesPrivadosFragment(){}
 
+    //endregion
 
     //El Fragment va a cargar su layout, el cual debemos especificar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.listado_mensajes, container, false);
+        ButterKnife.bind(this, rootView);
         home = (homeActivity) rootView.getContext();
+        mNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                home.toggleDrawer();
+            }
+        });
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
@@ -90,7 +109,7 @@ public class MensajesPrivadosFragment extends Fragment {
             id= getArguments().getString("id");
             name = getArguments().getString("name");
 
-            if (!name.isEmpty()) home.setTitle(name);
+            if (!name.isEmpty()) mTitle.setText(name);
         }
 
         messageET = (EditText) rootView.findViewById(R.id.txtMensajeMensaje);
@@ -110,9 +129,6 @@ public class MensajesPrivadosFragment extends Fragment {
 
         return rootView;
     }
-
-
-
 
     //La vista de layout ha sido creada y ya está disponible
     @Override
@@ -141,6 +157,9 @@ public class MensajesPrivadosFragment extends Fragment {
 
                 oListadoMensajes.setMensajes(response);
                 oListadoMensajes.putConfigNewsCount();
+
+                String url=ROOT_URL+"static-img/"+oListadoMensajes.getAvatar();
+                mAvatar.setImageUrl(url,imageLoader);
 
                 // setting the nav drawer list adapter
                 oListadoMensajes.notifyDataSetChanged();
@@ -225,7 +244,5 @@ public class MensajesPrivadosFragment extends Fragment {
     public void clearMessage(){
         messageET.setText("");
     }
-
-
 
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_FragmentNotificacion"
+            android:icon="@drawable/ic_notifications_black_24dp"
+            android:title="@string/FragmentNotificacion"/>
+        <item
+            android:id="@+id/nav_FragmentResumen"
+            android:icon="@drawable/ic_whats_hot"
+            android:title="@string/FragmentResumen"/>
+        <item
+            android:id="@+id/nav_FragmentExplorar"
+            android:icon="@drawable/ic_public_black_24dp"
+            android:title="@string/FragmentExplorar"/>
+        <item
+            android:id="@+id/nav_FragmentMensajes"
+            android:icon="@drawable/ic_email_black_24dp"
+            android:title="@string/FragmentMensajes"/>
+        <item
+            android:id="@+id/nav_FragmentChatGlobal"
+            android:icon="@drawable/ic_chat_bubble_outline_black_24dp"
+            android:title="@string/FragmentChatGlobal"/>
+        <item
+            android:id="@+id/nav_FragmentNakamas"
+            android:icon="@drawable/ic_group_black_24dp"
+            android:title="@string/FragmentNakamas"/>
+        <item
+            android:id="@+id/nav_FragmentPerfil"
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:title="@string/FragmentPerfil"/>
+        <item
+            android:id="@+id/nav_FragmentConfig"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/FragmentConfig"/>
+        <item
+            android:id="@+id/nav_FragmentLogout"
+            android:icon="@drawable/ic_power_settings_new_black_24dp"
+            android:title="@string/FragmentLogout"/>
+    </group>
+
+    <!--
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:title="Share"/>
+            <item
+                android:id="@+id/nav_send"
+                android:title="Send"/>
+        </menu>
+    </item>
+-->
+</menu>

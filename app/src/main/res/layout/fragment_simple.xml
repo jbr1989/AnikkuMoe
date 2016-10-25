@@ -1,0 +1,16 @@
+<com.malinskiy.superrecyclerview.SuperRecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_empty="@layout/recyclerview_empty"
+    app:layout_moreProgress="@layout/recyclerview_more_progress"
+    app:layout_progress="@layout/recyclerview_progress"
+    app:mainLayoutId="@layout/recyclerview_verticalscroll"
+    app:recyclerClipToPadding="false"
+    app:scrollbarStyle="insideInset"
+    android:nestedScrollingEnabled="false"
+    android:background="#ffffff"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+

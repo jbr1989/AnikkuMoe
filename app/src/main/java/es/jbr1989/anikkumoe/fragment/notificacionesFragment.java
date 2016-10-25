@@ -12,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,10 +29,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.NotificacionListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.PublicacionActivity;
+import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsNotificacion;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
@@ -54,6 +59,12 @@ public class notificacionesFragment extends Fragment implements AdapterView.OnIt
 
     private SwipeRefreshLayout swipeContainer;
 
+    private homeActivity home;
+    @Bind(R.id.navigation) LinearLayout mNavigation;
+    @Bind(R.id.title) TextView mTitle;
+
+    //region CONSTRUCTOR
+
     public static final String TAG = "ExampleFragment";
     private FragmentIterationListener mCallback = null;
     public interface FragmentIterationListener{
@@ -66,14 +77,22 @@ public class notificacionesFragment extends Fragment implements AdapterView.OnIt
     }
     public notificacionesFragment(){}
 
+    //endregion
 
     //El Fragment va a cargar su layout, el cual debemos especificar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.notificaciones, container, false);
-
-        getActivity().setTitle(R.string.FragmentNotificacion);
+        ButterKnife.bind(this, rootView);
+        home = (homeActivity) rootView.getContext();
+        mNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                home.toggleDrawer();
+            }
+        });
+        mTitle.setText(R.string.FragmentNotificacion);
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
@@ -165,7 +184,7 @@ public class notificacionesFragment extends Fragment implements AdapterView.OnIt
                 Fragment fragment =perfilFragment.newInstance(arguments);
 
                 FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
                 break;
         }
 

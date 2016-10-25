@@ -26,6 +26,7 @@ import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.fragment.perfilFragment;
+import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.object.clsComentario;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.clsDate;
@@ -59,11 +60,13 @@ public class ComentariosListAdapter extends BaseAdapter {
 
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
+    public MyWebClient webClient;
+
     //endregion
 
     //region CONSTRUCTOR
 
-    public ComentariosListAdapter(Context context){
+    public ComentariosListAdapter(Context context, MyWebClient webClient){
         this.context = context;
 
         oUsuarioSession = new clsUsuarioSession(context);
@@ -75,6 +78,7 @@ public class ComentariosListAdapter extends BaseAdapter {
         ComentariosConfig = context.getSharedPreferences(SP_NAME, 0);
         ComentariosConfigEditor = ComentariosConfig.edit();
 
+        this.webClient=webClient;
     }
 
     //endregion
@@ -97,12 +101,8 @@ public class ComentariosListAdapter extends BaseAdapter {
 
         ViewHolder viewHolder;
 
-        NetworkImageView imgAvatar;
-        TextView txtUsuario, txtNombre, txtFecha;
-        WebView webBody;
-
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.comentario, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_comentario, parent, false);
             viewHolder =new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else{
@@ -121,6 +121,8 @@ public class ComentariosListAdapter extends BaseAdapter {
         //viewHolder.webBody.loadDataWithBaseURL(null, oComentario.getHTMLTexto(), "text/html", "UTF-8", null);
         //viewHolder.webBody.setBackgroundColor(0x00000000);
 
+        //mostrar_body(viewHolder,oComentario);
+
         viewHolder.txtUsuario.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 cargar_perfil(oComentario.user.getUsuario());
@@ -134,6 +136,19 @@ public class ComentariosListAdapter extends BaseAdapter {
         });
 
         return convertView;
+    }
+
+    public void mostrar_body(final ComentariosListAdapter.ViewHolder holder, clsComentario oComentario){
+
+            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><style>img{max-width:100%;}</style>";
+
+            html+="<div style=\"text-align:left;border-left: 2px solid #026acb;margin: 10px 0;padding: 0 10px 0 5px;\">"+oComentario.getHTMLTexto()+"</div>";
+
+            html+="</body></html>";
+
+            holder.webBody.setWebViewClient(webClient);
+            holder.webBody.getSettings().setJavaScriptEnabled(true);
+            holder.webBody.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
     }
 
 
@@ -192,11 +207,13 @@ public class ComentariosListAdapter extends BaseAdapter {
     private static class ViewHolder {
         public final NetworkImageView imgAvatar;
         public final TextView txtUsuario, txtBody, txtNombre, txtFecha;
+        public final WebView webBody;
 
         public ViewHolder(View v){
             this.imgAvatar = (NetworkImageView) v.findViewById(R.id.ImgAvatar);
             this.txtUsuario = (TextView) v.findViewById(R.id.txtUsuario);
             this.txtBody = (TextView) v.findViewById(R.id.txtBody);
+            this.webBody = (WebView) v.findViewById(R.id.webBody);
             this.txtNombre = (TextView) v.findViewById(R.id.txtNombre);
             this.txtFecha = (TextView) v.findViewById(R.id.txtFecha);
         }

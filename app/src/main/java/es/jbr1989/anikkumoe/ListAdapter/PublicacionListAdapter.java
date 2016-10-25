@@ -115,7 +115,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         PublicacionesConfig = context.getSharedPreferences(SP_NAME, 0);
         PublicacionesConfigEditor = PublicacionesConfig.edit();
 
-        oListadoComentarios= new ComentariosListAdapter(context);
+        oListadoComentarios= new ComentariosListAdapter(context,webClient);
 
         this.webClient=webClient;
 
@@ -126,7 +126,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     @Override
     public PublicacionListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.publicacion, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_publicacion, parent, false);
         return new ViewHolder(view);
     }
 
@@ -232,7 +232,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         holder.lytComentar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(holder.lytComentarios.getVisibility()!=View.VISIBLE){
-                    oListadoComentarios= new ComentariosListAdapter(context);
+                    oListadoComentarios= new ComentariosListAdapter(context,webClient);
                     holder.lstComentarios.setAdapter(oListadoComentarios);
                     cargar_comentarios(holder.lstComentarios, oPublicacion.feed.getId());
                     holder.lytComentarios.setVisibility(View.VISIBLE);
@@ -296,8 +296,6 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             holder.imgLike.setImageResource(R.drawable.icon_like);
             holder.txtLike.setText("Me gusta");
         }
-
-
 
     }
 
@@ -393,7 +391,8 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     // Guardar item cargado
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final LinearLayout lytPublicacion, lytBody, lytSpoiler, lytAnime, lytComentar,lytComentarios, lytLikes, lytReplicas, lytReactionLike, lytReactionLove, lytReactionHaha, lytReactionWow, lytReactionSorry, lytReactionAnger, lytReactionReplicas;
+        //public final CardView lytPublicacion;
+        public final LinearLayout lytBody, lytSpoiler, lytAnime, lytComentar,lytComentarios, lytLikes, lytReplicas, lytReactionLike, lytReactionLove, lytReactionHaha, lytReactionWow, lytReactionSorry, lytReactionAnger, lytReactionReplicas;
         public final NetworkImageView imgAvatar,imgAvatarOri,imgAnime;
         public final ImageView imgLike;
         public final WebView webBody;
@@ -404,7 +403,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         public ViewHolder(View itemView){
             super(itemView);
 
-            this.lytPublicacion = (LinearLayout) itemView.findViewById(R.id.lytPublicacion);
+            //this.lytPublicacion = (CardView) itemView.findViewById(R.id.lytPublicacion);
             this.lytBody = (LinearLayout) itemView.findViewById(R.id.lytBody);
             this.lytSpoiler = (LinearLayout) itemView.findViewById(R.id.lytSpoiler);
             this.lytAnime = (LinearLayout) itemView.findViewById(R.id.lytAnime);

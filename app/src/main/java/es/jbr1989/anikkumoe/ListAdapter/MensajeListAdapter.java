@@ -90,6 +90,8 @@ public class MensajeListAdapter extends BaseAdapter {
         return position;
     }
 
+    public String getAvatar(){return oMensajes.user.getAvatar();}
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

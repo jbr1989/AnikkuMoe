@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,6 +25,8 @@ import org.json.JSONArray;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.UltimoMensajeListAdapter;
 import es.jbr1989.anikkumoe.R;
@@ -50,6 +54,10 @@ public class UltimosMensajesFragment extends Fragment implements AdapterView.OnI
     private SwipeRefreshLayout swipeContainer;
 
     private homeActivity home;
+    @Bind(R.id.navigation) LinearLayout mNavigation;
+    @Bind(R.id.title) TextView mTitle;
+
+    //region CONSTRUCTOR
 
     public static final String TAG = "ExampleFragment";
     private FragmentIterationListener mCallback = null;
@@ -63,14 +71,22 @@ public class UltimosMensajesFragment extends Fragment implements AdapterView.OnI
     }
     public UltimosMensajesFragment(){}
 
+    //endregion
 
     //El Fragment va a cargar su layout, el cual debemos especificar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.ultimos_mensajes, container, false);
+        ButterKnife.bind(this, rootView);
         home = (homeActivity) rootView.getContext();
-        home.setTitle(R.string.FragmentMensajes);
+        mNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                home.toggleDrawer();
+            }
+        });
+        mTitle.setText(R.string.FragmentMensajes);
 
         oUsuarioSession = new clsUsuarioSession(rootView.getContext());
         requestQueue = Volley.newRequestQueue(rootView.getContext());
@@ -142,7 +158,7 @@ public class UltimosMensajesFragment extends Fragment implements AdapterView.OnI
         arguments.putString("name", oMensaje.getUsuario());
 
         Fragment fragment = MensajesPrivadosFragment.newInstance(arguments);
-        getFragmentManager().beginTransaction().replace(R.id.frame_container, fragment).addToBackStack(null).commit();
+        getFragmentManager().beginTransaction().replace(R.id.content, fragment).addToBackStack(null).commit();
 
     }
 

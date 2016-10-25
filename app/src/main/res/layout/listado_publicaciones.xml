@@ -1,26 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffffff">
 
-    <FrameLayout
-        android:id="@+id/main_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/background">
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:contentInsetStart="10dp"
+                    app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                        <LinearLayout
+                            android:id="@+id/navigation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_menu_white_24dp"/>
+
+                                <TextView
+                                    android:id="@+id/title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:singleLine="true"
+                                    android:textColor="#ffffff"
+                                    android:textSize="16sp"/>
+                        </LinearLayout>
+                </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.AppBarLayout>
+
 
         <com.malinskiy.superrecyclerview.SuperRecyclerView
             android:id="@+id/list"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_empty="@layout/emptyview"
-            app:layout_moreProgress="@layout/view_more_progress"
-            app:mainLayoutId="@layout/layout_recyclerview_verticalscroll"
+            android:layout_height="match_parent"
+            app:layout_empty="@layout/recyclerview_empty"
+            app:layout_moreProgress="@layout/recyclerview_more_progress"
+            app:layout_progress="@layout/recyclerview_progress"
+            app:mainLayoutId="@layout/recyclerview_verticalscroll"
             app:recyclerClipToPadding="false"
-            app:scrollbarStyle="insideInset"/>
+            app:scrollbarStyle="insideInset"
+            android:nestedScrollingEnabled="false"
+            android:background="#ffffff"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -33,6 +71,4 @@
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"/>
 
-    </FrameLayout>
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
