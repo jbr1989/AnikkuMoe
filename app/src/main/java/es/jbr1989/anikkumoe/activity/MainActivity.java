@@ -3,10 +3,8 @@ package es.jbr1989.anikkumoe.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,10 +34,8 @@ import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
-    private static final String API_URL = AppController.getInstance().getApi();
 
     clsUsuarioSession oUsuarioSession;
-    SharedPreferences Config;
 
     ProgressDialog pDialog;
 
@@ -68,7 +64,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         btnLogin.setOnClickListener(this);
 
         oUsuarioSession = new clsUsuarioSession(this);
-        Config = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override

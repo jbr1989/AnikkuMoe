@@ -18,10 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
@@ -35,7 +33,6 @@ import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsNakama;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
 /**
  * Created by jbr1989 on 09/12/2015.
@@ -45,13 +42,9 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
     public static final String TAG = "nakamasFragment";
     ProgressDialog pDialog;
 
-    private clsUsuarioSession oUsuarioSession;
     private NakamaListAdapter oListadoNakamas;
 
     private ListView lstNakamas;
-
-    public RequestQueue requestQueue;
-    public CustomRequest request;
 
     Handler timerHandler = new Handler();
 
@@ -96,9 +89,6 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
             }
         });
         mTitle.setText(R.string.FragmentNakamas);
-
-        oUsuarioSession = new clsUsuarioSession(rootView.getContext());
-        requestQueue = Volley.newRequestQueue(rootView.getContext());
 
         oListadoNakamas= new NakamaListAdapter(rootView.getContext());
 
@@ -146,16 +136,16 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("mdl", "usuarios");
         params.put("acc", "nakamas");
-        params.put("usuario",oUsuarioSession.getUsuario());
+        params.put("usuario", home.oUsuarioSession.getUsuario());
         params.put("fecha", "undefined");
         params.put("uid","AWTlu");
 
-        request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 //oListadoNakamas.clearNakamas();
@@ -171,21 +161,21 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
             }
         });
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void cargar_nakamas_online(){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("mdl", "usuarios");
         params.put("acc", "nakamason");
         params.put("pag", "0");
 
-        request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 oListadoNakamas.clearNakamasOn();
@@ -198,7 +188,7 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
             }
         });
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     // end region
@@ -213,7 +203,7 @@ public class nakamasFragment extends Fragment implements AdapterView.OnItemClick
         arguments.putString("id", oNakama.getId().toString());
         arguments.putString("name", oNakama.getNombre());
 
-        Fragment fragment = chatPrivadoFragment.newInstance(arguments);
+        Fragment fragment = chat2PrivadoFragment.newInstance(arguments);
         getFragmentManager().beginTransaction().replace(R.id.content, fragment).commit();
     }
 

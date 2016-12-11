@@ -1,67 +1,62 @@
 package es.jbr1989.anikkumoe.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
-import es.jbr1989.anikkumoe.ListAdapter.ChatListAdapter;
+import es.jbr1989.anikkumoe.ListAdapter.Chat2PrivadoListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
+import es.jbr1989.anikkumoe.object.clsChatPrivado;
 
 /**
  * Created by jbr1989 on 09/12/2015.
  */
-public class chatFragment extends Fragment {
+public class chat2PrivadoFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
+    private static final String ROOT_URL = AppController.getInstance().getUrl();
     private static final String API_OLD_URL = AppController.getInstance().getApiOld();
+    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    public static final String TAG = "chatFragment";
-    ProgressDialog pDialog;
+    private SuperRecyclerView mRecycler;
+    private Chat2PrivadoListAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private Handler mHandler;
 
-    private clsUsuarioSession oUsuarioSession;
-    private ChatListAdapter oListadoChats;
-
-    private ListView lstChats;
-
-    public RequestQueue requestQueue;
-    public CustomRequest request;
-
-    Handler timerHandler = new Handler();
-
-    private EditText messageET;
-    private ImageButton sendBtn;
-
-    public static final String SP_NAME = "Chats";
+    public static String id;
+    public static String name;
 
     Long intervalo;
 
@@ -69,19 +64,18 @@ public class chatFragment extends Fragment {
     @Bind(R.id.navigation) LinearLayout mNavigation;
     @Bind(R.id.avatar) NetworkImageView mAvatar;
     @Bind(R.id.title) TextView mTitle;
+    @Bind(R.id.txtMensaje) TextView messageET;
+    @Bind(R.id.btnComentario) ImageButton sendBtn;
 
     //region CONSTRUCTOR
 
-    private FragmentIterationListener mCallback = null;
-    public interface FragmentIterationListener{
-        public void onFragmentIteration(Bundle parameters);
-    }
-    public static chatFragment newInstance(Bundle arguments){
-        chatFragment f = new chatFragment();
+    public chat2PrivadoFragment(){}
+    public static chat2PrivadoFragment newInstance(Bundle arguments){
+        chat2PrivadoFragment f = new chat2PrivadoFragment();
         if(arguments != null) f.setArguments(arguments);
         return f;
     }
-    public chatFragment(){}
+
 
     //endregion
 
@@ -89,10 +83,15 @@ public class chatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.chat, container, false);
-        cargar_preferencias(rootView);
-
+        View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
         ButterKnife.bind(this, rootView);
+
+        SharedPreferences ChatsConfig = PreferenceManager.getDefaultSharedPreferences(rootView.getContext());
+        intervalo=Long.parseLong(ChatsConfig.getString("chat_intervalo", "10"));
+
+        id= getArguments().getString("id");
+        name = getArguments().getString("name");
+
         home = (homeActivity) rootView.getContext();
         mNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,26 +99,19 @@ public class chatFragment extends Fragment {
                 home.toggleDrawer();
             }
         });
-        mAvatar.setVisibility(View.GONE);
-        mTitle.setText(R.string.FragmentChatGlobal);
+        mTitle.setText(name);
 
-        oUsuarioSession = new clsUsuarioSession(rootView.getContext());
-        requestQueue = Volley.newRequestQueue(rootView.getContext());
+        ArrayList<clsChatPrivado> list = new ArrayList<>();
+        mAdapter = new Chat2PrivadoListAdapter(rootView.getContext(),list);
 
-        oListadoChats= new ChatListAdapter(rootView.getContext());
+        mRecycler = (SuperRecyclerView) rootView.findViewById(R.id.list);
+        mLayoutManager = new LinearLayoutManager(rootView.getContext());
+        mRecycler.setLayoutManager(mLayoutManager);
 
-        lstChats = (ListView) rootView.findViewById(R.id.lstChat);
+        mHandler = new Handler(Looper.getMainLooper());
 
-        //View headerView = View.inflate(rootView.getContext(), R.layout.header, null);
-        //lstChats.addHeaderView(headerView);
-
-        //View footerView = View.inflate(rootView.getContext(), R.layout.footer, null);
-        //lstChats.addFooterView(footerView);
-
-        lstChats.setAdapter(oListadoChats);
-
-        messageET = (EditText) rootView.findViewById(R.id.txtMensaje);
-        sendBtn = (ImageButton) rootView.findViewById(R.id.btnComentario);
+        mRecycler.setRefreshListener(this);
+        mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +130,16 @@ public class chatFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onRefresh() {
+        //Toast.makeText(getActivity(), "Recargar", Toast.LENGTH_LONG).show();
+
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                cargar_chats();
+            }
+        }, 2000);
+    }
 
     //La vista de layout ha sido creada y ya está disponible
     @Override
@@ -148,20 +150,10 @@ public class chatFragment extends Fragment {
 
     private Runnable onEverySecond=new Runnable() {
         public void run() {
-            // do real work here
-            //Toast.makeText(getActivity(), "Buscando nuevos mensajes...", Toast.LENGTH_SHORT).show();
-
-            if (oListadoChats.get_UltimaFecha()!=null) cargar_nuevos_chats();
-            else cargar_chats();
+            cargar_chats();
         }
     };
 
-    private void cargar_preferencias(View view){
-
-        SharedPreferences ChatsConfig = PreferenceManager.getDefaultSharedPreferences(view.getContext());
-
-        intervalo=Long.parseLong(ChatsConfig.getString("chat_intervalo", "10"));
-    }
 
     // region CHATS
 
@@ -169,25 +161,31 @@ public class chatFragment extends Fragment {
 
         home.setRefreshActionButtonState(true);
 
-        oListadoChats.clearPublicaciones();
-
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("mdl", "plugin");
-        params.put("acc", "chatbox");
-        params.put("id", "1");
+        params.put("mdl", "chatsu");
+        params.put("acc", "private");
+        params.put("id", id);
 
-        request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                oListadoChats.setChats(response);
-                oListadoChats.notifyDataSetChanged();
+
+                mAdapter.setUsuario(response);
+                mAdapter.clearChats();
+                mAdapter.setChats(response);
+                mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
+
                 home.setRefreshActionButtonState(false);
 
-                if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
+                String url=ROOT_URL+"static-img/"+mAdapter.getAvatar();
+                mAvatar.setImageUrl(url, imageLoader);
+
+                if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -195,16 +193,17 @@ public class chatFragment extends Fragment {
                 home.setRefreshActionButtonState(false);
                 Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
 
-                if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
+                if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
             }
         }, API_OLD_URL);
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
+    /*
     public void cargar_nuevos_chats(){
 
-        home.setRefreshActionButtonState(true);
+    home.setRefreshActionButtonState(true);
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
@@ -214,57 +213,23 @@ public class chatFragment extends Fragment {
         params.put("mdl", "plugin");
         params.put("acc", "chatbox_messages_news");
         params.put("fecha", oListadoChats.get_UltimaFecha().toString());
-        params.put("id", "1");
+        params.put("id", id);
 
         request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (oListadoChats.setNewChats(response)) oListadoChats.notifyDataSetChanged();
-                if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
-                home.setRefreshActionButtonState(false);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                home.setRefreshActionButtonState(false);
                 Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-                if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
             }
-        }, API_OLD_URL);
+        });
 
         requestQueue.add(request);
     }
-
-    public void cargar_anteriores_chats(long tiempo){
-
-        home.setRefreshActionButtonState(true);
-
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("mdl", "plugin");
-        params.put("acc", "chatbox_messages_news");
-        params.put("fecha", oListadoChats.get_AnteriorFecha(tiempo).toString());
-        params.put("id", "1");
-
-        request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                if (oListadoChats.setOlderChats(response)) oListadoChats.notifyDataSetChanged();
-                home.setRefreshActionButtonState(false);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                home.setRefreshActionButtonState(false);
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }, API_OLD_URL);
-
-        requestQueue.add(request);
-    }
+    */
 
     public void sendMessage(String messageText){
 
@@ -273,18 +238,18 @@ public class chatFragment extends Fragment {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
         headers.put("Content-Disposition", "form-data");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("mdl", "plugin");
-        params.put("acc", "chatbox_message");
-        params.put("id", "1");
-        params.put("texto", messageText);
+        params.put("mdl", "chatsu");
+        params.put("acc", "send");
+        params.put("id", id);
+        params.put("mensaje", messageText);
 
-        request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                if (oListadoChats.setNewChats(response)) oListadoChats.notifyDataSetChanged();
+                if (mAdapter.setNewChats(response)) mAdapter.notifyDataSetChanged();
                 clearMessage();
                 sendBtn.setEnabled(true);
             }
@@ -296,17 +261,16 @@ public class chatFragment extends Fragment {
             }
         }, API_OLD_URL);
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void clearMessage(){
         messageET.setText("");
     }
 
-
     // end region
 
-    /*
+
     //El fragment se ha adjuntado al Activity
     @Override
     public void onAttach(Activity activity) {
@@ -319,7 +283,6 @@ public class chatFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-
     //La vista ha sido creada y cualquier configuración guardada está cargada
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
@@ -331,20 +294,26 @@ public class chatFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
-    */
+
+    //El Fragment ha sido quitado de su Activity y ya no está disponible
+    @Override
+    public void onDetach() {
+        //mCallback = null;
+        super.onDetach();
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (intervalo!=0) timerHandler.postDelayed(onEverySecond, intervalo*1000);
+        if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        timerHandler.removeCallbacks(onEverySecond);
+        mHandler.removeCallbacks(onEverySecond);
     }
-
 
 }

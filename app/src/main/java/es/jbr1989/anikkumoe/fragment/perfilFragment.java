@@ -15,12 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,9 +43,6 @@ public class perfilFragment extends Fragment implements OnClickListener{
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
     private static final String LOGIN_URL = ROOT_URL+"core/";
-
-    public RequestQueue requestQueue;
-    public CustomRequest request;
 
     clsUsuarioSession oUsuarioSession;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
@@ -94,8 +89,6 @@ public class perfilFragment extends Fragment implements OnClickListener{
                 home.toggleDrawer();
             }
         });
-
-        requestQueue = Volley.newRequestQueue(rootView.getContext());
 
         imgAvatar = (NetworkImageView) rootView.findViewById(R.id.imgAvatar);
         imgWeb = (NetworkImageView) rootView.findViewById(R.id.imgWeb);
@@ -183,7 +176,7 @@ public class perfilFragment extends Fragment implements OnClickListener{
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
@@ -200,7 +193,7 @@ public class perfilFragment extends Fragment implements OnClickListener{
             }
         }, ROOT_URL+"api/user/"+usuario+"/page");
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void seguir(final String usuario){
@@ -214,7 +207,7 @@ public class perfilFragment extends Fragment implements OnClickListener{
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -238,7 +231,7 @@ public class perfilFragment extends Fragment implements OnClickListener{
             }
         }, ROOT_URL+ "api/user/" + usuario + "/follow");
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void abrir_web(String url){

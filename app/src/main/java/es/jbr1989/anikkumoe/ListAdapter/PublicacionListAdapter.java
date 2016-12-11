@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -42,10 +41,9 @@ import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.ReactionActivity;
 import es.jbr1989.anikkumoe.activity.homeActivity;
-import es.jbr1989.anikkumoe.fragment.perfilFragment;
+import es.jbr1989.anikkumoe.fragment.SerieFragment;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
-import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.ExpandedListView;
@@ -84,7 +82,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
     public CustomRequest request;
     public CustomRequest2 request2;
 
-    public MyWebClient webClient;
+    public homeActivity home;
 
     //endregion
 
@@ -103,8 +101,9 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         PublicacionesConfigEditor = PublicacionesConfig.edit();
     }
 
-    public PublicacionListAdapter(Context context, ArrayList<clsPublicacion> oPublicaciones, MyWebClient webClient) {
+    public PublicacionListAdapter(Context context, ArrayList<clsPublicacion> oPublicaciones) {
         this.context = context;
+        this.home = (homeActivity) context;
 
         oUsuarioSession = new clsUsuarioSession(context);
         requestQueue = Volley.newRequestQueue(context);
@@ -115,10 +114,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         PublicacionesConfig = context.getSharedPreferences(SP_NAME, 0);
         PublicacionesConfigEditor = PublicacionesConfig.edit();
 
-        oListadoComentarios= new ComentariosListAdapter(context,webClient);
-
-        this.webClient=webClient;
-
+        oListadoComentarios= new ComentariosListAdapter(context);
     }
     //endregion
 
@@ -186,9 +182,9 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         holder.txtNombre.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (oPublicacion.getType().equalsIgnoreCase("REP")==Boolean.FALSE) {
-                    cargar_perfil(oPublicacion.user.getUsuario());
+                    home.cargar_perfil(oPublicacion.user.getUsuario());
                 }else{
-                    cargar_perfil(oPublicacion.user_original.getUsuario());
+                    home.cargar_perfil(oPublicacion.user_original.getUsuario());
                 }
             }
         });
@@ -196,22 +192,22 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         holder.imgAvatar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (oPublicacion.getType().equalsIgnoreCase("REP")==Boolean.FALSE) {
-                    cargar_perfil(oPublicacion.user.getUsuario());
+                    home.cargar_perfil(oPublicacion.user.getUsuario());
                 }else{
-                    cargar_perfil(oPublicacion.user_original.getUsuario());
+                    home.cargar_perfil(oPublicacion.user_original.getUsuario());
                 }
             }
         });
 
         holder.txtNombreOri.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                    cargar_perfil(oPublicacion.user.getUsuario());
+                home.cargar_perfil(oPublicacion.user.getUsuario());
             }
         });
 
         holder.imgAvatarOri.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            cargar_perfil(oPublicacion.user.getUsuario());
+                home.cargar_perfil(oPublicacion.user.getUsuario());
             }
         });
 
@@ -223,8 +219,19 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
         holder.lytAnime.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+"serie/" + oPublicacion.feed.anime.getId()));
-                v.getContext().startActivity(browserIntent1);
+
+                Bundle arguments = new Bundle();
+                arguments.putString("id", oPublicacion.feed.anime.getId().toString());
+
+                Fragment fragment = SerieFragment.newInstance(arguments);
+
+                if (context instanceof homeActivity) {
+                    homeActivity feeds = (homeActivity) context;
+                    feeds.switchContent(fragment);
+                }
+
+                //Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+"serie/" + oPublicacion.feed.anime.getId()));
+                //v.getContext().startActivity(browserIntent1);
 
             }
         });
@@ -232,7 +239,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         holder.lytComentar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(holder.lytComentarios.getVisibility()!=View.VISIBLE){
-                    oListadoComentarios= new ComentariosListAdapter(context,webClient);
+                    oListadoComentarios= new ComentariosListAdapter(context);
                     holder.lstComentarios.setAdapter(oListadoComentarios);
                     cargar_comentarios(holder.lstComentarios, oPublicacion.feed.getId());
                     holder.lytComentarios.setVisibility(View.VISIBLE);
@@ -299,18 +306,6 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     }
 
-    public void cargar_perfil(String usuario){
-        Bundle arguments = new Bundle();
-        arguments.putString("usuario", usuario);
-
-        Fragment fragment = perfilFragment.newInstance(arguments);
-
-        if (context instanceof homeActivity) {
-            homeActivity feeds = (homeActivity) context;
-            feeds.switchContent(fragment);
-        }
-    }
-
     @Override
     public int getItemCount() {
         return oPublicaciones.size();
@@ -359,7 +354,21 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         return ultima_fecha;
     }
 
+    public int indexOf_id(Integer id_publicacion){
+        for (int i=0; i<oPublicaciones.size(); i++){
+            if (oPublicaciones.get(i).feed.getId().equals(id_publicacion)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     //endregion
+
+    public void setPublicacion(Integer id_publicacion, clsPublicacion oPublicacion){
+        Integer pos = indexOf_id(id_publicacion);
+        if(pos>=0) oPublicaciones.set(pos,oPublicacion);
+    }
 
     public void setPublicaciones(JSONObject response){
 
@@ -531,16 +540,16 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             holder.lytSpoiler.setVisibility(View.GONE);
             holder.lytBody.setVisibility(View.VISIBLE);
 
-            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><style>img{max-width:100%;}</style>";
+            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><style>img{max-width:100%;margin:0 -5px;}</style>";
 
-            html+="<div style=\"text-align:left;border-left: 2px solid #026acb;margin: 10px 0;padding: 0 10px 0 5px;\">"+oPublicacion.feed.getTextoHtml()+"</div>";
+            html+="<div style=\"text-align:justify;margin: 10px 5px;padding: 0;\">"+oPublicacion.feed.getTextoHtml()+"</div>";
 
             if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) html+= "<img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\">";
             else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")) html+= "<a href=\""+oPublicacion.feed.getVideo()+"\"><iframe src=\"http://www.youtube.com/embed/"+oPublicacion.feed.getIdVideo()+"\" type=\"text/html\" width=\"100%\"></iframe></a>";
 
             html+="</body></html>";
 
-            holder.webBody.setWebViewClient(webClient);
+            holder.webBody.setWebViewClient(home.webClient);
             //holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
             holder.webBody.getSettings().setJavaScriptEnabled(true);
             //holder.webBody.getSettings().setLoadWithOverviewMode(true);

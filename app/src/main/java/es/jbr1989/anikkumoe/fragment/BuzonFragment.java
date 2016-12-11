@@ -4,54 +4,52 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
-import es.jbr1989.anikkumoe.ListAdapter.UltimoMensajeListAdapter;
+import es.jbr1989.anikkumoe.ListAdapter.BuzonListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
-import es.jbr1989.anikkumoe.object.clsUltimoMensaje;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
+import es.jbr1989.anikkumoe.object.clsBuzon;
+import es.jbr1989.anikkumoe.other.RecyclerItemClickListener;
 
 /**
  * Created by jbr1989 on 26/05/2016.
  */
-public class UltimosMensajesFragment extends Fragment implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class BuzonFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
-    private clsUsuarioSession oUsuarioSession;
+    private SuperRecyclerView mRecycler;
+    private BuzonListAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private Handler                    mHandler;
 
-    private UltimoMensajeListAdapter oListadoMensajes;
-
-    private ListView lstMensajes;
-
-    public RequestQueue requestQueue;
-    public CustomRequest2 request;
-
-    private SwipeRefreshLayout swipeContainer;
+    private String tipo;
+    private String valor;
 
     private homeActivity home;
     @Bind(R.id.navigation) LinearLayout mNavigation;
@@ -59,17 +57,13 @@ public class UltimosMensajesFragment extends Fragment implements AdapterView.OnI
 
     //region CONSTRUCTOR
 
-    public static final String TAG = "ExampleFragment";
-    private FragmentIterationListener mCallback = null;
-    public interface FragmentIterationListener{
-        public void onFragmentIteration(Bundle parameters);
-    }
-    public static UltimosMensajesFragment newInstance(Bundle arguments){
-        UltimosMensajesFragment f = new UltimosMensajesFragment();
+    public BuzonFragment(){}
+
+    public static BuzonFragment newInstance(Bundle arguments){
+        BuzonFragment f = new BuzonFragment();
         if(arguments != null) f.setArguments(arguments);
         return f;
     }
-    public UltimosMensajesFragment(){}
 
     //endregion
 
@@ -77,7 +71,7 @@ public class UltimosMensajesFragment extends Fragment implements AdapterView.OnI
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.ultimos_mensajes, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_buzon, container, false);
         ButterKnife.bind(this, rootView);
         home = (homeActivity) rootView.getContext();
         mNavigation.setOnClickListener(new View.OnClickListener() {
@@ -88,53 +82,68 @@ public class UltimosMensajesFragment extends Fragment implements AdapterView.OnI
         });
         mTitle.setText(R.string.FragmentMensajes);
 
-        oUsuarioSession = new clsUsuarioSession(rootView.getContext());
-        requestQueue = Volley.newRequestQueue(rootView.getContext());
+        ArrayList<clsBuzon> list = new ArrayList<>();
+        mAdapter = new BuzonListAdapter(rootView.getContext(),list);
 
-        oListadoMensajes= new UltimoMensajeListAdapter(rootView.getContext());
+        mRecycler = (SuperRecyclerView) rootView.findViewById(R.id.list);
+        mLayoutManager = new LinearLayoutManager(rootView.getContext());
+        mRecycler.setLayoutManager(mLayoutManager);
 
-        lstMensajes = (ListView) rootView.findViewById(R.id.lstMensajes);
-        lstMensajes.setOnItemClickListener(this);
-        lstMensajes.setAdapter(oListadoMensajes);
+        mRecycler.addOnItemTouchListener(
+                new RecyclerItemClickListener(rootView.getContext(), mRecycler ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        itemClick(view, position);
+                    }
+                })
+        );
 
-        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.srlContainer);
-        swipeContainer.setOnRefreshListener(this);
-        // Set colors to display in widget.
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        mHandler = new Handler(Looper.getMainLooper());
+
+        mRecycler.setRefreshListener(this);
+        mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
 
         return rootView;
+    }
+
+    @Override
+    public void onRefresh() {
+        //Toast.makeText(getActivity(), "Recargar", Toast.LENGTH_LONG).show();
+
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                cargar_mensajes();
+                //mAdapter.add("New stuff");
+            }
+        }, 2000);
     }
 
     //La vista de layout ha sido creada y ya está disponible
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         cargar_mensajes();
     }
 
     /* Listado de todos los mensajes */
     public void cargar_mensajes(){
 
-        oListadoMensajes.clearMensajes();
+        mAdapter.clearMensajes();
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
         //params.put("mdl", "notificaciones");
         //params.put("acc", "obtener");
 
-        request = new CustomRequest2(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
+        home.request2 = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
-                oListadoMensajes.setMensajes(response);
-                oListadoMensajes.putConfigNewsCount();
-
-                // setting the nav drawer list adapter
-                oListadoMensajes.notifyDataSetChanged();
+                mAdapter.setMensajes(response);
+                mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
 
             }
         }, new Response.ErrorListener() {
@@ -144,35 +153,21 @@ public class UltimosMensajesFragment extends Fragment implements AdapterView.OnI
             }
         },ROOT_URL+"api/user/messages");
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request2);
     }
 
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void itemClick( View view, int position) {
 
-        clsUltimoMensaje oMensaje = (clsUltimoMensaje) oListadoMensajes.getItem(position);
+        clsBuzon oMensaje = (clsBuzon) mAdapter.getItem(position);
 
         Bundle arguments = new Bundle();
         arguments.putString("id", oMensaje.getId().toString());
         arguments.putString("name", oMensaje.getUsuario());
 
-        Fragment fragment = MensajesPrivadosFragment.newInstance(arguments);
+        Fragment fragment = MensajesFragment.newInstance(arguments);
         getFragmentManager().beginTransaction().replace(R.id.content, fragment).addToBackStack(null).commit();
 
-    }
-
-    @Override
-    public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                cargar_mensajes();
-                // Remove widget from screen.
-                swipeContainer.setRefreshing(false);
-            }
-        }, 3000);
     }
 
     //El fragment se ha adjuntado al Activity

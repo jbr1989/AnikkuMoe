@@ -2,11 +2,11 @@ package es.jbr1989.anikkumoe.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -39,7 +39,7 @@ import es.jbr1989.anikkumoe.object.clsUsuario;
  * Created by jbr1989 on 25/09/2016.
  */
 
-public class perfil2Fragment extends Fragment {
+public class perfil3Fragment extends Fragment {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
     private static final String LOGIN_URL = ROOT_URL+"core/";
@@ -48,29 +48,32 @@ public class perfil2Fragment extends Fragment {
 
     private homeActivity home;
 
-    public SimpleViewPagerAdapter adapter;
-
     //@Bind(R.id.navigation) LinearLayout mNavigation;
     @Bind(R.id.title) TextView mTitle;
     @Bind(R.id.banner) NetworkImageView mBanner;
     @Bind(R.id.avatar) NetworkImageView mAvatar;
     @Bind(R.id.btnPerfilAdd) FloatingActionButton mPerfilAdd;
-    @Bind(R.id.viewpager) ViewPager mViewpager;
 
     @Bind(R.id.appbar) AppBarLayout mAppbar;
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbar;
     @Bind(R.id.toolbar) Toolbar mToolbar;
 
+    @Bind(R.id.lblNumNakamas) TextView lblNumNakamas;
+    @Bind(R.id.lblNumSiguiendo) TextView lblNumSiguiendo;
+    @Bind(R.id.lblNumSeguidores) TextView lblNumSeguidores;
+    @Bind(R.id.lblNumPublicaciones) TextView lblNumPublicaciones;
+
+
     //region CONSTRUCTOR
 
     public static final String TAG = "ExampleFragment";
-    private perfil2Fragment.FragmentIterationListener mCallback = null;
+    private perfil3Fragment.FragmentIterationListener mCallback = null;
     public interface FragmentIterationListener{
         public void onFragmentIteration(Bundle parameters);
     }
 
-    public static perfil2Fragment newInstance(Bundle arguments){
-        perfil2Fragment f = new perfil2Fragment();
+    public static perfil3Fragment newInstance(Bundle arguments){
+        perfil3Fragment f = new perfil3Fragment();
         if(arguments != null) f.setArguments(arguments);
 
         SimpleViewPagerAdapter adapter = null;
@@ -79,7 +82,7 @@ public class perfil2Fragment extends Fragment {
         return f;
     }
 
-    public perfil2Fragment(){}
+    public perfil3Fragment(){}
 
     //endregion
 
@@ -87,7 +90,7 @@ public class perfil2Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_perfil, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_perfil3, container, false);
         ButterKnife.bind(this, rootView);
         home = (homeActivity) rootView.getContext();
 
@@ -132,7 +135,7 @@ public class perfil2Fragment extends Fragment {
 
             mPerfilAdd.setVisibility((!home.oUsuarioSession.getId().equalsIgnoreCase(oUsuario.getId().toString()) ? View.VISIBLE: View.GONE));
             mPerfilAdd.setImageResource((oUsuario.getIs_following() ? R.drawable.ic_person_del_white_24dp : R.drawable.ic_person_add_white_24dp));
-            mPerfilAdd.setBackgroundColor((oUsuario.getIs_following() ? getResources().getColor(R.color.perfil_del) : getResources().getColor(R.color.perfil_add)));
+            mPerfilAdd.setBackgroundTintList(ColorStateList.valueOf((oUsuario.getIs_following() ? getResources().getColor(R.color.perfil_del) : getResources().getColor(R.color.perfil_add))));
 
             mPerfilAdd.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -140,19 +143,13 @@ public class perfil2Fragment extends Fragment {
                 }
             });
 
-            //perfilPagerAdapter adapter = new perfilPagerAdapter(home.getSupportFragmentManager(),oUsuario.getUsuario());
+            lblNumNakamas.setText(oUsuario.getNakamasN().toString());
+            lblNumSiguiendo.setText(oUsuario.getSiguiendoN().toString());
+            lblNumSeguidores.setText(oUsuario.getMesiguenN().toString());
+            lblNumPublicaciones.setText(oUsuario.getPublicacionesN().toString());
 
-            adapter = new SimpleViewPagerAdapter(home.getSupportFragmentManager());
-            adapter.addFragment(RecyclerView2Fragment.newInstance("Publicaciones",home.webClient,oUsuario.getUsuario()), "Publicaciones ("+oUsuario.getPublicacionesN().toString()+")");
-            adapter.addFragment(GridViewFragment.newInstance("Nakamas",oUsuario.getUsuario()), "Nakamas ("+oUsuario.getNakamasN().toString()+")");
-            adapter.addFragment(GridViewFragment.newInstance("Siguiendo",oUsuario.getUsuario()), "Siguiendo ("+oUsuario.getSiguiendoN().toString()+")");
-            adapter.addFragment(GridViewFragment.newInstance("Seguidores",oUsuario.getUsuario()), "Seguidores ("+oUsuario.getMesiguenN().toString()+")");
-
-            mViewpager.setAdapter(adapter);
-            mViewpager.setCurrentItem(0);
-
-            TabLayout mTabs = (TabLayout) getView().findViewById(R.id.tabs);
-            mTabs.setupWithViewPager(mViewpager);
+            RecyclerViewFragment aux = RecyclerViewFragment.newInstance(home, "user", oUsuario.getUsuario());
+            home.getFragmentManager().beginTransaction().add(R.id.lytPerfilListadoPublicaciones, aux).commit();
 
         }catch (Exception ex){
             ex.printStackTrace();
@@ -205,10 +202,10 @@ public class perfil2Fragment extends Fragment {
                 try {
                     if (response.getString("status").equalsIgnoreCase("followed")){
                         mPerfilAdd.setImageResource(R.drawable.ic_person_del_white_24dp);
-                        mPerfilAdd.setBackgroundColor(getResources().getColor(R.color.perfil_del));
+                        mPerfilAdd.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.perfil_del)));
                     }else if (response.getString("status").equalsIgnoreCase("unfollowed")) {
                         mPerfilAdd.setImageResource(R.drawable.ic_person_add_white_24dp);
-                        mPerfilAdd.setBackgroundColor(getResources().getColor(R.color.perfil_add));
+                        mPerfilAdd.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.perfil_add)));
                     }else{
                         Toast.makeText(getActivity(), response.getString("status"), Toast.LENGTH_SHORT).show();
                     }
@@ -257,7 +254,5 @@ public class perfil2Fragment extends Fragment {
         //mCallback = null;
         super.onDetach();
     }
-
-
 
 }

@@ -182,6 +182,14 @@ public class clsPublicacion {
 
     //endregion
 
+    //region SETTERS
+
+    public void setMy_reaction(String my_reaction) {
+        this.my_reaction = my_reaction;
+    }
+
+    //endregion
+
     //region funciones
 
     public String getUrlUser(String ROOT_URL){

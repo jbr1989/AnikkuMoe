@@ -20,6 +20,7 @@ import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.object.clsNakama;
 import es.jbr1989.anikkumoe.other.clsDate;
 
@@ -48,12 +49,15 @@ public class NakamaListAdapter extends BaseAdapter {
 
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
+    public homeActivity home;
+
     //endregion
 
     //region CONSTRUCTOR
 
     public NakamaListAdapter(Context context){
         this.context = context;
+        this.home = (homeActivity) context;
 
         oNakamas=new ArrayList<clsNakama>();
         oNakamasOnline=new ArrayList<Integer>();

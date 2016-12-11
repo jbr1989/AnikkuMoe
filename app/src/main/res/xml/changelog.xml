@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
-        <release version="0.4" versioncode="13" summary="Alpha" date="">
-            <change>NUEVO DISEÑO de la aplicación (Dedicado a @Sharon-chan).</change>
+        <release version="0.4.1" versioncode="14" summary="Alpha" date="11/12/2016">
             <!--<change>Ver publicaciones, nakamas, siguiendo y seguidores en el perfil de usuario.</change>-->
+            <change>Ver publicaciones en el perfil de usuario.</change>
+            <change>Ver publicaciones de una serie.</change>
+            <change>Habilitados los enlaces dentro de las publicaciones (Se abre el navegador).</change>
+            <change>FIX: Al cerrar la pestaña de hashtag o perfil no mostraba la pestaña anterior.</change>
+            <change>FIX: Para cerrar la aplicación tenias que hacer doble atras.</change>
+        </release>
+        <release version="0.4" versioncode="13" summary="Alpha" date="25/10/2016">
+            <change>NUEVO DISEÑO de la aplicación (Dedicado a @Sharon-chan).</change>
             <change>FIX: Ahora muestra animación durante la carga de datos.</change>
             <change>FIX: Ya no se pueden quitar elementos del listado de publicaciones arrastrando al lateral. </change>
         </release>

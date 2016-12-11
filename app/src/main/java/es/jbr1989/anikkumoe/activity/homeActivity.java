@@ -16,8 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.Volley;
 import com.flyco.systembar.SystemBarHelper;
 
 import butterknife.Bind;
@@ -25,13 +27,15 @@ import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.NotifyService;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.fragment.BuzonFragment;
 import es.jbr1989.anikkumoe.fragment.ConfigFragment;
-import es.jbr1989.anikkumoe.fragment.ListadoPublicacionesFragment;
-import es.jbr1989.anikkumoe.fragment.UltimosMensajesFragment;
-import es.jbr1989.anikkumoe.fragment.chatFragment;
+import es.jbr1989.anikkumoe.fragment.PublicacionesFragment;
+import es.jbr1989.anikkumoe.fragment.chat2Fragment;
 import es.jbr1989.anikkumoe.fragment.nakamasFragment;
 import es.jbr1989.anikkumoe.fragment.notificacionesFragment;
-import es.jbr1989.anikkumoe.fragment.perfilFragment;
+import es.jbr1989.anikkumoe.fragment.perfil3Fragment;
+import es.jbr1989.anikkumoe.http.CustomRequest;
+import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
@@ -48,8 +52,13 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
 
     public FragmentManager fragmentManager;
     public MyWebClient webClient;
+    public Fragment fragment;
 
-    clsUsuarioSession oUsuarioSession;
+    public RequestQueue requestQueue;
+    public CustomRequest request;
+    public CustomRequest2 request2;
+
+    public clsUsuarioSession oUsuarioSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +67,10 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.bind(this);
 
         oUsuarioSession=new clsUsuarioSession(this);
+        requestQueue = Volley.newRequestQueue(this);
+
         fragmentManager = getFragmentManager();
-        webClient = new MyWebClient(fragmentManager);
+        webClient = new MyWebClient(getBaseContext(),fragmentManager);
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
@@ -80,7 +91,7 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
             // on first time display view for first nav item
             //displayView(0); //Seleccionar NOTIFICACIONES
             SharedPreferences Config = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-            displayView(mNavigationView.getMenu().getItem(Integer.parseInt(Config.getString("fragment_defecto", "1"))).getItemId());
+            displayView(mNavigationView.getMenu().getItem(Integer.parseInt(Config.getString("fragment_defecto", "1"))).getItemId(),true);
         }
 
     }
@@ -115,15 +126,16 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        displayView(item.getItemId());
+        displayView(item.getItemId(), false);
         return true;
     }
 
-    public void displayView(Integer id){
+    public void displayView(Integer id, boolean nuevo){
 
-        Fragment fragment = null;
         Bundle arguments = new Bundle();
         String title = "";
+
+        fragment = null;
 
         switch (id) {
             case R.id.nav_FragmentNotificacion:
@@ -132,20 +144,20 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_FragmentResumen:
                 arguments.putString("tipo", "resumen");
-                fragment = ListadoPublicacionesFragment.newInstance(arguments);
+                fragment = PublicacionesFragment.newInstance(arguments);
                 title=getResources().getString(R.string.FragmentResumen);
                 break;
             case R.id.nav_FragmentExplorar:
                 arguments.putString("tipo", "explorar");
-                fragment = ListadoPublicacionesFragment.newInstance(arguments);
+                fragment = PublicacionesFragment.newInstance(arguments);
                 title=getResources().getString(R.string.FragmentExplorar);
                 break;
             case R.id.nav_FragmentMensajes:
-                fragment= new UltimosMensajesFragment();
+                fragment= new BuzonFragment();
                 title=getResources().getString(R.string.FragmentMensajes);
                 break;
             case R.id.nav_FragmentChatGlobal:
-                fragment = new chatFragment();
+                fragment = new chat2Fragment();
                 title=getResources().getString(R.string.FragmentChatGlobal);
                 break;
             case R.id.nav_FragmentNakamas:
@@ -154,7 +166,7 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_FragmentPerfil:
                 arguments.putString("usuario", oUsuarioSession.getUsuario());
-                fragment = perfilFragment.newInstance(arguments);
+                fragment = perfil3Fragment.newInstance(arguments);
                 title=getResources().getString(R.string.FragmentPerfil);
                 break;
             case R.id.nav_FragmentConfig:
@@ -162,16 +174,7 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
                 title=getResources().getString(R.string.FragmentConfig);
                 break;
             case R.id.nav_FragmentLogout:
-                title=getResources().getString(R.string.FragmentLogout);
-
-                oUsuarioSession.delUsuario();
-                oUsuarioSession.setLogin(false);
-                stopService(new Intent(this, NotifyService.class));
-
-                Intent i = new Intent(this, MainActivity.class);
-                startActivity(i);
-
-                finish();
+                logout();
                 break;
 
             default:
@@ -179,7 +182,8 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (fragment != null) {
-            fragmentManager.beginTransaction().replace(R.id.content, fragment).addToBackStack(null).commit();
+            if (!nuevo) switchContent(fragment);
+            else fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
 
             // update selected item and title, then close the drawer
             setTitle(title);
@@ -229,6 +233,32 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         */
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        fragment.onActivityResult(requestCode,resultCode,data);
+    }
+
+    // FRAGMENTS
+
+    public void cargar_perfil(String usuario){
+        Bundle arguments = new Bundle();
+        arguments.putString("usuario", usuario);
+
+        Fragment fragment = perfil3Fragment.newInstance(arguments);
+        switchContent(fragment);
+    }
+
+    public void logout(){
+        oUsuarioSession.delUsuario();
+        oUsuarioSession.setLogin(false);
+        stopService(new Intent(this, NotifyService.class));
+
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+
+        finish();
     }
 
 }

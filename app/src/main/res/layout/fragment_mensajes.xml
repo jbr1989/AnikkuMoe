@@ -103,16 +103,20 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="5sp" />
 
-        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/lstMensajes"
+        <com.malinskiy.superrecyclerview.SuperRecyclerView
+            android:id="@+id/list"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentTop="false"
-            android:transcriptMode="alwaysScroll"
-            android:listSelector="@drawable/list_row_selector"
-            android:layout_above="@+id/btnMensajeMensaje">
-        </ListView>
+            app:layout_empty="@layout/recyclerview_empty"
+            app:layout_moreProgress="@layout/recyclerview_more_progress"
+            app:layout_progress="@layout/recyclerview_progress"
+            app:mainLayoutId="@layout/recyclerview_verticalscroll"
+            app:recyclerClipToPadding="false"
+            app:scrollbarStyle="insideInset"
+            android:nestedScrollingEnabled="false"
+            android:background="#ffffff"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

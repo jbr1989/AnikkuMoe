@@ -20,14 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
-import com.malinskiy.superrecyclerview.swipe.SparseItemRemoveAnimator;
-import com.malinskiy.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 
 import org.json.JSONObject;
 
@@ -40,33 +36,25 @@ import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.PublicacionListAdapter;
 import es.jbr1989.anikkumoe.R;
-import es.jbr1989.anikkumoe.activity.MainActivity;
 import es.jbr1989.anikkumoe.activity.NuevaPublicacionActivity;
 import es.jbr1989.anikkumoe.activity.ReactionActivity;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
 /**
  * Created by jbr1989 on 02/04/2016.
  */
-public class ListadoPublicacionesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener, SwipeDismissRecyclerViewTouchListener.DismissCallbacks {
+public class PublicacionesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
-    public static final String TAG = "ListadopublicacionesFragment";
-
-    private clsUsuarioSession oUsuarioSession;
+    public static final String TAG = "PublicacionesFragment";
 
     private SuperRecyclerView          mRecycler;
     private PublicacionListAdapter          mAdapter;
-    private SparseItemRemoveAnimator mSparseAnimator;
     private RecyclerView.LayoutManager mLayoutManager;
     private Handler                    mHandler;
-
-    public RequestQueue requestQueue;
-    public CustomRequest request;
 
     private String tipo;
     private String valor;
@@ -77,10 +65,10 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
     //region CONSTRUCTOR
 
-    public ListadoPublicacionesFragment(){}
+    public PublicacionesFragment(){}
 
-    public static ListadoPublicacionesFragment newInstance(Bundle arguments){
-        ListadoPublicacionesFragment f = new ListadoPublicacionesFragment();
+    public static PublicacionesFragment newInstance(Bundle arguments){
+        PublicacionesFragment f = new PublicacionesFragment();
         if(arguments != null) f.setArguments(arguments);
         return f;
     }
@@ -91,7 +79,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.listado_publicaciones, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_publicaciones, container, false);
         ButterKnife.bind(this, rootView);
         home = (homeActivity) rootView.getContext();
         mNavigation.setOnClickListener(new View.OnClickListener() {
@@ -113,65 +101,17 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             }
         }
 
-
-        oUsuarioSession = new clsUsuarioSession(rootView.getContext());
-        requestQueue = Volley.newRequestQueue(rootView.getContext());
-
         ArrayList<clsPublicacion> list = new ArrayList<>();
-        mAdapter = new PublicacionListAdapter(rootView.getContext(),list,home.webClient);
+        mAdapter = new PublicacionListAdapter(rootView.getContext(),list);
 
         mRecycler = (SuperRecyclerView) rootView.findViewById(R.id.list);
         mLayoutManager = new LinearLayoutManager(rootView.getContext());
         mRecycler.setLayoutManager(mLayoutManager);
-        // mRecycler.addItemDecoration(new PaddingItemDecoration());
-
-        //mRecycler.setupSwipeToDismiss(this);
-        //mSparseAnimator = new SparseItemRemoveAnimator();
-        //mRecycler.getRecyclerView().setItemAnimator(mSparseAnimator);
-
         mHandler = new Handler(Looper.getMainLooper());
-/*
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecycler.setAdapter(mAdapter);
-                    }
-                });
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        cargar_publicaciones();
-                        //mAdapter.addAll(new String[]{"More stuff", "More stuff", "More stuff"});
-                    }
-                });
-            }
-        });
-        thread.start();
-
-*/
-
-        //cargar_publicaciones();
 
         mRecycler.setRefreshListener(this);
         mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
         mRecycler.setupMoreListener(this, 1);
-
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -189,8 +129,13 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
     public  void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1 && resultCode == Activity.RESULT_OK){
-            String countryCode = data.getStringExtra(ReactionActivity.RESULT_CONTRYCODE);
-            Toast.makeText(getActivity(), "You selected countrycode: " + countryCode, Toast.LENGTH_LONG).show();
+            Integer id_publicacion = data.getIntExtra(ReactionActivity.RESULT_ID,0);
+            String reaction = data.getStringExtra(ReactionActivity.RESULT_REACTION);
+
+            //mAdapter.setReaction(id_publicacion,reaction);
+            cargar_publicacion(id_publicacion);
+
+            Toast.makeText(getActivity(), "Reaction: " +reaction, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -217,19 +162,6 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
                 //mAdapter.add("More asked, more served");
             }
         }, 300);
-    }
-
-    @Override
-    public boolean canDismiss(int position) {
-        return true;
-    }
-
-    @Override
-    public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
-        for (int position : reverseSortedPositions) {
-            mSparseAnimator.setSkipNext(true);
-            mAdapter.remove(position);
-        }
     }
 
     //La vista de layout ha sido creada y ya está disponible
@@ -260,6 +192,35 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
         }
     }
 
+    public void cargar_publicacion(final Integer id_publicacion){
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+        //params.put("mdl", "publicaciones");
+        //params.put("acc", "resumen");
+        //params.put("publicacion", "0");
+        //params.put("uid", "0");
+
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                clsPublicacion oPublicacion= new clsPublicacion(response);
+                mAdapter.setPublicacion(id_publicacion, oPublicacion);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        },ROOT_URL+"api/user/activity/"+id_publicacion.toString());
+
+        home.requestQueue.add(home.request);
+    }
+
     //region RESUMEN
 
     public void resumen_publicaciones(){
@@ -268,11 +229,11 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
@@ -283,13 +244,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
-                    oUsuarioSession.delUsuario();
-                    oUsuarioSession.setLogin(false);
-
-                    Intent i = new Intent(getActivity(), MainActivity.class);
-                    startActivity(i);
-
-                    getActivity().finish();
+                    home.logout();
                 }else{
                     Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
                     resumen_publicaciones();
@@ -297,18 +252,18 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             }
         },ROOT_URL+"api/user/activity?page=0");
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void resumen_nuevas_publicaciones(){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
@@ -321,7 +276,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             }
         },ROOT_URL+"api/user/activity?page="+mAdapter.get_UltimaFecha().toString());
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     //endregion
@@ -334,11 +289,11 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
@@ -353,18 +308,18 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             }
         },ROOT_URL+"api/user/browse?page=0");
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void explorar_nuevas_publicaciones(){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
@@ -377,7 +332,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             }
         },ROOT_URL+"api/user/browse?page="+mAdapter.get_UltimaFecha().toString());
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     //endregion
@@ -390,11 +345,11 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
@@ -409,18 +364,18 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             }
         },ROOT_URL+"api/user/hashtag/"+valor+"?page=0");
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void hashtag_nuevas_publicaciones(){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
@@ -433,7 +388,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             }
         },ROOT_URL+"api/user/hashtag/"+valor+"?page="+mAdapter.get_UltimaFecha().toString());
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     //endregion
@@ -446,11 +401,11 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
@@ -465,18 +420,18 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             }
         },ROOT_URL+"api/user/browse?page=0");
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void usuario_nuevas_publicaciones(){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
@@ -489,7 +444,7 @@ public class ListadoPublicacionesFragment extends Fragment implements SwipeRefre
             }
         },ROOT_URL+"api/user/browse?page="+mAdapter.get_UltimaFecha().toString());
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     //endregion

@@ -1,14 +1,12 @@
 package es.jbr1989.anikkumoe.ListAdapter;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,12 +19,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
-import es.jbr1989.anikkumoe.fragment.perfilFragment;
 import es.jbr1989.anikkumoe.object.clsChatPrivado;
 import es.jbr1989.anikkumoe.object.clsUsuario;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
@@ -35,23 +31,19 @@ import es.jbr1989.anikkumoe.other.clsDate;
 /**
  * Created by jbr1989 on 09/12/2015.
  */
-public class ChatPrivadoListAdapter extends BaseAdapter {
+public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoListAdapter.ViewHolder> {
 
     //region VARIABLES
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
-
     public static final String SP_NAME = "Chats";
-    public Integer pos;
 
     private Context context;
-    private Long fecha;
     private Long ultima_fecha;
 
     private clsUsuarioSession oUsuarioSession;
     private ArrayList<clsChatPrivado> oChats;
-    private ArrayList<clsUsuario> oUsuarios;
-    private Map<String, String> MSG_NOTIFICACION;
+    private clsUsuario oUsuario;
 
     private clsDate oDate = new clsDate();
     private Integer nuevos;
@@ -61,17 +53,19 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
 
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
+    public homeActivity home;
+
     //endregion
 
     //region CONSTRUCTOR
 
-    public ChatPrivadoListAdapter(Context context){
+    public Chat2PrivadoListAdapter(Context context){
         this.context = context;
 
         oUsuarioSession = new clsUsuarioSession(context);
 
         oChats=new ArrayList<clsChatPrivado>();
-        oUsuarios = new ArrayList<clsUsuario>();
+        oUsuario = new clsUsuario();
         nuevos=0;
         ultima_fecha=null;
 
@@ -79,26 +73,84 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
         ChatsConfigEditor = ChatsConfig.edit();
 
     }
+
+    public Chat2PrivadoListAdapter(Context context, ArrayList<clsChatPrivado> oChats){
+        this.context = context;
+        this.home = (homeActivity) context;
+
+        oUsuarioSession = new clsUsuarioSession(context);
+
+        this.oChats=oChats;
+        nuevos=0;
+        ultima_fecha=null;
+
+        ChatsConfig = context.getSharedPreferences(SP_NAME, 0);
+        ChatsConfigEditor = ChatsConfig.edit();
+    }
+
     //endregion
 
-    //region GETTER
-
-    public Long getFecha() {
-        return fecha;
+    @Override
+    public Chat2PrivadoListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat, parent, false);
+        return new Chat2PrivadoListAdapter.ViewHolder(view);
     }
+
+    @Override
+    public void onBindViewHolder(final Chat2PrivadoListAdapter.ViewHolder holder, final int position) {
+
+        final clsChatPrivado oChat=oChats.get(position);
+        final boolean isMe = isMe(oChat.getId_de());
+
+        setAlignment(holder, isMe);
+
+        holder.imgAvatar.setImageUrl(ROOT_URL + "/static-img/" + (isMe ? oUsuarioSession.getAvatar() : oUsuario.getAvatar()), imageLoader);
+        holder.txtUsuario.setText((isMe ? oUsuarioSession.getNombre() : oUsuario.getNombre()));
+
+        holder.txtFecha.setText(oDate.DateDiff(oChat.getEnviado13(), System.currentTimeMillis()));
+        //txtBody.setText(oChat.getHTMLMensaje());
+
+        holder.webBody.setWebViewClient(home.webClient);
+        holder.webBody.getSettings().setJavaScriptEnabled(true);
+        holder.webBody.loadDataWithBaseURL(null, oChat.getHTMLMensaje(), "text/html", "UTF-8", null);
+        holder.webBody.setBackgroundColor(0x00000000);
+
+        holder.txtUsuario.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                home.cargar_perfil((isMe ? oUsuarioSession.getUsuario() : oUsuario.getUsuario()));
+            }
+        });
+
+        holder.imgAvatar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                home.cargar_perfil((isMe ? oUsuarioSession.getUsuario() : oUsuario.getUsuario()));
+            }
+        });
+    }
+
+
+    //region GETTER
 
     public Long get_UltimaFecha() {
         return ultima_fecha;
     }
 
-    public String getAvatar(){ return oUsuarios.get(0).getAvatar();}
+    public Long get_PrimeraFecha(){
+        final clsChatPrivado oChat=oChats.get(0);
+        return oChat.getEnviado13();
+    }
+
+    public Long get_AnteriorFecha(long tiempo){
+        return get_PrimeraFecha()-tiempo;
+    }
+
+    public String getAvatar(){ return oUsuario.getAvatar();}
 
     //endregion
 
     @Override
-    public int getCount() { return oChats.size();}
+    public int getItemCount() { return oChats.size();}
 
-    @Override
     public Object getItem(int position) {
         return oChats.get(position);
     }
@@ -106,52 +158,6 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-
-        ViewHolder viewHolder;
-
-        NetworkImageView imgAvatar;
-        LinearLayout lytBody;
-        TextView  txtUsuario, txtFecha;
-        WebView webBody;
-
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.chat_item, parent, false);
-            viewHolder =new ViewHolder(convertView);
-            convertView.setTag(viewHolder);
-        } else{
-            viewHolder  = (ViewHolder) convertView.getTag();
-        }
-
-        final clsChatPrivado oChat=oChats.get(position);
-        final clsUsuario oUsuario = cargar_usuario(oChat.getId_de());
-
-        setAlignment(viewHolder, isMe(oChat.getId_de()));
-
-        viewHolder.imgAvatar.setImageUrl(ROOT_URL + "/static-img/" + oUsuario.getAvatar(), imageLoader);
-        viewHolder.txtUsuario.setText(oUsuario.getNombre());
-
-        viewHolder.txtFecha.setText(oDate.DateDiff(oChat.getEnviado13(), System.currentTimeMillis()));
-        //txtBody.setText(oChat.getHTMLMensaje());
-        viewHolder.webBody.loadDataWithBaseURL(null, oChat.getHTMLMensaje(), "text/html", "UTF-8", null);
-        viewHolder.webBody.setBackgroundColor(0x00000000);
-
-        viewHolder.txtUsuario.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                cargar_perfil(oUsuario.getUsuario());
-            }
-        });
-
-        viewHolder.imgAvatar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                cargar_perfil(oUsuario.getUsuario());
-            }
-        });
-
-        return convertView;
     }
 
     private void setAlignment(ViewHolder holder, boolean isMe) {
@@ -186,43 +192,13 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
         }
     }
 
-    public void cargar_perfil(String usuario){
-        Bundle arguments = new Bundle();
-        arguments.putString("usuario", usuario);
-
-        Fragment fragment = perfilFragment.newInstance(arguments);
-
-        if (context instanceof homeActivity) {
-            homeActivity feeds = (homeActivity) context;
-            feeds.switchContent(fragment);
-        }
-    }
-
 
     public boolean isMe(String id_usuario){
         return (oUsuarioSession.getId().equals(id_usuario));
     }
 
 
-
-    public clsUsuario cargar_usuario(String id_usuario){
-
-        for(clsUsuario oUsuario: oUsuarios){
-            if (oUsuario.getId().toString().equals(id_usuario))
-                return oUsuario;
-        }
-
-        return null;
-
-    }
-
-    public void addUsuario(clsUsuario oUsuario){
-        oUsuarios.add(oUsuario);
-    }
-
-    public void setUsuarios(JSONObject response){
-
-        clsUsuario oUsuario;
+    public void setUsuario(JSONObject response){
 
         try {
             //fecha = response.getLong("ncache");
@@ -230,14 +206,10 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
 
             JSONObject jUsuario = jData.getJSONObject("usuario"); // usuario
             oUsuario = new clsUsuario(jUsuario);
-            oUsuarios.add(oUsuario);
-
-            //oUsuarios.add(oUsuarioSession);
 
         }catch (JSONException ex){ex.printStackTrace();}
 
     }
-
 
     public void setChats(JSONObject response){
 
@@ -283,32 +255,27 @@ public class ChatPrivadoListAdapter extends BaseAdapter {
     }
 
     public void clearChats(){
-        oChats.clear();
+        oChats= new ArrayList<clsChatPrivado>();
         nuevos=0;
     }
 
     // Guardar item cargado
-    private static class ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final NetworkImageView imgAvatar;
         public final LinearLayout lytBody;
         public final TextView txtUsuario, txtFecha;
         public final WebView webBody;
 
-        public ViewHolder(View v){
-            this.lytBody = (LinearLayout) v.findViewById(R.id.lytBody);
-            this.imgAvatar = (NetworkImageView) v.findViewById(R.id.ImgAvatar);
-            this.txtUsuario = (TextView) v.findViewById(R.id.txtUsuario);
-            this.txtFecha = (TextView) v.findViewById(R.id.txtFecha);
-            this.webBody= (WebView) v.findViewById(R.id.webBody);
+        public ViewHolder(View itemView){
+            super(itemView);
+
+            this.lytBody = (LinearLayout) itemView.findViewById(R.id.lytBody);
+            this.imgAvatar = (NetworkImageView) itemView.findViewById(R.id.imgAvatar);
+            this.txtUsuario = (TextView) itemView.findViewById(R.id.txtUsuario);
+            this.txtFecha = (TextView) itemView.findViewById(R.id.txtFecha);
+            this.webBody= (WebView) itemView.findViewById(R.id.webBody);
         }
 
-        public ViewHolder( NetworkImageView imgAvatar, LinearLayout lytBody,  TextView txtUsuario,TextView txtFecha, WebView webBody) {
-            this.imgAvatar=imgAvatar;
-            this.lytBody= lytBody;
-            this.txtFecha=txtFecha;
-            this.txtUsuario=txtUsuario;
-            this.webBody=webBody;
-        }
     }
 
 }

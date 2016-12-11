@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                android:layout_height="260dp" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <LinearLayout
+                    android:id="@+id/navigation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_menu_white_24dp"/>
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:singleLine="true"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+
+            </android.support.v7.widget.Toolbar>
+
+            <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/avatar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom|left"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.8"
+                android:layout_marginBottom="60dp"
+                android:layout_marginLeft="20dp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/btnPerfilAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                app:borderWidth="0dp"
+                app:elevation="6dp"
+                android:layout_marginBottom="56dp"
+                android:layout_marginRight="16dp"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.8"
+                app:backgroundTint="@android:color/transparent"
+                android:visibility="invisible" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_gravity="bottom"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.8"
+                android:layout_height="45dp"
+                android:background="@color/colorPrimary">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/lblNakamas"
+                        android:id="@+id/lblNakamas"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/desconocido"
+                        android:id="@+id/lblNumNakamas"
+                        android:layout_gravity="center_horizontal" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/lblSiguiendo"
+                        android:id="@+id/lblSiguiendo"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/desconocido"
+                        android:id="@+id/lblNumSiguiendo"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/lblSeguidores"
+                        android:id="@+id/lblSeguidores"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/desconocido"
+                        android:id="@+id/lblNumSeguidores"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/lblPublicaciones"
+                        android:id="@+id/lblPublicaciones"
+                        android:layout_gravity="center_horizontal"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/desconocido"
+                        android:id="@+id/lblNumPublicaciones"
+                        android:layout_gravity="center_horizontal" />
+
+                </LinearLayout>
+
+            </TableRow>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/lytPerfilListadoPublicaciones"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -38,4 +38,5 @@ dependencies {
     compile "de.hdodenhof:circleimageview:2.0.0"
     compile "com.jakewharton:butterknife:7.0.1"
     compile "com.android.support:cardview-v7:24.2.0"
+    compile 'com.github.jrvansuita:PickImage:v1.0.0'
 }

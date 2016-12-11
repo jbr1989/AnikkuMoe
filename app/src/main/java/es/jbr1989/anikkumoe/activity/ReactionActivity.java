@@ -37,7 +37,9 @@ public class ReactionActivity extends ListActivity {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
-    public static String RESULT_CONTRYCODE = "countrycode";
+    public static String RESULT_ID="id";
+    public static String RESULT_REACTION = "reaction";
+
     public String[] countrynames, countrycodes;
     private TypedArray imgs;
     private List<Country> countryList;
@@ -48,6 +50,8 @@ public class ReactionActivity extends ListActivity {
 
     public RequestQueue requestQueue;
     public CustomRequest request;
+
+    public Intent returnIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +67,10 @@ public class ReactionActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Country c = countryList.get(position);
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra(RESULT_CONTRYCODE, c.getCode());
-                setResult(RESULT_OK, returnIntent);
+                returnIntent = new Intent();
+                returnIntent.putExtra(RESULT_ID, id_publicacion);
+                returnIntent.putExtra(RESULT_REACTION, c.getCode());
+                //setResult(RESULT_OK, returnIntent);
                 imgs.recycle(); //recycle images
 
                 like(id_publicacion, c.getCode());

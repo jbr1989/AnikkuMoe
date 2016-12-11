@@ -87,7 +87,6 @@
                 android:autoText="true"
                 android:hint="mensaje" />
 
-
             <ImageButton
                 android:layout_width="30sp"
                 android:layout_height="30sp"
@@ -98,18 +97,21 @@
                 android:layout_alignParentEnd="true"
                 android:layout_margin="5sp" />
 
-            <ListView
-                android:id="@+id/lstChat"
+            <com.malinskiy.superrecyclerview.SuperRecyclerView
+                android:id="@+id/list"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentTop="false"
-                android:layout_above="@+id/txtMensaje"
-                android:listSelector="@android:color/transparent"
-                android:transcriptMode="alwaysScroll"
-                android:dividerHeight="5sp"
-                android:divider="@null"
-                android:contextClickable="false"/>
+                app:layout_empty="@layout/recyclerview_empty"
+                app:layout_moreProgress="@layout/recyclerview_more_progress"
+                app:layout_progress="@layout/recyclerview_progress"
+                app:mainLayoutId="@layout/recyclerview_verticalscroll"
+                app:recyclerClipToPadding="false"
+                app:scrollbarStyle="insideInset"
+                android:nestedScrollingEnabled="false"
+                android:background="#ffffff"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_above="@+id/txtMensaje"/>
 
         </RelativeLayout>
     </LinearLayout>

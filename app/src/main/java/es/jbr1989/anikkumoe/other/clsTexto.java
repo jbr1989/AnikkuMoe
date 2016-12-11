@@ -56,9 +56,9 @@ public class clsTexto {
     public static String toHTML(String text){
         String html=text;
 
-        html=html.replaceAll("(^|\\s)#(\\w*[a-zA-Z_Ã±Ã¡Ã©Ã\u00ADÃ³Ãº]+\\w*)", "$1<a href=\"http://www.anikku.moe/hashtag/$2\" class=\"hashtag\">#$2</a>");
-        html=html.replaceAll("(^|\\s)\\@(\\w*[A-Za-z0-9-_.]+\\w*)","$1<a href=\"http://www.anikku.moe/user/$2\">@$2</a>");
-        html=html.replaceAll("(\\b(http|https|ftp):\\/\\/[A-Z0-9+&@#\\/%?=~_|!:,.;-]*[-A-Z0-9+&@#\\/%=~_|])","<a href=\"$1\">$1</a>");
+        html=html.replaceAll("(^|\\s)#(\\w*[a-zA-Z_Ã±Ã¡Ã©Ã\u00ADÃ³Ãº]+\\w*)", "$1<a href=\"hashtag:$2\" class=\"hashtag\">#$2</a>");
+        html=html.replaceAll("(^|\\s)\\@(\\w*[A-Za-z0-9-_.]+\\w*)","$1<a href=\"user:$2\">@$2</a>");
+        html=html.replaceAll("(\\b(https?|ftp):\\/\\/[A-z0-9+&@#\\/%?=~_|!:,.;-]*[-A-z0-9+&@#\\/%=~_|])","<a href=\"$1\">$1</a>");
         html=html.replaceAll("(\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,6})","<a href=\"mailto:$1\">$1</a>");
         html=html.replaceAll("(?:\r\n|\r|\n)", "<br />");
 

@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:id="@+id/lytNotificacion">
+    android:id="@+id/lytMensaje">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -12,7 +12,7 @@
         android:padding="@dimen/activity_vertical_margin">
 
         <com.android.volley.toolbox.NetworkImageView
-            android:id="@+id/ImgAvatar"
+            android:id="@+id/imgAvatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
@@ -24,6 +24,17 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Medium Text"
+                android:id="@+id/txtUsuario"
+                android:layout_gravity="left|center_horizontal"
+                android:textColor="#46B0FB"
+                android:textStyle="bold"
+                android:clickable="true" />
 
             <TextView
                 android:layout_width="wrap_content"

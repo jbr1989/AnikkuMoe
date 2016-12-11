@@ -1,10 +1,12 @@
 package es.jbr1989.anikkumoe.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
@@ -25,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.frosquivel.magicalcamera.MagicalCamera;
+import com.vansuita.library.IPickResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,11 +41,12 @@ import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
+import es.jbr1989.anikkumoe.other.clsImagen;
 
 /**
  * Created by jbr1989 on 01/06/2016.
  */
-public class NuevaPublicacionActivity extends Activity {
+public class NuevaPublicacionActivity extends AppCompatActivity implements IPickResult {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
@@ -65,6 +69,8 @@ public class NuevaPublicacionActivity extends Activity {
 
     private ProgressDialog loading;
 
+    public Bitmap imageBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,19 +92,21 @@ public class NuevaPublicacionActivity extends Activity {
         lblNewVideo = (TextView) findViewById(R.id.lblNewPubVideo);
         btnDelVideo = (ImageButton) findViewById(R.id.btnDelPubVideo);
 
+        imageBitmap = null;
+
         magicalCamera = new MagicalCamera(this, RESIZE_PHOTO_PIXELS_PERCENTAGE);
 
         btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                magicalCamera.takePhoto();
+                clsImagen.camera(NuevaPublicacionActivity.this);
             }
         });
 
         btnGaleria.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                magicalCamera.selectedPicture("Escoge una imagen");
+                clsImagen.galeria(NuevaPublicacionActivity.this);
             }
         });
 
@@ -134,9 +142,34 @@ public class NuevaPublicacionActivity extends Activity {
     }
 
     @Override
+    public void onPickImageResult(Bitmap bitmap) {
+        //TODO: use bitmap.
+        imgNewImagen.setImageBitmap(bitmap);
+        lytMultimedia.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+            imgNewImagen.setImageBitmap(imageBitmap);
+            lytMultimedia.setVisibility(View.VISIBLE);
+        }
+
+        if (requestCode == 2 && resultCode == RESULT_OK) {
+            Uri imageUri = (Uri) data.getData();
+
+            try{
+                imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                imgNewImagen.setImageBitmap(imageBitmap);
+                lytMultimedia.setVisibility(View.VISIBLE);
+            }catch (Exception e) {}
+        }
+
+/*
         if (data!=null) {
             if (requestCode != 2) {
                 //call this method ever
@@ -155,7 +188,7 @@ public class NuevaPublicacionActivity extends Activity {
                 }else{
                     Toast.makeText(this, "Sorry your photo dont write in devide, please contact with fabian7593@gmail and say this error", Toast.LENGTH_SHORT).show();
                 }
-                */
+
 
             } else if (data.hasExtra("link")) {
                 String video = data.getStringExtra("link");
@@ -166,6 +199,7 @@ public class NuevaPublicacionActivity extends Activity {
                 }
             }
         }
+        */
     }
 
     public void addPublicacion(String publicacionText){
@@ -183,19 +217,20 @@ public class NuevaPublicacionActivity extends Activity {
 
         Map<String, String> params = new HashMap<String, String>();
 
-        if(magicalCamera.getMyPhoto()!=null){
+        if(imageBitmap!=null){
 
-            loading.setMessage("Convirtiendo a bytes");
-            byte[] bites = MagicalCamera.bitmapToBytes(magicalCamera.getMyPhoto(),MagicalCamera.JPEG);
-            loading.setMessage("Convirtiendo a base64");
-            String base64 = MagicalCamera.bytesToStringBase64(bites);
+            //loading.setMessage("Convirtiendo a bytes");
+            //byte[] bites = MagicalCamera.bitmapToBytes(magicalCamera.getMyPhoto(),MagicalCamera.JPEG);
+            //loading.setMessage("Convirtiendo a base64");
+            String base64 = clsImagen.encodeToBase64(imageBitmap); //MagicalCamera.bytesToStringBase64(bites);
 
             //Converting Bitmap to String
             //String image = getStringImage(magicalCamera.getMyPhoto());
 
             //Adding parameters
-            params.put("file", "data:image/jpg;base64," + base64);
-            loading.setMessage("Enviando...");
+            params.put("filename","prova.jpg");
+            params.put("file", base64);
+            //loading.setMessage("Enviando...");
 
             tipo=2;
         }
@@ -215,7 +250,7 @@ public class NuevaPublicacionActivity extends Activity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    loading.dismiss();
+                    //loading.dismiss();
                     if (response.getBoolean("success")) Toast.makeText(getBaseContext(), "PUBLICADO", Toast.LENGTH_SHORT).show();
                     finish();
                 }catch (JSONException ex){ex.printStackTrace();}
@@ -225,7 +260,7 @@ public class NuevaPublicacionActivity extends Activity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                loading.dismiss();
+                //loading.dismiss();
                 Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_SHORT).show();
                 btnAddPublicacion.setEnabled(true);
             }

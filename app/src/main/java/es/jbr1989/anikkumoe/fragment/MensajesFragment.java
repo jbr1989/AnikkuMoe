@@ -3,83 +3,74 @@ package es.jbr1989.anikkumoe.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
-import es.jbr1989.anikkumoe.ListAdapter.MensajeListAdapter;
+import es.jbr1989.anikkumoe.ListAdapter.MensajesListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
+import es.jbr1989.anikkumoe.object.clsMensaje;
 
 /**
  * Created by jbr1989 on 02/08/2016.
  */
-public class MensajesPrivadosFragment extends Fragment {
+public class MensajesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    private clsUsuarioSession oUsuarioSession;
-
-    private MensajeListAdapter oListadoMensajes;
-
-    private ListView lstMensajes;
-
-    public RequestQueue requestQueue;
-    public CustomRequest request;
-
-    private SwipeRefreshLayout swipeContainer;
+    private SuperRecyclerView mRecycler;
+    private MensajesListAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private Handler mHandler;
 
     private homeActivity home;
     @Bind(R.id.navigation) LinearLayout mNavigation;
     @Bind(R.id.avatar) NetworkImageView mAvatar;
     @Bind(R.id.title) TextView mTitle;
+    @Bind(R.id.txtMensajeMensaje) TextView messageET;
+    @Bind(R.id.btnMensajeMensaje) ImageButton sendBtn;
 
     public static String id;
     public static String name;
 
-    private EditText messageET;
-    private ImageButton sendBtn;
-
     //region CONSTRUCTOR
 
-    public static final String TAG = "ExampleFragment";
-    private FragmentIterationListener mCallback = null;
-    public interface FragmentIterationListener{
-        public void onFragmentIteration(Bundle parameters);
-    }
-    public static MensajesPrivadosFragment newInstance(Bundle arguments){
-        MensajesPrivadosFragment f = new MensajesPrivadosFragment();
+    public MensajesFragment(){}
+
+    public static MensajesFragment newInstance(Bundle arguments){
+        MensajesFragment f = new MensajesFragment();
         if(arguments != null) f.setArguments(arguments);
         return f;
     }
-    public MensajesPrivadosFragment(){}
 
     //endregion
 
@@ -87,7 +78,7 @@ public class MensajesPrivadosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.listado_mensajes, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_mensajes, container, false);
         ButterKnife.bind(this, rootView);
         home = (homeActivity) rootView.getContext();
         mNavigation.setOnClickListener(new View.OnClickListener() {
@@ -97,13 +88,25 @@ public class MensajesPrivadosFragment extends Fragment {
             }
         });
 
-        oUsuarioSession = new clsUsuarioSession(rootView.getContext());
-        requestQueue = Volley.newRequestQueue(rootView.getContext());
+        ArrayList<clsMensaje> list = new ArrayList<>();
+        mAdapter = new MensajesListAdapter(rootView.getContext(),list);
 
-        oListadoMensajes= new MensajeListAdapter(rootView.getContext());
+        mRecycler = (SuperRecyclerView) rootView.findViewById(R.id.list);
+        mLayoutManager = new LinearLayoutManager(rootView.getContext());
+        mRecycler.setLayoutManager(mLayoutManager);
+/*
+        mRecycler.addOnItemTouchListener(
+                new RecyclerItemClickListener(rootView.getContext(), mRecycler ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        itemClick(view, position);
+                    }
+                })
+        );
+*/
+        mHandler = new Handler(Looper.getMainLooper());
 
-        lstMensajes = (ListView) rootView.findViewById(R.id.lstMensajes);
-        lstMensajes.setAdapter(oListadoMensajes);
+        mRecycler.setRefreshListener(this);
+        mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
 
         if (getArguments()!=null){
             id= getArguments().getString("id");
@@ -111,9 +114,6 @@ public class MensajesPrivadosFragment extends Fragment {
 
             if (!name.isEmpty()) mTitle.setText(name);
         }
-
-        messageET = (EditText) rootView.findViewById(R.id.txtMensajeMensaje);
-        sendBtn = (ImageButton) rootView.findViewById(R.id.btnMensajeMensaje);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,39 +130,49 @@ public class MensajesPrivadosFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onRefresh() {
+        //Toast.makeText(getActivity(), "Recargar", Toast.LENGTH_LONG).show();
+
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                cargar_mensajes();
+                //mAdapter.add("New stuff");
+            }
+        }, 2000);
+    }
+
     //La vista de layout ha sido creada y ya está disponible
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         cargar_mensajes();
     }
 
     /* Listado de todos los mensajes */
     public void cargar_mensajes(){
 
-        oListadoMensajes.clearMensajes();
+        mAdapter.clearMensajes();
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
         //params.put("mdl", "notificaciones");
         //params.put("acc", "obtener");
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
-                oListadoMensajes.setMensajes(response);
-                oListadoMensajes.putConfigNewsCount();
+                mAdapter.setDatos(response);
 
-                String url=ROOT_URL+"static-img/"+oListadoMensajes.getAvatar();
+                String url=ROOT_URL+"static-img/"+mAdapter.getAvatar();
                 mAvatar.setImageUrl(url,imageLoader);
 
-                // setting the nav drawer list adapter
-                oListadoMensajes.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -171,7 +181,7 @@ public class MensajesPrivadosFragment extends Fragment {
             }
         },ROOT_URL+"api/user/messages/"+name+"?page=0");
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
 
     }
 
@@ -213,22 +223,21 @@ public class MensajesPrivadosFragment extends Fragment {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
         headers.put("Content-Disposition", "form-data");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("message", messageText);
 
-        request = new CustomRequest(requestQueue, Request.Method.PUT, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.PUT, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                oListadoMensajes.addMensaje(response);
-                oListadoMensajes.putConfigNewsCount();
-
-                // setting the nav drawer list adapter
-                oListadoMensajes.notifyDataSetChanged();
+                mAdapter.addMensaje(response);
 
                 clearMessage();
                 sendBtn.setEnabled(true);
+
+                mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -238,7 +247,7 @@ public class MensajesPrivadosFragment extends Fragment {
             }
         }, ROOT_URL+"api/user/messages/"+name);
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void clearMessage(){

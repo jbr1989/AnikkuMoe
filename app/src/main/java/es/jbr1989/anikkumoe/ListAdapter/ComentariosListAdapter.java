@@ -1,9 +1,7 @@
 package es.jbr1989.anikkumoe.ListAdapter;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +23,6 @@ import java.util.Map;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
-import es.jbr1989.anikkumoe.fragment.perfilFragment;
-import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.object.clsComentario;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.clsDate;
@@ -60,14 +56,15 @@ public class ComentariosListAdapter extends BaseAdapter {
 
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    public MyWebClient webClient;
+    public homeActivity home;
 
     //endregion
 
     //region CONSTRUCTOR
 
-    public ComentariosListAdapter(Context context, MyWebClient webClient){
+    public ComentariosListAdapter(Context context){
         this.context = context;
+        this.home = (homeActivity) context;
 
         oUsuarioSession = new clsUsuarioSession(context);
 
@@ -77,8 +74,6 @@ public class ComentariosListAdapter extends BaseAdapter {
 
         ComentariosConfig = context.getSharedPreferences(SP_NAME, 0);
         ComentariosConfigEditor = ComentariosConfig.edit();
-
-        this.webClient=webClient;
     }
 
     //endregion
@@ -125,13 +120,13 @@ public class ComentariosListAdapter extends BaseAdapter {
 
         viewHolder.txtUsuario.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                cargar_perfil(oComentario.user.getUsuario());
+                home.cargar_perfil(oComentario.user.getUsuario());
             }
         });
 
         viewHolder.imgAvatar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                cargar_perfil(oComentario.user.getUsuario());
+                home.cargar_perfil(oComentario.user.getUsuario());
             }
         });
 
@@ -146,7 +141,7 @@ public class ComentariosListAdapter extends BaseAdapter {
 
             html+="</body></html>";
 
-            holder.webBody.setWebViewClient(webClient);
+            holder.webBody.setWebViewClient(home.webClient);
             holder.webBody.getSettings().setJavaScriptEnabled(true);
             holder.webBody.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
     }
@@ -189,18 +184,6 @@ public class ComentariosListAdapter extends BaseAdapter {
     public void clearComentarios(){
         oComentarios.clear();
         nuevos=0;
-    }
-
-    public void cargar_perfil(String usuario){
-        Bundle arguments = new Bundle();
-        arguments.putString("usuario", usuario);
-
-        Fragment fragment = perfilFragment.newInstance(arguments);
-
-        if (context instanceof homeActivity) {
-            homeActivity feeds = (homeActivity) context;
-            feeds.switchContent(fragment);
-        }
     }
 
     // Guardar item cargado

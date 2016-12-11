@@ -1,11 +1,11 @@
 package es.jbr1989.anikkumoe.fragment;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,14 +17,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
-import com.malinskiy.superrecyclerview.swipe.SparseItemRemoveAnimator;
-import com.malinskiy.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 
 import org.json.JSONObject;
 
@@ -32,132 +28,62 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.PublicacionListAdapter;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
-import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
 
-public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener, SwipeDismissRecyclerViewTouchListener.DismissCallbacks {
-    private static final String ARG_TAB_NAME = "tab_name";
-    @Bind(R.id.list) SuperRecyclerView mRecyclerView;
-    private Context mContext;
-    private String mTabName;
-    private ArrayList<String> mTabNames = new ArrayList<>();
-
+public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnMoreListener{
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
-    private clsUsuarioSession oUsuarioSession;
+    private homeActivity home;
 
+    private SuperRecyclerView          mRecycler;
     private PublicacionListAdapter          mAdapter;
-    private SparseItemRemoveAnimator mSparseAnimator;
     private RecyclerView.LayoutManager mLayoutManager;
     private Handler                    mHandler;
 
-    public RequestQueue requestQueue;
-    public CustomRequest request;
-    public MyWebClient webClient;
-    public String user;
+    private String tipo;
+    private String valor;
 
     public RecyclerViewFragment() {
         // Required empty public constructor
     }
 
-    public static RecyclerViewFragment newInstance(String tabName, MyWebClient webClient, String user) {
+    public static RecyclerViewFragment newInstance(Context context, String tipo, String valor) {
         RecyclerViewFragment fragment = new RecyclerViewFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_TAB_NAME, tabName);
-        fragment.setArguments(args);
-        fragment.webClient=webClient;
-        fragment.user=user;
-        return fragment;
-    }
-
-    public static RecyclerViewFragment newInstance(String tabName) {
-        RecyclerViewFragment fragment = new RecyclerViewFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_TAB_NAME, tabName);
-        fragment.setArguments(args);
+        //Bundle args = new Bundle();
+        //args.putSerializable(ARG_TAB_NAME, tabName);
+        //fragment.setArguments(args);
+        //fragment.setRetainInstance(true);
+        fragment.home=(homeActivity) context;
+        fragment.tipo=tipo;
+        fragment.valor= valor;
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mTabName = getArguments().getString(ARG_TAB_NAME);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        mContext = getActivity();
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_simple, container, false);
         ButterKnife.bind(this, rootView);
 
-
-        oUsuarioSession = new clsUsuarioSession(rootView.getContext());
-        requestQueue = Volley.newRequestQueue(rootView.getContext());
-
         ArrayList<clsPublicacion> list = new ArrayList<>();
-        mAdapter = new PublicacionListAdapter(rootView.getContext(),list,webClient);
+        mAdapter = new PublicacionListAdapter(rootView.getContext(),list);
 
-        mRecyclerView = (SuperRecyclerView) rootView.findViewById(R.id.list);
+        mRecycler = (SuperRecyclerView) rootView.findViewById(R.id.list);
         mLayoutManager = new LinearLayoutManager(rootView.getContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        // mRecycler.addItemDecoration(new PaddingItemDecoration());
-
-        mRecyclerView.setupSwipeToDismiss(this);
-        mSparseAnimator = new SparseItemRemoveAnimator();
-        mRecyclerView.getRecyclerView().setItemAnimator(mSparseAnimator);
-
+        mRecycler.setLayoutManager(mLayoutManager);
         mHandler = new Handler(Looper.getMainLooper());
 
-
-        mRecyclerView.setRefreshListener(this);
-        mRecyclerView.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
-        mRecyclerView.setupMoreListener(this, 1);
-
+        mRecycler.setRefreshListener(this);
+        mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
+        mRecycler.setupMoreListener(this, 1);
 
         return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        cargar_publicaciones();
-
-
-/*
-        for (int i = 0; i < 20; i++) {
-            mTabNames.add(mTabName);
-        }
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-
-        SimpleAdapter adapter = new SimpleAdapter(mTabNames, R.layout.item_home_fragment);
-
-        mRecyclerView.setAdapter(adapter);
-        adapter.setHandleClickListener(new BaseAdapter.HandleClickListener() {
-            @Override
-            public void handleClick(BaseAdapter.ViewHolder holder) {
-                final TextView mItem = ButterKnife.findById(holder.getItemView(), R.id.item);
-                mItem.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(getActivity(), mItem.getText().toString(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-        */
     }
 
     @Override
@@ -184,17 +110,11 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
         }, 300);
     }
 
+    //La vista de layout ha sido creada y ya está disponible
     @Override
-    public boolean canDismiss(int position) {
-        return true;
-    }
-
-    @Override
-    public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
-        for (int position : reverseSortedPositions) {
-            mSparseAnimator.setSkipNext(true);
-            mAdapter.remove(position);
-        }
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        cargar_publicaciones();
     }
 
     @Override
@@ -206,16 +126,196 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
     //region PUBLICACIONES
 
     public void cargar_publicaciones(){
-        switch(mTabName){
-            case "Publicaciones": usuario_publicaciones();break;
+        switch(tipo){
+            case "resumen": resumen_publicaciones();break;
+            case "explorar": explorar_publicaciones();break;
+            case "hashtag": hashtag_publicaciones(); break;
+            case "user": usuario_publicaciones();break;
+            case "serie": serie_publicaciones(); break;
         }
     }
 
     public void cargar_nuevas_publicaciones(){
-        switch(mTabName){
-            case "Publicaciones": usuario_nuevas_publicaciones();break;
+        switch(tipo){
+            case "resumen": resumen_nuevas_publicaciones();break;
+            case "explorar": explorar_nuevas_publicaciones();break;
+            case "hashtag": hashtag_nuevas_publicaciones(); break;
+            case "user": usuario_nuevas_publicaciones();break;
+            case "serie": serie_nuevas_publicaciones();break;
         }
     }
+
+    //region RESUMEN
+
+    public void resumen_publicaciones(){
+
+        mAdapter.clearPublicaciones();
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    home.logout();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    resumen_publicaciones();
+                }
+            }
+        },ROOT_URL+"api/user/activity?page=0");
+
+        home.requestQueue.add(home.request);
+    }
+
+    public void resumen_nuevas_publicaciones(){
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        },ROOT_URL+"api/user/activity?page="+mAdapter.get_UltimaFecha().toString());
+
+        home.requestQueue.add(home.request);
+    }
+
+    //endregion
+
+    //region EXPLORAR
+
+    public void explorar_publicaciones(){
+
+        mAdapter.clearPublicaciones();
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                cargar_publicaciones();
+            }
+        },ROOT_URL+"api/user/browse?page=0");
+
+        home.requestQueue.add(home.request);
+    }
+
+    public void explorar_nuevas_publicaciones(){
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        },ROOT_URL+"api/user/browse?page="+mAdapter.get_UltimaFecha().toString());
+
+        home.requestQueue.add(home.request);
+    }
+
+    //endregion
+
+    //region HASHTAG
+
+    public void hashtag_publicaciones(){
+
+        mAdapter.clearPublicaciones();
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                cargar_publicaciones();
+            }
+        },ROOT_URL+"api/user/hashtag/"+valor+"?page=0");
+
+        home.requestQueue.add(home.request);
+    }
+
+    public void hashtag_nuevas_publicaciones(){
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        },ROOT_URL+"api/user/hashtag/"+valor+"?page="+mAdapter.get_UltimaFecha().toString());
+
+        home.requestQueue.add(home.request);
+    }
+
+    //endregion
 
     //region USUARIO
 
@@ -225,37 +325,37 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
-                mRecyclerView.setAdapter(mAdapter);
+                mRecycler.setAdapter(mAdapter);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-                cargar_publicaciones();
+                usuario_publicaciones();
             }
-        },ROOT_URL+"api/user/"+user+"/activity?type=0&page=0");
+        },ROOT_URL+"api/user/"+valor+"/activity?type=0&page=0");
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
     }
 
     public void usuario_nuevas_publicaciones(){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
 
         Map<String, String> params = new HashMap<String, String>();
 
-        request = new CustomRequest(requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 mAdapter.setPublicaciones(response);
@@ -266,9 +366,69 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
             }
-        },ROOT_URL+"api/user/"+user+"/activity?type=0&page="+mAdapter.get_UltimaFecha().toString());
+        },ROOT_URL+"api/user/"+valor+"/activity?type=0&page="+mAdapter.get_UltimaFecha().toString());
 
-        requestQueue.add(request);
+        home.requestQueue.add(home.request);
+    }
+
+    //endregion
+
+    //region SERIE
+
+    public void serie_publicaciones(){
+
+        mAdapter.clearPublicaciones();
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+                mRecycler.setAdapter(mAdapter);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    home.logout();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    serie_publicaciones();
+                }
+            }
+        },ROOT_URL+"api/serie/"+valor +"/activity?page=0");
+
+        home.requestQueue.add(home.request);
+    }
+
+    public void serie_nuevas_publicaciones(){
+
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
+
+        Map<String, String> params = new HashMap<String, String>();
+
+        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones(response);
+                mAdapter.notifyDataSetChanged();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        },ROOT_URL+"api/serie/"+valor +"/activity?page="+mAdapter.get_UltimaFecha().toString());
+
+        home.requestQueue.add(home.request);
     }
 
     //endregion
@@ -285,6 +445,38 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             //Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(oListadoPublicaciones.getUrl(position)));
             //startActivity(browserIntent1);
         }
+    }
+
+    //El fragment se ha adjuntado al Activity
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    //El Fragment ha sido creado
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
+    //La vista ha sido creada y cualquier configuración guardada está cargada
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    //El Activity que contiene el Fragment ha terminado su creación
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    //El Fragment ha sido quitado de su Activity y ya no está disponible
+    @Override
+    public void onDetach() {
+        //mCallback = null;
+        super.onDetach();
     }
 
 }

@@ -87,7 +87,7 @@ public class PublicacionActivity extends Activity {
         requestQueue = Volley.newRequestQueue(this);
 
         fragmentManager = getFragmentManager();
-        webClient = new MyWebClient(fragmentManager);
+        webClient = new MyWebClient(getBaseContext(), fragmentManager);
 
         Intent i= getIntent();
         Bundle extras = i.getExtras();
@@ -302,7 +302,7 @@ public class PublicacionActivity extends Activity {
 
     public void ver_comentarios(){
         if(lytComentarios.getVisibility()!=View.VISIBLE){
-            oListadoComentarios= new ComentariosListAdapter(getBaseContext(),webClient);
+            oListadoComentarios= new ComentariosListAdapter(getBaseContext());
             lstComentarios.setAdapter(oListadoComentarios);
             cargar_comentarios();
             lytComentarios.setVisibility(View.VISIBLE);

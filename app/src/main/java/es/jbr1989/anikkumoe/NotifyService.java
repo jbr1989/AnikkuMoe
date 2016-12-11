@@ -126,7 +126,7 @@ public class NotifyService extends Service {
 
                             oListadoNotificaciones.clearNotificaciones();
                             oListadoNotificaciones.setNotificaciones(response);
-                            oListadoNotificaciones.putConfigNewsCount();
+                            oListadoNotificaciones.notifyDataSetChanged();
 
                             if (oListadoNotificaciones.IfNews()) {
                                 notificar(oListadoNotificaciones.getNewsCount() + " notificaciones nuevas.", oListadoNotificaciones.getNovedades());

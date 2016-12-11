@@ -11,7 +11,7 @@ import es.jbr1989.anikkumoe.other.clsTexto;
 /**
  * Created by jbr1989 on 26/05/2016.
  */
-public class clsUltimoMensaje {
+public class clsBuzon {
 
     //region VARIABLES
 
@@ -29,7 +29,7 @@ public class clsUltimoMensaje {
 
     //region CONSTRUCTOR
 
-    public clsUltimoMensaje(JSONObject jPub){
+    public clsBuzon(JSONObject jPub){
 
         try {this.id=jPub.getInt("id");}
         catch (JSONException ex){ex.printStackTrace();}

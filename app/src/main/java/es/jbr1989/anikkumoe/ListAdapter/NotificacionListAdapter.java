@@ -1,16 +1,16 @@
 package es.jbr1989.anikkumoe.ListAdapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
@@ -23,13 +23,17 @@ import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.activity.homeActivity;
+import es.jbr1989.anikkumoe.http.CustomRequest;
+import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsNotificacion;
+import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.clsDate;
 
 /**
  * Created by jbr1989 on 06/12/2015.
  */
-public class NotificacionListAdapter extends BaseAdapter {
+public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionListAdapter.ViewHolder> {
 
     //region VARIABLES
 
@@ -37,6 +41,8 @@ public class NotificacionListAdapter extends BaseAdapter {
     public static final String SP_NAME = "Notificaciones";
 
     private Context context;
+    private Long ultima_fecha;
+
     private ArrayList<clsNotificacion> oNotificaciones ;
     private Map<String, String> MSG_NOTIFICACION;
 
@@ -46,9 +52,15 @@ public class NotificacionListAdapter extends BaseAdapter {
     private SharedPreferences NotificacionesConfig;
     private SharedPreferences.Editor NotificacionesConfigEditor;
 
-    private Activity activity;
-    private LayoutInflater inflater;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+
+    private clsUsuarioSession oUsuarioSession;
+
+    public RequestQueue requestQueue;
+    public CustomRequest request;
+    public CustomRequest2 request2;
+
+    public homeActivity home;
 
     //endregion
 
@@ -65,6 +77,42 @@ public class NotificacionListAdapter extends BaseAdapter {
 
         cargar_mensajes(context);
     }
+
+    public NotificacionListAdapter(Context context, ArrayList<clsNotificacion> oNotificaciones) {
+        this.context = context;
+        this.home = (homeActivity) context;
+
+        this.oNotificaciones=oNotificaciones;
+        nuevos=0;
+
+        NotificacionesConfig = context.getSharedPreferences(SP_NAME, 0);
+        NotificacionesConfigEditor = NotificacionesConfig.edit();
+
+        cargar_mensajes(context);
+    }
+
+    @Override
+    public NotificacionListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notificacion, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(final NotificacionListAdapter.ViewHolder holder, final int position) {
+
+        final clsNotificacion oNotificacion = oNotificaciones.get(position);
+
+        if (oNotificacion.nuevo()==Boolean.TRUE) holder.lytNotificacion.setBackgroundColor(context.getResources().getColor(R.color.notification_new));
+        else holder.lytNotificacion.setBackgroundColor(Color.TRANSPARENT);
+
+        holder.imgAvatar.setImageUrl(ROOT_URL+"static-img/"+oNotificacion.user.getAvatar(), imageLoader);
+        holder.txtFecha.setText(oDate.DateDiff(oNotificacion.getFecha13(), System.currentTimeMillis()));
+
+        if (!oNotificacion.getTipo().equalsIgnoreCase("REACT")) holder.txtDescr.setText("@" + oNotificacion.user.getNombre() + " " + MSG_NOTIFICACION.get(oNotificacion.getTipo()));
+        else holder.txtDescr.setText("@" + oNotificacion.user.getNombre() + " ha reaccionado \""+ oNotificacion.getReactionString(context)+ "\" a tu publicación");
+    }
+
+
 
     private void cargar_mensajes(Context context){
 
@@ -89,7 +137,7 @@ public class NotificacionListAdapter extends BaseAdapter {
     //endregion
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return oNotificaciones.size();
     }
 
@@ -113,13 +161,6 @@ public class NotificacionListAdapter extends BaseAdapter {
     }
 
 
-
-    @Override
-    public Object getItem(int position) {
-        return oNotificaciones.get(position);
-    }
-
-
     @Override
     public long getItemId(int position) {
         return position;
@@ -133,45 +174,11 @@ public class NotificacionListAdapter extends BaseAdapter {
         return oNotificaciones.get(position).user.getUsuario();
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        LinearLayout lytNotificacion;
-        NetworkImageView imgAvatar;
-        TextView txtDescr;
-        TextView txtFecha;
-
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.notificacion, null);
-
-            lytNotificacion = (LinearLayout) convertView.findViewById(R.id.lytNotificacion);
-            imgAvatar = (NetworkImageView) convertView.findViewById(R.id.ImgAvatar);
-            txtDescr = (TextView) convertView.findViewById(R.id.txtDescr);
-            txtFecha = (TextView) convertView.findViewById(R.id.txtFecha);
-
-            convertView.setTag(new ViewHolder(lytNotificacion,imgAvatar,txtDescr,txtFecha));
-
-        } else{
-            ViewHolder viewHolder = (ViewHolder) convertView.getTag();
-            lytNotificacion = viewHolder.lytNotificacion;
-            imgAvatar = viewHolder.imgAvatar;
-            txtDescr = viewHolder.txtDescr;
-            txtFecha = viewHolder.txtFecha;
-        }
-
-        clsNotificacion oNotificacion = oNotificaciones.get(position);
-
-        if (oNotificacion.nuevo()==Boolean.TRUE) lytNotificacion.setBackgroundColor(context.getResources().getColor(R.color.notification_new));
-        else lytNotificacion.setBackgroundColor(Color.TRANSPARENT);
-
-        imgAvatar.setImageUrl(ROOT_URL+"static-img/"+oNotificacion.user.getAvatar(), imageLoader);
-        txtFecha.setText(oDate.DateDiff(oNotificacion.getFecha13(), System.currentTimeMillis()));
-
-        if (!oNotificacion.getTipo().equalsIgnoreCase("REACT")) txtDescr.setText("@" + oNotificacion.user.getNombre() + " " + MSG_NOTIFICACION.get(oNotificacion.getTipo()));
-        else txtDescr.setText("@" + oNotificacion.user.getNombre() + " ha reaccionado \""+ oNotificacion.getReactionString(context)+ "\" a tu publicación");
-
-        return convertView;
+    public Long get_UltimaFecha() {
+        return ultima_fecha;
     }
+
+
 
     public void setNotificaciones(JSONArray response){
 
@@ -183,8 +190,9 @@ public class NotificacionListAdapter extends BaseAdapter {
             int num = response.length();
             for (int i=0; i<num;i++){
                 oNotificacion= new clsNotificacion(response.getJSONObject(i));
+                ultima_fecha=oNotificacion.getFecha13();
                 oNotificaciones.add(oNotificacion);
-                if(oNotificacion.nuevo()) nuevos+=1;
+                //if(oNotificacion.nuevo()) nuevos+=1;
             }
 
         }catch (JSONException ex){ex.printStackTrace();}
@@ -240,52 +248,25 @@ public class NotificacionListAdapter extends BaseAdapter {
             case "PLUGPUBMEN": url+=oNotificacion.getLink(); break;
             case "REACT": url+="feed/"+oNotificacion.feed.user.getUsuario()+"/"+oNotificacion.getId().toString();break;
         }
-/*
-        switch(oNotificacion.getTipo()){
-            case "MEGCOM": url+="feed/"+oNotificacion.getUsuariopub()+"/"+oNotificacion.getIdentificador().toString();break;
-            case "REPPUB": url+="feed/"+oNotificacion.getUsuario()+ "/"+oNotificacion.getIdentificador().toString(); break;
-            case "MEGPUB": url+="feed/"+oNotificacion.getUsuario()+"/"+oNotificacion.getIdentificador().toString(); break;
-            case "USRSEG": url+="user/"+oNotificacion.getNombre(); break;
-            case "COMPUB": url+="feed/"+oNotificacion.getUsuario()+"/"+oNotificacion.getIdentificador().toString(); break;
-            case "PUBMEN": url+="feed/"+oNotificacion.getActor()+ "/"+oNotificacion.getIdentificador().toString(); break;
-            case "COMMEN": url+="feed/"+oNotificacion.getUsuariopub()+ "/"+oNotificacion.getIdentificador().toString(); break;
-            case "MENPRIV": url+="mensajes"; break;
-            case "PUBGUA": url+="feed/"+oNotificacion.getUsuario()+"/"+oNotificacion.getIdentificador().toString(); break;
-            case "MEGRPUB": url+="feed/"+oNotificacion.getUsuariopub()+ "/"+oNotificacion.getIdentificador().toString(); break;
-            case "COMRPUB": url+="feed/"+oNotificacion.getUsuario()+ "/"+oNotificacion.getIdentificador().toString(); break;
-            case "PLUGMEGCOM": url+=oNotificacion.getEnlace(); break;
-            case "PLUGPUBMEN": url+=oNotificacion.getEnlace(); break;
-        }
-        */
         return url;
     }
 
+
     // Guardar item cargado
-    private static class ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final LinearLayout lytNotificacion;
         public final NetworkImageView imgAvatar;
         public final TextView txtDescr, txtFecha;
 
+        public ViewHolder(View itemView){
+            super(itemView);
 
-        public ViewHolder(LinearLayout lytNotificacion, NetworkImageView imgAvatar,  TextView txtDescr,  TextView txtFecha) {
-            this.lytNotificacion=lytNotificacion;
-            this.imgAvatar=imgAvatar;
-            this.txtDescr=txtDescr;
-            this.txtFecha=txtFecha;
+            //this.lytPublicacion = (CardView) itemView.findViewById(R.id.lytPublicacion);
+            this.lytNotificacion = (LinearLayout) itemView.findViewById(R.id.lytNotificacion);
+            this.imgAvatar = (NetworkImageView) itemView.findViewById(R.id.imgAvatar);
+            this.txtDescr = (TextView) itemView.findViewById(R.id.txtDescr);
+            this.txtFecha= (TextView) itemView.findViewById(R.id.txtFecha);
         }
     }
-
-    //region CONFIGURACION
-
-    public void putConfigNewsCount(){
-        NotificacionesConfigEditor.putInt("nuevos", this.getNewsCount());
-        NotificacionesConfigEditor.commit();
-    }
-
-    public Integer getConfigNewsCount(){
-        return NotificacionesConfig.getInt("nuevos",0);
-    }
-
-    //endregion
 
 }
