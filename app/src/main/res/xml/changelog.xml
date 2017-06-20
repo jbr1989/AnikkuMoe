@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
-        <release version="0.4.1" versioncode="14" summary="Alpha" date="11/12/2016">
+        <release version="FIN" versioncode="15" summary="Alpha" date="">
+            <change>FIN DEL DESARROLLO. Últimamente hay muchos problemas con la pàgina web y ademas no hay mucha actividad. Por eso, de momento lo dejare apartado. Si algún día veo que la cosa funciona mejos o la gente de anima, volveré.</change>
+            <change>Teneis todo el codigo en https://github.com/jbr1989/AnikkuMoe</change>
+            <change>Muchas gracias a todos y hasta la próxima.</change>
+        </release>
+        <release version="0.4.2" versioncode="15" summary="Alpha" date="20/06/2017">
+            <change>FIX: Quitada la imagen de fondo del login. Daba error en Android 7.0</change>
             <!--<change>Ver publicaciones, nakamas, siguiendo y seguidores en el perfil de usuario.</change>-->
+            <!--<change>Poner imagenes en las publicaciones.</change>-->
+        </release>
+        <release version="0.4.1" versioncode="14" summary="Alpha" date="11/12/2016">
             <change>Ver publicaciones en el perfil de usuario.</change>
             <change>Ver publicaciones de una serie.</change>
             <change>Habilitados los enlaces dentro de las publicaciones (Se abre el navegador).</change>

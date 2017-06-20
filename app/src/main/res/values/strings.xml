@@ -153,6 +153,18 @@
 
     <string name="validate_user_empty">Usuario obligatorio</string>
     <string name="validate_pass_empty">Contraseña obligatoria</string>
+    <string name="lblpassword">CONTRASEÑA</string>
+    <string name="lblUsuario">USUARIO</string>
+    <string name="lblLogin">Ingresar</string>
+    <string name="lblRecuperarPassword">Recuperar Contraseña</string>
+    <string name="lblRegister">Registrate</string>
+    <string name="lblAceptar">Aceptar</string>
+    <string name="lblMensaje">mensaje</string>
+    <string name="lblSend">ENVIAR</string>
+    <string name="lblCero">0</string>
+    <string name="lblPublicar">PUBLICAR</string>
+    <string name="lblSpoiler">Spoiler</string>
+    <string name="lblVacio">Sin elementos.</string>
 
     <!-- Reactions -->
     <string-array name="reactions_names">

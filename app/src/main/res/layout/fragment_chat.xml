@@ -43,9 +43,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:singleLine="true"
                     android:textColor="#ffffff"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:maxLines="1" />
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
@@ -84,8 +84,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_toLeftOf="@+id/btnComentario"
                 android:layout_toRightOf="@+id/pubKamojiButton"
-                android:autoText="true"
-                android:hint="mensaje" />
+                android:hint="@string/lblMensaje"
+                android:maxLines="1" />
 
             <ImageButton
                 android:layout_width="30sp"
@@ -95,7 +95,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:layout_margin="5sp" />
+                android:layout_margin="5sp"
+                android:contentDescription="@string/lblSend" />
 
             <com.malinskiy.superrecyclerview.SuperRecyclerView
                 android:id="@+id/list"

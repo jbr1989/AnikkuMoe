@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,10 +11,8 @@
         android:layout_height="40dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        android:contentDescription="Descripción del contenido de la imagen"
         android:src="@android:drawable/ic_menu_gallery"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_alignBottom="@+id/content"
         android:layout_margin="5sp"
         android:clickable="true" />
 
@@ -26,7 +25,8 @@
         android:paddingTop="10dp"
         android:orientation="vertical"
         android:baselineAligned="false"
-        android:layout_marginLeft="45dp">
+        android:layout_marginLeft="45dp"
+        tools:ignore="RtlSymmetry">
 
         <TextView
             android:layout_width="match_parent"
@@ -36,8 +36,7 @@
             android:id="@+id/txtUsuario"
             android:textStyle="bold"
             android:textIsSelectable="true"
-            android:clickable="true"
-            android:contextClickable="false" />
+            android:clickable="true" />
 
         <TextView
             android:layout_width="match_parent"
@@ -58,11 +57,10 @@
                 android:text="Usuario"
                 android:id="@+id/txtNombre"
                 android:textColor="#46B0FB"
-                android:singleLine="true"
                 android:textStyle="bold"
                 android:textIsSelectable="true"
                 android:clickable="true"
-                android:contextClickable="false" />
+                android:maxLines="1" />
 
             <TextView
                 android:id="@+id/txtFecha"
