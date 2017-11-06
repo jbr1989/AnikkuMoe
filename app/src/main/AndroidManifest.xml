@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="es.jbr1989.anikkumoe"
-    android:versionCode="14"
-    android:versionName="0.4.1">
+    android:versionCode="16"
+    android:versionName="0.4.3">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS"/>
     <!--
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -26,11 +34,31 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.homeActivity" android:theme="@style/AppTheme.NoActionBar" android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity android:name=".activity.NuevaPublicacionActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar" android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity android:name=".activity.ReactionActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" android:noHistory="true" android:label="Puntuar" />
-        <activity android:name=".activity.addVideoActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" android:noHistory="true" android:label="Video" />
-        <activity android:name=".activity.PublicacionActivity" android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity android:name=".activity.NuevaPublicacionActivity" android:theme="@style/Theme.AppCompat.Light.DarkActionBar" android:configChanges="orientation|keyboardHidden|screenSize" >
+            <meta-data android:name="com.google.android.apps.drive.APP_ID" android:value="AIzaSyAnqYflwPRH0-3ZsGa-q0dYsWttUC_yk04" />
+            <intent-filter>
+                <action android:name="com.google.android.apps.drive.DRIVE_OPEN" />
+                <data android:mimeType="application/vnd.google-apps.drive-sdk.1234567890" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpeg" />
+                <data android:mimeType="image/jpg" />
+            </intent-filter>
 
+            <!-- <intent-filter>
+                 <action android:name="android.intent.action.SEND" />
+                 <category android:name="android.intent.category.DEFAULT" />
+                 <data android:mimeType="image/*" />
+             </intent-filter>
+             <intent-filter>
+                 <action android:name="android.intent.action.SEND_MULTIPLE" />
+                 <category android:name="android.intent.category.DEFAULT" />
+                 <data android:mimeType="image/*" />
+             </intent-filter>-->
+         </activity>
+         <activity android:name=".activity.ReactionActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" android:noHistory="true" android:label="Puntuar" />
+         <activity android:name=".activity.addVideoActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" android:noHistory="true" android:label="Video" />
+
+        <activity android:name=".activity.imgActivity" android:theme="@android:style/Theme.Holo.Light.Dialog" android:noHistory="true" android:label="Opciones" />
         <!--
              ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.

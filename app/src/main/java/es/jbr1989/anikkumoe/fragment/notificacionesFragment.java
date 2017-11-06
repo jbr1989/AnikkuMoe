@@ -34,7 +34,6 @@ import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.NotificacionListAdapter;
 import es.jbr1989.anikkumoe.R;
-import es.jbr1989.anikkumoe.activity.PublicacionActivity;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsNotificacion;
@@ -162,6 +161,9 @@ public class notificacionesFragment extends Fragment implements SwipeRefreshLayo
         // display view for selected nav drawer item
 
         Intent i;
+        Fragment fragment;
+        Bundle arguments = new Bundle();
+        FragmentManager fragmentManager = getFragmentManager();
 
         switch(mAdapter.getTipo(position)){
             case "url":
@@ -169,25 +171,29 @@ public class notificacionesFragment extends Fragment implements SwipeRefreshLayo
                 startActivity(i);
                 break;
             case "publicacion":
-                i = new Intent(getActivity(), PublicacionActivity.class);
-                i.putExtra("id_publicacion", mAdapter.getIdPublicacion(position));
-                i.putExtra("ver_comentarios", false);
-                startActivity(i);
+                arguments.putInt("id_publicacion", mAdapter.getIdPublicacion(position)) ;
+                arguments.putBoolean("ver_comentarios", false);
+
+                fragment =PublicacionFragment.newInstance(arguments);
+
+                fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
                 break;
             case "publicacion_comentario":
-                i = new Intent(getActivity(), PublicacionActivity.class);
-                i.putExtra("id_publicacion", mAdapter.getIdPublicacion(position));
-                i.putExtra("ver_comentarios", true);
-                startActivity(i);
+                arguments.putInt("id_publicacion", mAdapter.getIdPublicacion(position)) ;
+                arguments.putBoolean("ver_comentarios", true);
+
+                fragment =PublicacionFragment.newInstance(arguments);
+
+                fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
                 break;
             case "perfil":
-
-                Bundle arguments = new Bundle();
                 arguments.putString("usuario", mAdapter.getUserName(position));
 
-                Fragment fragment =perfil3Fragment.newInstance(arguments);
+                fragment =perfil3Fragment.newInstance(arguments);
 
-                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
                 break;
         }

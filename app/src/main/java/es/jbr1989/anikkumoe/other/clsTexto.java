@@ -66,6 +66,9 @@ public class clsTexto {
         html=html.replaceAll("'","\"");
         html=html.replaceAll("src=\"//","src=\"http://");
 
+        html=html.replaceAll("<img\\s[^>]*?src\\s*=\\s*['\\\"]([^'\\\"]*?)['\\\"][^>]*?>", "<a href=\"img:$1\">$0</a>");
+
+
         return bbcode(html);
     }
 

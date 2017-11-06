@@ -122,6 +122,8 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
             }
         });
 
+        cargar_publicaciones();
+
         return rootView;
     }
 
@@ -168,8 +170,6 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        cargar_publicaciones();
-
     }
 
     //region PUBLICACIONES

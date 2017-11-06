@@ -4,6 +4,7 @@
     <string name="open">Abrir</string>
     <string name="close">Cerrar</string>
     <string name="desconocido"> \? </string>
+    <string name="loading">Cargando...</string>
     <string name="lblNakamas">Nakamas</string>
     <string name="lblSiguiendo">Siguiendo</string>
     <string name="lblSeguidores">Seguidores</string>
@@ -153,6 +154,18 @@
 
     <string name="validate_user_empty">Usuario obligatorio</string>
     <string name="validate_pass_empty">Contraseña obligatoria</string>
+    <string name="lblpassword">CONTRASEÑA</string>
+    <string name="lblUsuario">USUARIO</string>
+    <string name="lblLogin">Ingresar</string>
+    <string name="lblRecuperarPassword">Recuperar Contraseña</string>
+    <string name="lblRegister">Registrate</string>
+    <string name="lblAceptar">Aceptar</string>
+    <string name="lblMensaje">mensaje</string>
+    <string name="lblSend">ENVIAR</string>
+    <string name="lblCero">0</string>
+    <string name="lblPublicar">PUBLICAR</string>
+    <string name="lblSpoiler">Spoiler</string>
+    <string name="lblVacio">Sin elementos.</string>
 
     <!-- Reactions -->
     <string-array name="reactions_names">
@@ -181,6 +194,21 @@
         <item>@drawable/reaction_sorry_32</item>
         <item>@drawable/reaction_anger2_32</item>
     </string-array>
+
+    <!-- Opciones ImgView -->
+    <string-array name="imgview_actions_names">
+        <item>Fondo de pantalla</item>
+        <item>Descargar</item>
+    </string-array>
+
+    <string-array name="imgview_actions_values">
+        <item>wallpaper</item>
+        <item>download</item>
+    </string-array>
+
+    <string name="wallpaper">Fondo de pantalla</string>
+    <string name="wallpaper_ok">Fondo de pantalla cambiado.</string>
+    <string name="wallpaper_error">Error al cambiar el fondo de pantalla.</string>
 
 
 </resources>

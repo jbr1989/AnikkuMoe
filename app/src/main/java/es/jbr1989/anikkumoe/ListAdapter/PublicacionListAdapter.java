@@ -90,6 +90,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     public PublicacionListAdapter(Context context){
         this.context = context;
+        this.home = (homeActivity) context;
 
         oUsuarioSession = new clsUsuarioSession(context);
         requestQueue = Volley.newRequestQueue(context);
@@ -128,182 +129,8 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     @Override
     public void onBindViewHolder(final PublicacionListAdapter.ViewHolder holder, final int position) {
-
         final clsPublicacion oPublicacion=oPublicaciones.get(position);
-
-        if (oPublicacion.getType().equalsIgnoreCase("REP")) {
-            holder.imgAvatarOri.setImageUrl(ROOT_URL+"static-img/" + oPublicacion.user.getAvatar(), imageLoader);
-            holder.txtNombreOri.setText(oPublicacion.user.getHTMLNombre());
-        }
-
-        holder.imgAvatar.setImageUrl(ROOT_URL+"static-img/" + (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getAvatar() : oPublicacion.user_original.getAvatar()), imageLoader);
-        holder.txtNombre.setText((!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getHTMLNombre() : oPublicacion.user_original.getHTMLNombre()));
-        holder.txtUsuario.setText("@" + (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getHTMLUsuario() : oPublicacion.user_original.getHTMLUsuario()));
-
-        holder.imgAvatarOri.setVisibility((!oPublicacion.getType().equalsIgnoreCase("REP") ? View.GONE : View.VISIBLE));
-        holder.txtNombreOri.setVisibility((!oPublicacion.getType().equalsIgnoreCase("REP") ? View.GONE : View.VISIBLE));
-
-        holder.txtFecha.setText(oDate.DateDiff(oPublicacion.feed.getFecha(), System.currentTimeMillis()));
-
-        mostrar_body(holder, oPublicacion, oPublicacion.feed.getSpoiler());
-
-        holder.lytAnime.setVisibility(View.GONE);
-
-        if(oPublicacion.feed.getAnime()!=null){
-            holder.imgAnime.setImageUrl("http://www.anilista.com/img/dir/anime/regular/"+oPublicacion.feed.anime.getId().toString()+".jpg", imageLoader);
-            holder.txtAnime.setText(oPublicacion.feed.anime.getTitulo());
-            holder.lytAnime.setVisibility(View.VISIBLE);
-        }
-
-        holder.txtComentarios.setText(oPublicacion.feed.stats.getComments());
-
-        holder.lytReplicas.setBackgroundColor((oPublicacion.getIs_replicated() ? context.getResources().getColor(R.color.btn_rep) : ((Integer.parseInt(oUsuarioSession.getId())!=oPublicacion.user.getId()) ? Color.TRANSPARENT : context.getResources().getColor(R.color.btn_dislike))));
-        //holder.lytLikes.setBackgroundColor((oPublicacion.getMy_reaction() ? context.getResources().getColor(R.color.btn_like) : Color.TRANSPARENT));
-
-        holder.lytReactionLike.setVisibility((oPublicacion.feed.stats.reactions.getLike()>0 ? View.VISIBLE : View.GONE));
-        holder.lytReactionLove.setVisibility((oPublicacion.feed.stats.reactions.getLove()>0 ? View.VISIBLE : View.GONE));
-        holder.lytReactionHaha.setVisibility((oPublicacion.feed.stats.reactions.getHaha()>0 ? View.VISIBLE : View.GONE));
-        holder.lytReactionWow.setVisibility((oPublicacion.feed.stats.reactions.getWow()>0 ? View.VISIBLE : View.GONE));
-        holder.lytReactionSorry.setVisibility((oPublicacion.feed.stats.reactions.getSorry()>0 ? View.VISIBLE : View.GONE));
-        holder.lytReactionAnger.setVisibility((oPublicacion.feed.stats.reactions.getAnger()>0 ? View.VISIBLE : View.GONE));
-        holder.lytReactionReplicas.setVisibility((Integer.parseInt(oPublicacion.feed.stats.getShared())>0 ? View.VISIBLE : View.GONE));
-
-
-        holder.txtReactionLike.setText(oPublicacion.feed.stats.reactions.getLike().toString());
-        holder.txtReactionLove.setText(oPublicacion.feed.stats.reactions.getLove().toString());
-        holder.txtReactionHaha.setText(oPublicacion.feed.stats.reactions.getHaha().toString());
-        holder.txtReactionWow.setText(oPublicacion.feed.stats.reactions.getWow().toString());
-        holder.txtReactionSorry.setText(oPublicacion.feed.stats.reactions.getSorry().toString());
-        holder.txtReactionAnger.setText(oPublicacion.feed.stats.reactions.getAnger().toString());
-        holder.txtReactionReplicas.setText(oPublicacion.feed.stats.getShared());
-
-        holder.lytComentarios.setVisibility(View.GONE);
-
-        holder.txtNombre.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (oPublicacion.getType().equalsIgnoreCase("REP")==Boolean.FALSE) {
-                    home.cargar_perfil(oPublicacion.user.getUsuario());
-                }else{
-                    home.cargar_perfil(oPublicacion.user_original.getUsuario());
-                }
-            }
-        });
-
-        holder.imgAvatar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (oPublicacion.getType().equalsIgnoreCase("REP")==Boolean.FALSE) {
-                    home.cargar_perfil(oPublicacion.user.getUsuario());
-                }else{
-                    home.cargar_perfil(oPublicacion.user_original.getUsuario());
-                }
-            }
-        });
-
-        holder.txtNombreOri.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                home.cargar_perfil(oPublicacion.user.getUsuario());
-            }
-        });
-
-        holder.imgAvatarOri.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                home.cargar_perfil(oPublicacion.user.getUsuario());
-            }
-        });
-
-        holder.lytSpoiler.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                mostrar_body(holder, oPublicacion, false);
-            }
-        });
-
-        holder.lytAnime.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                Bundle arguments = new Bundle();
-                arguments.putString("id", oPublicacion.feed.anime.getId().toString());
-
-                Fragment fragment = SerieFragment.newInstance(arguments);
-
-                if (context instanceof homeActivity) {
-                    homeActivity feeds = (homeActivity) context;
-                    feeds.switchContent(fragment);
-                }
-
-                //Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+"serie/" + oPublicacion.feed.anime.getId()));
-                //v.getContext().startActivity(browserIntent1);
-
-            }
-        });
-
-        holder.lytComentar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(holder.lytComentarios.getVisibility()!=View.VISIBLE){
-                    oListadoComentarios= new ComentariosListAdapter(context);
-                    holder.lstComentarios.setAdapter(oListadoComentarios);
-                    cargar_comentarios(holder.lstComentarios, oPublicacion.feed.getId());
-                    holder.lytComentarios.setVisibility(View.VISIBLE);
-                }else{
-                    holder.lytComentarios.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        holder.lytLikes.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                final Intent intent = new Intent(v.getContext(), ReactionActivity.class);
-                intent.putExtra("id_publicacion", oPublicacion.feed.getId());
-                //intent.putExtra("usuario", (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getUsuario() : oPublicacion.user_original.getUsuario()));
-                ((Activity) context).startActivityForResult(intent, 1);
-            }
-        });
-
-        if (Integer.parseInt(oUsuarioSession.getId())!=oPublicacion.user.getId()) {
-            holder.lytReplicas.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    if (!oPublicacion.getIs_replicated())
-                        republicar(holder.lytReplicas, position, oPublicacion.feed.getId());
-                }
-            });
-        }
-
-        holder.btnComentario.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                String messageText = holder.txtMessage.getText().toString();
-                if (TextUtils.isEmpty(messageText)) {
-                    Toast.makeText(context, "Escribe un comentario", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                comentar(holder, oPublicacion.feed.getId(),messageText);
-            }
-        });
-
-
-        String my_reaction =oPublicacion.getMy_reaction();
-
-        if (my_reaction.equalsIgnoreCase("like")) {
-            holder.imgLike.setImageResource(R.drawable.reaction_like_32);
-            holder.txtLike.setText("Me gusta");
-        } else if (my_reaction.equalsIgnoreCase("love")){
-            holder.imgLike.setImageResource(R.drawable.reaction_love_32);
-            holder.txtLike.setText("Sugoi");
-        } else if (my_reaction.equalsIgnoreCase("haha")){
-            holder.imgLike.setImageResource(R.drawable.reaction_haha_32);
-            holder.txtLike.setText("HaHa");
-        } else if (my_reaction.equalsIgnoreCase("wow")){
-            holder.imgLike.setImageResource(R.drawable.reaction_wow_32);
-            holder.txtLike.setText("Ara ara");
-        } else if (my_reaction.equalsIgnoreCase("sorry")){
-            holder.imgLike.setImageResource(R.drawable.reaction_sorry_32);
-            holder.txtLike.setText("Me entristece");
-        } else if (my_reaction.equalsIgnoreCase("anger")) {
-            holder.imgLike.setImageResource(R.drawable.reaction_anger_32);
-            holder.txtLike.setText("Me enfada");
-        }else{
-            holder.imgLike.setImageResource(R.drawable.icon_like);
-            holder.txtLike.setText("Me gusta");
-        }
-
+        cargar_publicacion(holder, oPublicacion);
     }
 
     @Override
@@ -458,6 +285,188 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         }
     }
 
+    //region PUBLICACION
+
+    public void cargar_publicacion(final ViewHolder holder, final clsPublicacion oPublicacion){
+
+        if (oPublicacion.getType().equalsIgnoreCase("REP")) {
+            holder.imgAvatarOri.setImageUrl(ROOT_URL+"static-img/" + oPublicacion.user.getAvatar(), imageLoader);
+            holder.txtNombreOri.setText(oPublicacion.user.getHTMLNombre());
+        }
+
+        holder.imgAvatar.setImageUrl(ROOT_URL+"static-img/" + (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getAvatar() : oPublicacion.user_original.getAvatar()), imageLoader);
+        holder.txtNombre.setText((!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getHTMLNombre() : oPublicacion.user_original.getHTMLNombre()));
+        holder.txtUsuario.setText("@" + (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getHTMLUsuario() : oPublicacion.user_original.getHTMLUsuario()));
+
+        holder.imgAvatarOri.setVisibility((!oPublicacion.getType().equalsIgnoreCase("REP") ? View.GONE : View.VISIBLE));
+        holder.txtNombreOri.setVisibility((!oPublicacion.getType().equalsIgnoreCase("REP") ? View.GONE : View.VISIBLE));
+
+        holder.txtFecha.setText(oDate.DateDiff(oPublicacion.feed.getFecha(), System.currentTimeMillis()));
+
+        mostrar_body(holder, oPublicacion, oPublicacion.feed.getSpoiler());
+
+        holder.lytAnime.setVisibility(View.GONE);
+
+        if(oPublicacion.feed.getAnime()!=null){
+            holder.imgAnime.setImageUrl("http://www.anilista.com/img/dir/anime/regular/"+oPublicacion.feed.anime.getId().toString()+".jpg", imageLoader);
+            holder.txtAnime.setText(oPublicacion.feed.anime.getTitulo());
+            holder.lytAnime.setVisibility(View.VISIBLE);
+        }
+
+        holder.txtComentarios.setText(oPublicacion.feed.stats.getComments());
+
+        holder.lytReplicas.setBackgroundColor((oPublicacion.getIs_replicated() ? context.getResources().getColor(R.color.btn_rep) : ((Integer.parseInt(oUsuarioSession.getId())!=oPublicacion.user.getId()) ? Color.TRANSPARENT : context.getResources().getColor(R.color.btn_dislike))));
+        //holder.lytLikes.setBackgroundColor((oPublicacion.getMy_reaction() ? context.getResources().getColor(R.color.btn_like) : Color.TRANSPARENT));
+
+        holder.lytReactionLike.setVisibility((oPublicacion.feed.stats.reactions.getLike()>0 ? View.VISIBLE : View.GONE));
+        holder.lytReactionLove.setVisibility((oPublicacion.feed.stats.reactions.getLove()>0 ? View.VISIBLE : View.GONE));
+        holder.lytReactionHaha.setVisibility((oPublicacion.feed.stats.reactions.getHaha()>0 ? View.VISIBLE : View.GONE));
+        holder.lytReactionWow.setVisibility((oPublicacion.feed.stats.reactions.getWow()>0 ? View.VISIBLE : View.GONE));
+        holder.lytReactionSorry.setVisibility((oPublicacion.feed.stats.reactions.getSorry()>0 ? View.VISIBLE : View.GONE));
+        holder.lytReactionAnger.setVisibility((oPublicacion.feed.stats.reactions.getAnger()>0 ? View.VISIBLE : View.GONE));
+        holder.lytReactionReplicas.setVisibility((Integer.parseInt(oPublicacion.feed.stats.getShared())>0 ? View.VISIBLE : View.GONE));
+
+
+        holder.txtReactionLike.setText(oPublicacion.feed.stats.reactions.getLike().toString());
+        holder.txtReactionLove.setText(oPublicacion.feed.stats.reactions.getLove().toString());
+        holder.txtReactionHaha.setText(oPublicacion.feed.stats.reactions.getHaha().toString());
+        holder.txtReactionWow.setText(oPublicacion.feed.stats.reactions.getWow().toString());
+        holder.txtReactionSorry.setText(oPublicacion.feed.stats.reactions.getSorry().toString());
+        holder.txtReactionAnger.setText(oPublicacion.feed.stats.reactions.getAnger().toString());
+        holder.txtReactionReplicas.setText(oPublicacion.feed.stats.getShared());
+
+        holder.lytComentarios.setVisibility(View.GONE);
+
+        holder.txtNombre.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (oPublicacion.getType().equalsIgnoreCase("REP")==Boolean.FALSE) {
+                    home.cargar_perfil(oPublicacion.user.getUsuario());
+                }else{
+                    home.cargar_perfil(oPublicacion.user_original.getUsuario());
+                }
+            }
+        });
+
+        holder.imgAvatar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (oPublicacion.getType().equalsIgnoreCase("REP")==Boolean.FALSE) {
+                    home.cargar_perfil(oPublicacion.user.getUsuario());
+                }else{
+                    home.cargar_perfil(oPublicacion.user_original.getUsuario());
+                }
+            }
+        });
+
+        holder.txtNombreOri.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                home.cargar_perfil(oPublicacion.user.getUsuario());
+            }
+        });
+
+        holder.imgAvatarOri.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                home.cargar_perfil(oPublicacion.user.getUsuario());
+            }
+        });
+
+        holder.lytSpoiler.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                mostrar_body(holder, oPublicacion, false);
+            }
+        });
+
+        holder.lytAnime.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Bundle arguments = new Bundle();
+                arguments.putString("id", oPublicacion.feed.anime.getId().toString());
+
+                Fragment fragment = SerieFragment.newInstance(arguments);
+
+                if (context instanceof homeActivity) {
+                    homeActivity feeds = (homeActivity) context;
+                    feeds.switchContent(fragment);
+                }
+
+                //Intent browserIntent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(ROOT_URL+"serie/" + oPublicacion.feed.anime.getId()));
+                //v.getContext().startActivity(browserIntent1);
+
+            }
+        });
+
+        holder.lytComentar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(holder.lytComentarios.getVisibility()!=View.VISIBLE){
+                    oListadoComentarios= new ComentariosListAdapter(context);
+                    holder.lstComentarios.setAdapter(oListadoComentarios);
+                    cargar_comentarios(holder.lstComentarios, oPublicacion.feed.getId());
+                    holder.lytComentarios.setVisibility(View.VISIBLE);
+                }else{
+                    holder.lytComentarios.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        holder.lytLikes.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final Intent intent = new Intent(v.getContext(), ReactionActivity.class);
+                intent.putExtra("id_publicacion", oPublicacion.feed.getId());
+                //intent.putExtra("usuario", (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getUsuario() : oPublicacion.user_original.getUsuario()));
+                ((Activity) context).startActivityForResult(intent, 1);
+            }
+        });
+
+        if (Integer.parseInt(oUsuarioSession.getId())!=oPublicacion.user.getId()) {
+            holder.lytReplicas.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (!oPublicacion.getIs_replicated())
+                        republicar(holder.lytReplicas, oPublicacion.feed.getId());
+                }
+            });
+        }
+
+        holder.btnComentario.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String messageText = holder.txtMessage.getText().toString();
+                if (TextUtils.isEmpty(messageText)) {
+                    Toast.makeText(context, "Escribe un comentario", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                comentar(holder, oPublicacion.feed.getId(),messageText);
+            }
+        });
+
+
+        String my_reaction =oPublicacion.getMy_reaction();
+
+        if (my_reaction.equalsIgnoreCase("like")) {
+            holder.imgLike.setImageResource(R.drawable.reaction_like_32);
+            holder.txtLike.setText("Me gusta");
+        } else if (my_reaction.equalsIgnoreCase("love")){
+            holder.imgLike.setImageResource(R.drawable.reaction_love_32);
+            holder.txtLike.setText("Sugoi");
+        } else if (my_reaction.equalsIgnoreCase("haha")){
+            holder.imgLike.setImageResource(R.drawable.reaction_haha_32);
+            holder.txtLike.setText("HaHa");
+        } else if (my_reaction.equalsIgnoreCase("wow")){
+            holder.imgLike.setImageResource(R.drawable.reaction_wow_32);
+            holder.txtLike.setText("Ara ara");
+        } else if (my_reaction.equalsIgnoreCase("sorry")){
+            holder.imgLike.setImageResource(R.drawable.reaction_sorry_32);
+            holder.txtLike.setText("Me entristece");
+        } else if (my_reaction.equalsIgnoreCase("anger")) {
+            holder.imgLike.setImageResource(R.drawable.reaction_anger_32);
+            holder.txtLike.setText("Me enfada");
+        }else{
+            holder.imgLike.setImageResource(R.drawable.icon_like);
+            holder.txtLike.setText("Me gusta");
+        }
+
+    }
+
+
+    //endregion
+
     //region COMENTARIOS
 
     public void cargar_comentarios(final ExpandedListView lstComentarios, Integer id_publicacion){
@@ -544,7 +553,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
             html+="<div style=\"text-align:justify;margin: 10px 5px;padding: 0;\">"+oPublicacion.feed.getTextoHtml()+"</div>";
 
-            if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) html+= "<img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\">";
+            if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) html+= "<a href=\"img:" + ROOT_URL + "static-img/" + oPublicacion.feed.getImagen() + "\"><img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\"></a>";
             else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")) html+= "<a href=\""+oPublicacion.feed.getVideo()+"\"><iframe src=\"http://www.youtube.com/embed/"+oPublicacion.feed.getIdVideo()+"\" type=\"text/html\" width=\"100%\"></iframe></a>";
 
             html+="</body></html>";
@@ -563,7 +572,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     }
 
-    public void republicar(final LinearLayout lytLikes, final Integer position, Integer id_publicacion){
+    public void republicar(final LinearLayout lytLikes, Integer id_publicacion){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");

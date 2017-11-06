@@ -1,85 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondo_login"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20sp"
         android:background="@drawable/logo_anikku"
-        android:layout_marginBottom="20sp" />
+        android:contentDescription="@string/app_name" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="USUARIO"
         android:id="@+id/lblUsuario"
-        android:textColor="#ffffff" />
-
-    <EditText
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtUser"
-        android:layout_marginBottom="10sp"
-        android:padding="5sp"
-        android:background="@drawable/text_border"/>
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CONTRASEÑA"
-        android:id="@+id/lblContrasena"
+        android:text="@string/lblUsuario"
         android:textColor="#ffffff" />
 
     <EditText
+        android:id="@+id/txtUser"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
+        android:layout_marginBottom="10sp"
+        android:background="@drawable/text_border"
+        android:inputType="text"
+        android:padding="5sp" />
+
+    <TextView
+        android:id="@+id/lblContrasena"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lblpassword"
+        android:textColor="#ffffff" />
+
+    <EditText
         android:id="@+id/txtPassword"
-        android:padding="5sp"
-        android:background="@drawable/text_border"/>
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_border"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:padding="5sp" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ingresar"
         android:id="@+id/btnLogin"
-        android:background="@drawable/button_blue"
-        android:textColor="#ffffff"
-        android:textAllCaps="false"
-        android:layout_marginTop="15sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="15sp"
-        android:padding="10sp" />
+        android:layout_marginTop="15sp"
+        android:background="@drawable/button_blue"
+        android:padding="10sp"
+        android:text="@string/lblLogin"
+        android:textAllCaps="false"
+        android:textColor="#ffffff" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Recuperar Contraseña"
         android:id="@+id/lblRecuperar"
-        android:layout_marginBottom="3sp"
-        android:layout_marginTop="3sp"
-        android:textSize="15sp"
-        android:textIsSelectable="true"
         style="@style/Link"
-        android:clickable="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Registrate"
-        android:id="@+id/lblRegistro"
         android:layout_marginBottom="3sp"
         android:layout_marginTop="3sp"
-        android:textSize="15sp"
-        android:textIsSelectable="false"
+        android:clickable="true"
+        android:text="@string/lblRecuperarPassword"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textIsSelectable="true"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/lblRegistro"
         style="@style/Link"
-        android:clickable="true" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3sp"
+        android:layout_marginTop="3sp"
+        android:clickable="true"
+        android:text="@string/lblRegister"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textIsSelectable="false"
+        android:textSize="15sp" />
 
 </LinearLayout>

@@ -82,11 +82,10 @@
                         android:text="Usuario"
                         android:id="@+id/txtNombre"
                         android:textColor="#46B0FB"
-                        android:singleLine="true"
                         android:textStyle="bold"
                         android:textIsSelectable="false"
                         android:clickable="true"
-                        android:contextClickable="false" />
+                        android:maxLines="1" />
 
                     <TextView
                         android:id="@+id/txtFecha"
@@ -171,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/txtReactionLike"
-                    android:text="0"
+                    android:text="@string/lblCero"
                     android:layout_gravity="center_vertical" />
             </LinearLayout>
 
@@ -194,7 +193,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/txtReactionLove"
-                    android:text="0"
+                    android:text="@string/lblCero"
                     android:layout_gravity="center_vertical"/>
             </LinearLayout>
 
@@ -217,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/txtReactionHaha"
-                    android:text="0"
+                    android:text="@string/lblCero"
                     android:layout_gravity="center_vertical"/>
             </LinearLayout>
 
@@ -240,7 +239,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/txtReactionWow"
-                    android:text="0"
+                    android:text="@string/lblCero"
                     android:layout_gravity="center_vertical"/>
 
             </LinearLayout>
@@ -264,7 +263,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/txtReactionSorry"
-                    android:text="0"
+                    android:text="@string/lblCero"
                     android:layout_gravity="center_vertical"/>
 
             </LinearLayout>
@@ -288,7 +287,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/txtReactionAnger"
-                    android:text="0"
+                    android:text="@string/lblCero"
                     android:layout_gravity="center_vertical"/>
 
             </LinearLayout>
@@ -312,7 +311,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:id="@+id/txtReactionReplicas"
-                    android:text="0"
+                    android:text="@string/lblCero"
                     android:layout_gravity="center_vertical"/>
 
             </LinearLayout>
@@ -325,8 +324,7 @@
             android:layout_height="match_parent"
             android:id="@+id/lytAnime"
             android:background="#ccc"
-            android:clickable="true"
-            android:contextClickable="false">
+            android:clickable="true">
 
             <com.android.volley.toolbox.NetworkImageView
                 android:layout_width="30dp"
@@ -498,8 +496,8 @@
                     android:layout_alignParentBottom="true"
                     android:layout_toLeftOf="@+id/btnComentario"
                     android:layout_toRightOf="@+id/pubKamojiButton"
-                    android:autoText="true"
-                    android:hint="mensaje" />
+                    android:hint="@string/lblMensaje"
+                    android:maxLines="1" />
 
                 <ImageButton
                     android:layout_width="30sp"

@@ -20,6 +20,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.flyco.systembar.SystemBarHelper;
 
 import butterknife.Bind;
@@ -65,6 +66,8 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
         ButterKnife.bind(this);
+
+        Fresco.initialize(this);
 
         oUsuarioSession=new clsUsuarioSession(this);
         requestQueue = Volley.newRequestQueue(this);
@@ -215,7 +218,7 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void switchContent(Fragment fragment) {
-        fragmentManager.beginTransaction().replace(R.id.content, fragment).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().add(R.id.content, fragment).addToBackStack(null).commit();
     }
 
     //MENU

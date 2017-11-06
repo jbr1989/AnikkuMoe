@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333">
+
+    <me.relex.photodraweeview.PhotoDraweeView
+        android:id="@+id/photo_drawee_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:failureImage="@drawable/ic_error"
+        app:failureImageScaleType="centerInside"
+        app:placeholderImage="@drawable/ic_placeholder"
+        app:placeholderImageScaleType="fitCenter"
+        app:progressBarAutoRotateInterval="1000"
+        app:progressBarImage="@drawable/ic_loading"
+        app:progressBarImageScaleType="centerInside" />
+
+    <RelativeLayout
+        android:id="@+id/toolbar_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#333"
+        android:visibility="visible">
+        <!--<ImageView
+            android:id="@+id/previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/buttonstate_transparent"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:src="@drawable/previous"/>
+
+        <ImageView
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/buttonstate_transparent"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:src="@drawable/next"/>-->
+
+
+        <Button
+            android:id="@+id/btnWallpaper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wallpaper" />
+
+        <ImageView
+            android:id="@+id/rotate"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/buttonstate_transparent"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:src="@drawable/rotate" />
+
+        <!--<TextView
+            android:id="@+id/note"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_toLeftOf="@id/rotate"
+            android:layout_toRightOf="@id/previous"
+            android:layout_centerVertical="true"
+            android:text="This image has been rotated 90 degrees. Tap the button to rotate it. EXIF rotation is supported for external files."
+            android:padding="10dp"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"/>-->
+
+    </RelativeLayout>
+
+</RelativeLayout>

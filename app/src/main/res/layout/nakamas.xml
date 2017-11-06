@@ -37,9 +37,9 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="10dp"
-                                    android:singleLine="true"
                                     android:textColor="#ffffff"
-                                    android:textSize="16sp"/>
+                                    android:textSize="16sp"
+                                    android:maxLines="1" />
                         </LinearLayout>
                 </android.support.v7.widget.Toolbar>
 

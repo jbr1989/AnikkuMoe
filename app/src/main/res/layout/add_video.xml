@@ -6,12 +6,13 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/txtVideo" />
+        android:id="@+id/txtVideo"
+        android:inputType="text" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Aceptar"
+        android:text="@string/lblAceptar"
         android:id="@+id/btnAddVideo"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>
