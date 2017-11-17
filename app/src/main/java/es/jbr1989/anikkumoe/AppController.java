@@ -23,6 +23,7 @@ public class AppController extends Application {
     private String _url= "http://www.anikku.moe/";
     private String _api_old = "http://www.anikku.moe/coreold/";
     private String _api ="http://api.anikku.moe/";
+    private String _img_url;
 
     private static AppController mInstance;
 
@@ -78,4 +79,5 @@ public class AppController extends Application {
     public String getUrl(){return this._url;}
     public String getApiOld(){return this._api_old;}
     public String getApi(){return this._api;}
+    public String getImg(){return this._url+"/static-img/80/";} // Imagenes a 80px. Tambien puede ser a 40px.
 }

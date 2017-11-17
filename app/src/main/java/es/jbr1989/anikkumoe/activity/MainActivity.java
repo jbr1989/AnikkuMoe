@@ -2,6 +2,7 @@ package es.jbr1989.anikkumoe.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,12 +31,13 @@ import es.jbr1989.anikkumoe.object.clsUsuario;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
 
-
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
     clsUsuarioSession oUsuarioSession;
+
+    Context ctx;
 
     ProgressDialog pDialog;
 
@@ -53,6 +55,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ctx=this;
+
         txtUser = (EditText) findViewById(R.id.txtUser);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         lblRecuperar = (TextView) findViewById(R.id.lblRecuperar);
@@ -64,6 +68,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         btnLogin.setOnClickListener(this);
 
         oUsuarioSession = new clsUsuarioSession(this);
+
+        //Intent NotificationServiceIntent = new Intent(this, NotificationService.class);
+        //this.startService(NotificationServiceIntent);
     }
 
     @Override
@@ -177,6 +184,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         requestQueue.add(request);
     }
+
 
 
 }

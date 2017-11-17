@@ -3,6 +3,7 @@ package es.jbr1989.anikkumoe.ListAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +40,7 @@ public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionLi
     //region VARIABLES
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String IMG_URL = AppController.getInstance().getImg();
     public static final String SP_NAME = "Notificaciones";
 
     private Context context;
@@ -105,14 +108,12 @@ public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionLi
         if (oNotificacion.nuevo()==Boolean.TRUE) holder.lytNotificacion.setBackgroundColor(context.getResources().getColor(R.color.notification_new));
         else holder.lytNotificacion.setBackgroundColor(Color.TRANSPARENT);
 
-        holder.imgAvatar.setImageUrl(ROOT_URL+"static-img/"+oNotificacion.user.getAvatar(), imageLoader);
+        holder.imgAvatar.setImageURI(Uri.parse(IMG_URL +oNotificacion.user.getAvatar()));
         holder.txtFecha.setText(oDate.DateDiff(oNotificacion.getFecha13(), System.currentTimeMillis()));
 
         if (!oNotificacion.getTipo().equalsIgnoreCase("REACT")) holder.txtDescr.setText("@" + oNotificacion.user.getNombre() + " " + MSG_NOTIFICACION.get(oNotificacion.getTipo()));
         else holder.txtDescr.setText("@" + oNotificacion.user.getNombre() + " ha reaccionado \""+ oNotificacion.getReactionString(context)+ "\" a tu publicación");
     }
-
-
 
     private void cargar_mensajes(Context context){
 
@@ -178,8 +179,6 @@ public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionLi
         return ultima_fecha;
     }
 
-
-
     public void setNotificaciones(JSONArray response){
 
         clsNotificacion oNotificacion;
@@ -192,7 +191,7 @@ public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionLi
                 oNotificacion= new clsNotificacion(response.getJSONObject(i));
                 ultima_fecha=oNotificacion.getFecha13();
                 oNotificaciones.add(oNotificacion);
-                //if(oNotificacion.nuevo()) nuevos+=1;
+                if(oNotificacion.nuevo()) nuevos+=1;
             }
 
         }catch (JSONException ex){ex.printStackTrace();}
@@ -255,7 +254,7 @@ public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionLi
     // Guardar item cargado
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final LinearLayout lytNotificacion;
-        public final NetworkImageView imgAvatar;
+        public final SimpleDraweeView imgAvatar;
         public final TextView txtDescr, txtFecha;
 
         public ViewHolder(View itemView){
@@ -263,7 +262,7 @@ public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionLi
 
             //this.lytPublicacion = (CardView) itemView.findViewById(R.id.lytPublicacion);
             this.lytNotificacion = (LinearLayout) itemView.findViewById(R.id.lytNotificacion);
-            this.imgAvatar = (NetworkImageView) itemView.findViewById(R.id.imgAvatar);
+            this.imgAvatar = (SimpleDraweeView) itemView.findViewById(R.id.imgAvatar);
             this.txtDescr = (TextView) itemView.findViewById(R.id.txtDescr);
             this.txtFecha= (TextView) itemView.findViewById(R.id.txtFecha);
         }

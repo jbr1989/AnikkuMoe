@@ -23,6 +23,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.json.JSONObject;
@@ -39,6 +40,7 @@ import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsChat;
+import es.jbr1989.anikkumoe.sqlite.ConfigSQLite;
 
 /**
  * Created by jbr1989 on 09/12/2015.
@@ -49,14 +51,14 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private SuperRecyclerView mRecycler;
     private Chat2ListAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private Handler mHandler;
 
     Long intervalo;
 
     private homeActivity home;
     @Bind(R.id.navigation) LinearLayout mNavigation;
-    @Bind(R.id.avatar) NetworkImageView mAvatar;
+    @Bind(R.id.avatar) SimpleDraweeView mAvatar;
     @Bind(R.id.title) TextView mTitle;
     @Bind(R.id.txtMensaje) TextView messageET;
     @Bind(R.id.btnComentario) ImageButton sendBtn;
@@ -96,6 +98,7 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mRecycler = (SuperRecyclerView) rootView.findViewById(R.id.list);
         mLayoutManager = new LinearLayoutManager(rootView.getContext());
+
         mRecycler.setLayoutManager(mLayoutManager);
 
         mHandler = new Handler(Looper.getMainLooper());
@@ -169,9 +172,11 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 mAdapter.clearChats();
                 mAdapter.setChats(response);
                 mAdapter.notifyDataSetChanged();
+                mLayoutManager.scrollToPosition(mLayoutManager.findLastVisibleItemPosition());
                 mRecycler.setAdapter(mAdapter);
 
                 home.setRefreshActionButtonState(false);
+                actualizar_config();
 
                 if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
             }
@@ -205,9 +210,14 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
         home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                if (mAdapter.setNewChats(response)) { mAdapter.notifyDataSetChanged(); mRecycler.setAdapter(mAdapter);}
+                if (mAdapter.setNewChats(response)) {
+                    mAdapter.notifyDataSetChanged();
+                    mRecycler.setAdapter(mAdapter);
+                    actualizar_config();
+                }
                 if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
                 home.setRefreshActionButtonState(false);
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -289,6 +299,13 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
         messageET.setText("");
     }
 
+
+    // SQL
+    public void actualizar_config(){
+        ConfigSQLite oConfigSQLite = new ConfigSQLite(home);
+        oConfigSQLite.setModConfig("time_chat_global",mAdapter.get_UltimaFecha().toString());
+        oConfigSQLite.setModConfig("notification_chat_global","0");
+    }
 
     // end region
 

@@ -2,6 +2,7 @@ package es.jbr1989.anikkumoe.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -17,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +51,7 @@ public class SerieFragment extends Fragment  {
 
     @Bind(R.id.title) TextView mTitle;
     @Bind(R.id.banner) NetworkImageView mBanner;
-    @Bind(R.id.avatar) NetworkImageView mAvatar;
+    @Bind(R.id.avatar) SimpleDraweeView mAvatar;
     @Bind(R.id.txtDescr) TextView mDescr;
 
     public String id_serie;
@@ -122,7 +124,7 @@ public class SerieFragment extends Fragment  {
                     clsSerie oSerie= new clsSerie(response.getJSONObject("data"));
 
                     mTitle.setText(oSerie.getTitulo());
-                    mAvatar.setImageUrl(oSerie.getPortada(),imageLoader);
+                    mAvatar.setImageURI(Uri.parse(oSerie.getPortada()));
                     mDescr.setText(oSerie.getDescr());
 
                     RecyclerViewFragment aux = RecyclerViewFragment.newInstance(home, "serie", id_serie.toString());

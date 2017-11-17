@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_menu_white_24dp"/>
 
-                <com.android.volley.toolbox.NetworkImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/avatar"
                     android:layout_width="34dp"
                     android:layout_height="34dp"
@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.android.volley.toolbox.NetworkImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/imgAvatar"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
@@ -118,7 +118,7 @@
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp" />
 
-                        <com.android.volley.toolbox.NetworkImageView
+                        <com.facebook.drawee.view.SimpleDraweeView
                             android:id="@+id/imgWeb"
                             android:layout_width="15dp"
                             android:layout_height="15dp"

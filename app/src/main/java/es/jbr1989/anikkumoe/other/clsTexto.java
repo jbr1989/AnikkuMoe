@@ -63,6 +63,9 @@ public class clsTexto {
         html=html.replaceAll("(?:\r\n|\r|\n)", "<br />");
 
         //Mostrar imagenes incrustadas en el texto
+
+        html=html.replaceAll("' ","\"");
+        html=html.replaceAll(" '","\"");
         html=html.replaceAll("'","\"");
         html=html.replaceAll("src=\"//","src=\"http://");
 

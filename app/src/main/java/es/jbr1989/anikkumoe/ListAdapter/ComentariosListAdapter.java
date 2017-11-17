@@ -2,6 +2,7 @@ package es.jbr1989.anikkumoe.ListAdapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +38,7 @@ public class ComentariosListAdapter extends BaseAdapter {
     //region VARIABLES
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String IMG_URL = AppController.getInstance().getImg();
 
     public static final String SP_NAME = "Comentarios";
     public Integer pos;
@@ -106,7 +109,7 @@ public class ComentariosListAdapter extends BaseAdapter {
 
         final clsComentario oComentario=oComentarios.get(position);
 
-        viewHolder.imgAvatar.setImageUrl(ROOT_URL + "/static-img/" + oComentario.user.getAvatar(), imageLoader);
+        viewHolder.imgAvatar.setImageURI(Uri.parse(IMG_URL + oComentario.user.getAvatar()));
         viewHolder.txtUsuario.setText(oComentario.user.getUsuario());
         viewHolder.txtNombre.setText(oComentario.user.getNombre());
 
@@ -188,12 +191,12 @@ public class ComentariosListAdapter extends BaseAdapter {
 
     // Guardar item cargado
     private static class ViewHolder {
-        public final NetworkImageView imgAvatar;
+        public final SimpleDraweeView imgAvatar;
         public final TextView txtUsuario, txtBody, txtNombre, txtFecha;
         public final WebView webBody;
 
         public ViewHolder(View v){
-            this.imgAvatar = (NetworkImageView) v.findViewById(R.id.ImgAvatar);
+            this.imgAvatar = (SimpleDraweeView) v.findViewById(R.id.ImgAvatar);
             this.txtUsuario = (TextView) v.findViewById(R.id.txtUsuario);
             this.txtBody = (TextView) v.findViewById(R.id.txtBody);
             this.webBody = (WebView) v.findViewById(R.id.webBody);

@@ -1,7 +1,10 @@
 package es.jbr1989.anikkumoe.activity;
 
+import android.app.AlarmManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,7 +29,6 @@ import com.flyco.systembar.SystemBarHelper;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
-import es.jbr1989.anikkumoe.NotifyService;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.fragment.BuzonFragment;
 import es.jbr1989.anikkumoe.fragment.ConfigFragment;
@@ -39,6 +41,8 @@ import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
+import es.jbr1989.anikkumoe.receiver.CronReceiver;
+import es.jbr1989.anikkumoe.service.NotifyService;
 
 /**
  * Created by jbr1989 on 05/12/2015.
@@ -61,6 +65,8 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
 
     public clsUsuarioSession oUsuarioSession;
 
+    public SharedPreferences Config;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +80,8 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
 
         fragmentManager = getFragmentManager();
         webClient = new MyWebClient(getBaseContext(),fragmentManager);
+
+        Config = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
@@ -90,11 +98,17 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
         //方法1:删除DrawerLayout所在布局中所有fitsSystemWindows属性,尤其是DrawerLayout的fitsSystemWindows属性
         SystemBarHelper.tintStatusBarForDrawer(this, mDrawerLayout, color);
 
-        if (savedInstanceState == null) {
+        Intent i= getIntent();
+        Bundle extras = i.getExtras();
+
+        if(extras != null) {
+            displayView(extras.getInt("fragment"),true);
+        }else if (savedInstanceState == null) {
             // on first time display view for first nav item
             //displayView(0); //Seleccionar NOTIFICACIONES
-            SharedPreferences Config = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
             displayView(mNavigationView.getMenu().getItem(Integer.parseInt(Config.getString("fragment_defecto", "1"))).getItemId(),true);
+
+            notificationCron();
         }
 
     }
@@ -262,6 +276,23 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
         startActivity(i);
 
         finish();
+    }
+
+    // NOTIFICACIONES
+
+    public void notificationCron(){
+
+        AlarmManager manager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+
+        Intent alarmIntent = new Intent(this, CronReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        if (Config.getBoolean("notificacion_activo", Boolean.FALSE)) {
+            int interval = 1000 * 60 * Integer.parseInt(Config.getString("notificacion_intervalo", "15"));
+            manager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), interval, pendingIntent);
+        }else{
+            manager.cancel(pendingIntent);
+        }
     }
 
 }

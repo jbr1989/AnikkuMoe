@@ -1,55 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <PreferenceScreen android:title="Aplicación">
 
         <ListPreference
-            android:key="fragment_defecto"
-            android:title="Pestaña por defecto..."
-            android:summary="Pestaña que se abre por defecto"
+            android:defaultValue="@string/nav_drawer_values_defecto"
             android:dialogTitle="Pestañas"
             android:entries="@array/nav_drawer_items"
             android:entryValues="@array/nav_drawer_values"
-            android:defaultValue="@string/nav_drawer_values_defecto"/>
+            android:key="fragment_defecto"
+            android:summary="Pestaña que se abre por defecto"
+            android:title="Pestaña por defecto..." />
 
     </PreferenceScreen>
 
-    <PreferenceScreen android:title="Notificaciones" android:enabled="false">
+    <PreferenceScreen android:title="Notificaciones">
 
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="notificacion_activo"
-            android:title="Notificaciones"
             android:summary="Activa o desactiva las notificaciones"
-            android:defaultValue="true"/>
+            android:title="Notificaciones" />
 
         <ListPreference
+            android:defaultValue="@string/notificaciones_intervalo_values_defecto"
             android:dependency="notificacion_activo"
-            android:key="notificacion_intervalo"
-            android:title="Comprobar notificaciones cada..."
-            android:summary="Intervalo para buscar notificaciones"
             android:dialogTitle="Intervalo"
             android:entries="@array/notificaciones_intervalo"
             android:entryValues="@array/notificaciones_intervalo_values"
-            android:defaultValue="@string/notificaciones_intervalo_values_defecto"/>
+            android:key="notificacion_intervalo"
+            android:summary="Intervalo para buscar notificaciones"
+            android:title="Comprobar notificaciones cada..." />
+
+        <PreferenceCategory android:title="TIPO">
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="notificacion_activo_notificaciones"
+                android:dependency="notificacion_activo"
+                android:summary="Activa o desactiva las notificaciones"
+                android:title="Notificaciones de Anikku" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="notificacion_activo_mensajes"
+                android:dependency="notificacion_activo"
+                android:summary="Activa o desactiva las notificaciones"
+                android:title="Mensajes privados" />
+
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="notificacion_activo_chat_global"
+                android:dependency="notificacion_activo"
+                android:summary="Activa o desactiva las notificaciones"
+                android:title="Chat global" />
+
+
+        </PreferenceCategory>
 
     </PreferenceScreen>
 
     <PreferenceScreen android:title="Chats">
 
         <ListPreference
-            android:key="chat_intervalo"
-            android:title="Comprobar mensajes cada..."
-            android:summary="Intervalo para buscar nuevos mensajes"
+            android:defaultValue="@string/chat_intervalo_values_defecto"
             android:dialogTitle="Intervalo"
             android:entries="@array/chat_intervalo"
             android:entryValues="@array/chat_intervalo_values"
-            android:defaultValue="@string/chat_intervalo_values_defecto"/>
+            android:key="chat_intervalo"
+            android:summary="Intervalo para buscar nuevos mensajes"
+            android:title="Comprobar mensajes cada..." />
 
     </PreferenceScreen>
 
     <PreferenceScreen android:title="Ayuda">
-        <Preference android:title="Listado de cambios" android:key="changelog"/>
-        <Preference android:title="Acerca de" android:key="about"/>
+        <Preference
+            android:key="changelog"
+            android:title="Listado de cambios" />
+        <Preference
+            android:key="about"
+            android:title="Acerca de" />
     </PreferenceScreen>
 
 </PreferenceScreen>

@@ -1,4 +1,4 @@
-package es.jbr1989.anikkumoe;
+package es.jbr1989.anikkumoe.service;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -24,7 +24,9 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.NotificacionListAdapter;
+import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;

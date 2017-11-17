@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +43,7 @@ import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 public class perfilFragment extends Fragment implements OnClickListener{
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String IMG_URL = AppController.getInstance().getImg();
     private static final String LOGIN_URL = ROOT_URL+"core/";
 
     clsUsuarioSession oUsuarioSession;
@@ -55,7 +57,7 @@ public class perfilFragment extends Fragment implements OnClickListener{
 
     private homeActivity home;
     @Bind(R.id.navigation) LinearLayout mNavigation;
-    @Bind(R.id.avatar) NetworkImageView mAvatar;
+    @Bind(R.id.avatar) SimpleDraweeView mAvatar;
     @Bind(R.id.title) TextView mTitle;
 
     //region CONSTRUCTOR
@@ -126,7 +128,7 @@ public class perfilFragment extends Fragment implements OnClickListener{
 
         try {
             mTitle.setText(oUsuario.getNombre());
-            mAvatar.setImageUrl(ROOT_URL+"/static-img/" + oUsuario.getAvatar(), imageLoader);
+            mAvatar.setImageURI(Uri.parse(IMG_URL + oUsuario.getAvatar()));
 
             lblUsuario.setText(oUsuario.getNombre());
             lblDescr.setText(oUsuario.getDescripcion());

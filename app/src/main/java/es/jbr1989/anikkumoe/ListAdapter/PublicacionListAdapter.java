@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +59,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
     //region VARIABLES
     private static final String ROOT_URL = AppController.getInstance().getUrl();
     private static final String API_URL = AppController.getInstance().getApi();
+    private static final String IMG_URL = AppController.getInstance().getImg();
     public static final String SP_NAME = "Publicaciones";
     public Integer pos;
 
@@ -229,7 +232,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
     public static class ViewHolder extends RecyclerView.ViewHolder {
         //public final CardView lytPublicacion;
         public final LinearLayout lytBody, lytSpoiler, lytAnime, lytComentar,lytComentarios, lytLikes, lytReplicas, lytReactionLike, lytReactionLove, lytReactionHaha, lytReactionWow, lytReactionSorry, lytReactionAnger, lytReactionReplicas;
-        public final NetworkImageView imgAvatar,imgAvatarOri,imgAnime;
+        public final SimpleDraweeView imgAvatar, imgAvatarOri, imgAnime;
         public final ImageView imgLike;
         public final WebView webBody;
         public final TextView txtNombre, txtFecha, txtUsuario, txtNombreOri, txtAnime, txtComentarios, txtReactionLike, txtReactionLove, txtReactionHaha, txtReactionWow, txtReactionSorry, txtReactionAnger, txtReactionReplicas, txtLike, txtMessage;
@@ -248,15 +251,15 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             this.lytReplicas = (LinearLayout)  itemView.findViewById(R.id.lytReplicas);
             this.lytLikes = (LinearLayout)  itemView.findViewById(R.id.lytLikes);
 
-            this.imgAvatar = (NetworkImageView) itemView.findViewById(R.id.imgPubAvatar);
-            this.imgAvatarOri = (NetworkImageView) itemView.findViewById(R.id.imgPubAvatarOri);
+            this.imgAvatar = (SimpleDraweeView) itemView.findViewById(R.id.imgPubAvatar);
+            this.imgAvatarOri = (SimpleDraweeView) itemView.findViewById(R.id.imgPubAvatarOri);
             this.webBody= (WebView) itemView.findViewById(R.id.webBody);
             this.txtNombre = (TextView) itemView.findViewById(R.id.txtNombre);
             this.txtFecha = (TextView) itemView.findViewById(R.id.txtFecha);
             this.txtUsuario = (TextView) itemView.findViewById(R.id.txtUsuario);
             this.txtNombreOri = (TextView) itemView.findViewById(R.id.txtNombreOri);
 
-            this.imgAnime = (NetworkImageView) itemView.findViewById(R.id.imgAnime);
+            this.imgAnime = (SimpleDraweeView) itemView.findViewById(R.id.imgAnime);
             this.txtAnime=(TextView) itemView.findViewById(R.id.txtAnime);
             this.txtComentarios = (TextView) itemView.findViewById(R.id.txtComentarios);
 
@@ -290,11 +293,11 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
     public void cargar_publicacion(final ViewHolder holder, final clsPublicacion oPublicacion){
 
         if (oPublicacion.getType().equalsIgnoreCase("REP")) {
-            holder.imgAvatarOri.setImageUrl(ROOT_URL+"static-img/" + oPublicacion.user.getAvatar(), imageLoader);
+            holder.imgAvatarOri.setImageURI(Uri.parse(IMG_URL + oPublicacion.user.getAvatar()));
             holder.txtNombreOri.setText(oPublicacion.user.getHTMLNombre());
         }
 
-        holder.imgAvatar.setImageUrl(ROOT_URL+"static-img/" + (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getAvatar() : oPublicacion.user_original.getAvatar()), imageLoader);
+        holder.imgAvatar.setImageURI(Uri.parse(IMG_URL + (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getAvatar() : oPublicacion.user_original.getAvatar())));
         holder.txtNombre.setText((!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getHTMLNombre() : oPublicacion.user_original.getHTMLNombre()));
         holder.txtUsuario.setText("@" + (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getHTMLUsuario() : oPublicacion.user_original.getHTMLUsuario()));
 
@@ -308,7 +311,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         holder.lytAnime.setVisibility(View.GONE);
 
         if(oPublicacion.feed.getAnime()!=null){
-            holder.imgAnime.setImageUrl("http://www.anilista.com/img/dir/anime/regular/"+oPublicacion.feed.anime.getId().toString()+".jpg", imageLoader);
+            holder.imgAnime.setImageURI(Uri.parse("http://www.anilista.com/img/dir/anime/regular/"+oPublicacion.feed.anime.getId().toString()+".jpg"));
             holder.txtAnime.setText(oPublicacion.feed.anime.getTitulo());
             holder.lytAnime.setVisibility(View.VISIBLE);
         }

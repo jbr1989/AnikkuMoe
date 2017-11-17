@@ -4,10 +4,8 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.app.WallpaperManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Animatable;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,24 +13,12 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
 import es.jbr1989.anikkumoe.R;
-import es.jbr1989.anikkumoe.activity.homeActivity;
-import es.jbr1989.anikkumoe.activity.imgActivity;
 import me.relex.photodraweeview.OnPhotoTapListener;
 import me.relex.photodraweeview.OnViewTapListener;
 import me.relex.photodraweeview.PhotoDraweeView;
@@ -158,41 +144,6 @@ public class ImgViewFragment extends Fragment implements View.OnClickListener {
                 mPhotoDraweeView.setRotation((mPhotoDraweeView.getRotation() + 90) % 360);
                 mPhotoDraweeView.update(mPhotoDraweeView.getWidth(),mPhotoDraweeView.getHeight());
                 break;
-        }
-    }
-
-    public class SetImgView extends AsyncTask<String, Void, Bitmap> {
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            result= null;
-            String imgUrl = params[0];
-            try {
-                result = Picasso.with(context).load(imgUrl).get();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute (Bitmap result) {
-            super.onPostExecute(result);
-
-            //SubsamplingScaleImageView imgView = (SubsamplingScaleImageView)rootView.findViewById(R.id.imageView);
-            //imgView.setImage(ImageSource.bitmap(result));
-
-            progressDialog.dismiss();
-        }
-
-        @Override
-        protected void onPreExecute () {
-            super.onPreExecute();
-
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage(getResources().getString(R.string.loading));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
         }
     }
 }

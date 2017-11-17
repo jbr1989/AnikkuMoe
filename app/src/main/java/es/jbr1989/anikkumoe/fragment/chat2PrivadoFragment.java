@@ -3,6 +3,7 @@ package es.jbr1989.anikkumoe.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.json.JSONObject;
@@ -52,7 +54,7 @@ public class chat2PrivadoFragment extends Fragment implements SwipeRefreshLayout
 
     private SuperRecyclerView mRecycler;
     private Chat2PrivadoListAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private Handler mHandler;
 
     public static String id;
@@ -62,7 +64,7 @@ public class chat2PrivadoFragment extends Fragment implements SwipeRefreshLayout
 
     private homeActivity home;
     @Bind(R.id.navigation) LinearLayout mNavigation;
-    @Bind(R.id.avatar) NetworkImageView mAvatar;
+    @Bind(R.id.avatar) SimpleDraweeView mAvatar;
     @Bind(R.id.title) TextView mTitle;
     @Bind(R.id.txtMensaje) TextView messageET;
     @Bind(R.id.btnComentario) ImageButton sendBtn;
@@ -183,7 +185,7 @@ public class chat2PrivadoFragment extends Fragment implements SwipeRefreshLayout
                 home.setRefreshActionButtonState(false);
 
                 String url=ROOT_URL+"static-img/"+mAdapter.getAvatar();
-                mAvatar.setImageUrl(url, imageLoader);
+                mAvatar.setImageURI(Uri.parse(url));
 
                 if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
             }

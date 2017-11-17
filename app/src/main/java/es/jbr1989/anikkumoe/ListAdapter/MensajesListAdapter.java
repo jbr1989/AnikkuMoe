@@ -2,6 +2,7 @@ package es.jbr1989.anikkumoe.ListAdapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +40,7 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
     //region VARIABLES
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String IMG_URL = AppController.getInstance().getImg();
     public static final String SP_NAME = "Mensajes";
 
     private Context context;
@@ -105,7 +108,7 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
 
         final clsMensaje oMensaje = oMensajes.get(position);
 
-        holder.imgAvatar.setImageUrl(ROOT_URL+"static-img/"+ (oMensaje.getCreador().equals(oUser.getId()) ? oUser.getAvatar() : oUsuarioSession.getAvatar()), imageLoader);
+        holder.imgAvatar.setImageURI(Uri.parse(IMG_URL + (oMensaje.getCreador().equals(oUser.getId()) ? oUser.getAvatar() : oUsuarioSession.getAvatar())));
         holder.txtUsuario.setText((oMensaje.getCreador().equals(oUser.getId()) ? oUser.getNombre() : oUsuarioSession.getNombre()));
         holder.txtDescr.setText(oMensaje.getTextoHTML());
         holder.txtFecha.setText((oMensaje.getCreador().equals(oUser.getId()) ? "Recibido " : "Enviado ")+oDate.DateDiff(oMensaje.getFecha(), System.currentTimeMillis()));
@@ -161,14 +164,14 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
     // Guardar item cargado
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final LinearLayout lytMensaje;
-        public final NetworkImageView imgAvatar;
+        public final SimpleDraweeView imgAvatar;
         public final TextView txtUsuario, txtDescr, txtFecha;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             this.lytMensaje=(LinearLayout) itemView.findViewById(R.id.lytMensaje);
-            this.imgAvatar=(NetworkImageView) itemView.findViewById(R.id.imgAvatar);
+            this.imgAvatar= (SimpleDraweeView) itemView.findViewById(R.id.imgAvatar);
             this.txtUsuario=(TextView) itemView.findViewById(R.id.txtUsuario);
             this.txtDescr=(TextView) itemView.findViewById(R.id.txtDescr);
             this.txtFecha=(TextView) itemView.findViewById(R.id.txtFecha);

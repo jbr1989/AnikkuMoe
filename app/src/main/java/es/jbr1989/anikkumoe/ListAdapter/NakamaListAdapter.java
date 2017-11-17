@@ -1,6 +1,7 @@
 package es.jbr1989.anikkumoe.ListAdapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +34,7 @@ public class NakamaListAdapter extends BaseAdapter {
     //region VARIABLES
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String IMG_URL = AppController.getInstance().getImg();
 
     public static final String SP_NAME = "Nakamas";
     public Integer pos;
@@ -99,14 +102,14 @@ public class NakamaListAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        NetworkImageView imgAvatar;
+        SimpleDraweeView imgAvatar;
         ImageView imgUsuario;
         TextView  txtUsuario;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.nakama_item, parent, false);
 
-            imgAvatar = (NetworkImageView) convertView.findViewById(R.id.ImgAvatar);
+            imgAvatar = (SimpleDraweeView) convertView.findViewById(R.id.ImgAvatar);
             txtUsuario = (TextView) convertView.findViewById(R.id.txtUsuario);
             imgUsuario = (ImageView) convertView.findViewById(R.id.imgUsuario);
 
@@ -121,7 +124,7 @@ public class NakamaListAdapter extends BaseAdapter {
 
         final clsNakama oNakama=oNakamas.get(position);
 
-        imgAvatar.setImageUrl(ROOT_URL + "/static-img/" + oNakama.getAvatar(), imageLoader);
+        imgAvatar.setImageURI(Uri.parse(IMG_URL + oNakama.getAvatar()));
         txtUsuario.setText(oNakama.getNombre());
         imgUsuario.setVisibility((isOnline(oNakama.getId()) ? View.VISIBLE : View.GONE));
 
@@ -196,11 +199,11 @@ public class NakamaListAdapter extends BaseAdapter {
 
     // Guardar item cargado
     private static class ViewHolder {
-        public final NetworkImageView imgAvatar;
+        public final SimpleDraweeView imgAvatar;
         public final ImageView imgUsuario;
         public final TextView txtUsuario;
 
-        public ViewHolder(NetworkImageView imgAvatar, TextView txtUsuario, ImageView imgUsuario) {
+        public ViewHolder(SimpleDraweeView imgAvatar, TextView txtUsuario, ImageView imgUsuario) {
             this.imgAvatar=imgAvatar;
             this.txtUsuario=txtUsuario;
             this.imgUsuario=imgUsuario;

@@ -31,7 +31,7 @@
                 android:layout_alignParentTop="false"
                 android:gravity="center|end">
 
-                <com.android.volley.toolbox.NetworkImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/imgPubAvatarOri"
                     android:layout_width="20sp"
                     android:layout_height="20sp" />
@@ -47,7 +47,7 @@
                     android:clickable="true" />
             </RelativeLayout>
 
-            <com.android.volley.toolbox.NetworkImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/imgPubAvatar"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -326,7 +326,7 @@
             android:background="#ccc"
             android:clickable="true">
 
-            <com.android.volley.toolbox.NetworkImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:id="@+id/imgAnime"

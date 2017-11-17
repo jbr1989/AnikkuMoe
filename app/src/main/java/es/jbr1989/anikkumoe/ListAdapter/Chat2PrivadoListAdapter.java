@@ -2,6 +2,7 @@ package es.jbr1989.anikkumoe.ListAdapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +38,7 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
     //region VARIABLES
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String IMG_URL = AppController.getInstance().getImg();
     public static final String SP_NAME = "Chats";
 
     private Context context;
@@ -104,7 +107,7 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
 
         setAlignment(holder, isMe);
 
-        holder.imgAvatar.setImageUrl(ROOT_URL + "/static-img/" + (isMe ? oUsuarioSession.getAvatar() : oUsuario.getAvatar()), imageLoader);
+        holder.imgAvatar.setImageURI(Uri.parse(IMG_URL + (isMe ? oUsuarioSession.getAvatar() : oUsuario.getAvatar())));
         holder.txtUsuario.setText((isMe ? oUsuarioSession.getNombre() : oUsuario.getNombre()));
 
         holder.txtFecha.setText(oDate.DateDiff(oChat.getEnviado13(), System.currentTimeMillis()));
@@ -261,7 +264,7 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
 
     // Guardar item cargado
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final NetworkImageView imgAvatar;
+        public final SimpleDraweeView imgAvatar;
         public final LinearLayout lytBody;
         public final TextView txtUsuario, txtFecha;
         public final WebView webBody;
@@ -270,7 +273,7 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
             super(itemView);
 
             this.lytBody = (LinearLayout) itemView.findViewById(R.id.lytBody);
-            this.imgAvatar = (NetworkImageView) itemView.findViewById(R.id.imgAvatar);
+            this.imgAvatar = (SimpleDraweeView) itemView.findViewById(R.id.imgAvatar);
             this.txtUsuario = (TextView) itemView.findViewById(R.id.txtUsuario);
             this.txtFecha = (TextView) itemView.findViewById(R.id.txtFecha);
             this.webBody= (WebView) itemView.findViewById(R.id.webBody);

@@ -5,7 +5,7 @@ android:layout_height="wrap_content"
     android:orientation="horizontal">
 
 
-        <com.android.volley.toolbox.NetworkImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/ImgAvatar"
             android:layout_width="50dp"
             android:layout_height="50dp"

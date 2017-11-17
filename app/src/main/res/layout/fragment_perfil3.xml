@@ -57,7 +57,7 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <com.android.volley.toolbox.NetworkImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/avatar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"

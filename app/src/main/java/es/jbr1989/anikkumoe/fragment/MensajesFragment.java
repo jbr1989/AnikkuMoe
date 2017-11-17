@@ -2,6 +2,7 @@ package es.jbr1989.anikkumoe.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.json.JSONObject;
@@ -45,6 +47,7 @@ import es.jbr1989.anikkumoe.object.clsMensaje;
 public class MensajesFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String IMG_URL = AppController.getInstance().getImg();
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     private SuperRecyclerView mRecycler;
@@ -54,7 +57,7 @@ public class MensajesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private homeActivity home;
     @Bind(R.id.navigation) LinearLayout mNavigation;
-    @Bind(R.id.avatar) NetworkImageView mAvatar;
+    @Bind(R.id.avatar) SimpleDraweeView mAvatar;
     @Bind(R.id.title) TextView mTitle;
     @Bind(R.id.txtMensajeMensaje) TextView messageET;
     @Bind(R.id.btnMensajeMensaje) ImageButton sendBtn;
@@ -169,7 +172,7 @@ public class MensajesFragment extends Fragment implements SwipeRefreshLayout.OnR
                 mAdapter.setDatos(response);
 
                 String url=ROOT_URL+"static-img/"+mAdapter.getAvatar();
-                mAvatar.setImageUrl(url,imageLoader);
+                mAvatar.setImageURI(Uri.parse(url));
 
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);

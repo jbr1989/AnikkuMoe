@@ -5,21 +5,27 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import es.jbr1989.anikkumoe.NotifyService;
 import es.jbr1989.anikkumoe.R;
+import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.inscription.ChangeLogDialog;
 import es.jbr1989.anikkumoe.inscription.CreditsDialog;
+import es.jbr1989.anikkumoe.service.NotifyService;
 
 /**
  * Created by jbr1989 on 07/12/2015.
  */
 public class ConfigFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
+    private homeActivity home;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.FragmentConfig);
 
         addPreferencesFromResource(R.xml.configuracion);
 
@@ -31,20 +37,27 @@ public class ConfigFragment extends PreferenceFragment implements SharedPreferen
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        rootView.setBackgroundColor(getResources().getColor(android.R.color.white));
+
+        home = (homeActivity) rootView.getContext();
+        //home.setTitle(R.string.FragmentConfig);
+
+        //home.setSupportActionBar((Toolbar) home.findViewById(R.id.toolbar));
+
+        //home.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        return rootView;
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPref, String key) {
 
         switch (key){
             case "notificacion_intervalo":
-                //Preference NotificacionIntervaloPref = findPreference("notificacion_intervalo");
-                //NotificacionIntervaloPref.setSummary(sharedPref.getString("notificacion_intervalo", "5 minutos"));
-
             case "notificacion_activo":
-                this.getActivity().stopService(new Intent(this.getActivity(), NotifyService.class));
-                Boolean activo = sharedPref.getBoolean("notificacion_activo",true);
-
-                if(activo) this.getActivity().startService(new Intent(this.getActivity(), NotifyService.class));
-
-            break;
+                home.notificationCron();
+                break;
         }
     }
 

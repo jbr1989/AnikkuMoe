@@ -3,6 +3,8 @@ package es.jbr1989.anikkumoe.object;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import es.jbr1989.anikkumoe.other.clsTexto;
+
 /**
  * Created by jbr1989 on 08/11/2016.
  */
@@ -130,8 +132,8 @@ public class clsSerie {
     }
 
     public String getDescr(){
-        if (!sinopsis_mcanime.equalsIgnoreCase("null")) return sinopsis_mcanime;
-        else if(!sinopsis.equalsIgnoreCase("null")) return sinopsis;
+        if (sinopsis_mcanime!=null) return clsTexto.recortar(sinopsis_mcanime, 250);
+        else if(!sinopsis.equalsIgnoreCase("null")) return clsTexto.recortar(sinopsis, 250);
         else return "";
     }
 

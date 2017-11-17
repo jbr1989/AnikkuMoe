@@ -2,6 +2,7 @@ package es.jbr1989.anikkumoe.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -20,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +44,7 @@ import es.jbr1989.anikkumoe.object.clsUsuario;
 public class perfil2Fragment extends Fragment {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String IMG_URL = AppController.getInstance().getImg();
     private static final String LOGIN_URL = ROOT_URL+"core/";
 
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
@@ -53,7 +56,7 @@ public class perfil2Fragment extends Fragment {
     //@Bind(R.id.navigation) LinearLayout mNavigation;
     @Bind(R.id.title) TextView mTitle;
     @Bind(R.id.banner) NetworkImageView mBanner;
-    @Bind(R.id.avatar) NetworkImageView mAvatar;
+    @Bind(R.id.avatar) SimpleDraweeView mAvatar;
     @Bind(R.id.btnPerfilAdd) FloatingActionButton mPerfilAdd;
     @Bind(R.id.viewpager) ViewPager mViewpager;
 
@@ -126,7 +129,7 @@ public class perfil2Fragment extends Fragment {
         try {
             mTitle.setText(oUsuario.getNombre());
             mBanner.setImageUrl(ROOT_URL+"static-img/"+oUsuario.getBanner(),imageLoader);
-            mAvatar.setImageUrl(ROOT_URL+"static-img/"+oUsuario.getAvatar(),imageLoader);
+            mAvatar.setImageURI(Uri.parse(IMG_URL+"static-img/"+oUsuario.getAvatar()));
 
             String id = home.oUsuarioSession.getId();
 

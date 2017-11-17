@@ -90,20 +90,22 @@
         <item name="intervalo_30m">30 minutos</item>
         <item name="intervalo_1h">1 hora</item>
         <item name="intervalo_6h">6 horas</item>
+        <item name="intervalo_12h">12 horas</item>
         <item name="intervalo_1d">1 día</item>
     </string-array>
 
     <string-array name="notificaciones_intervalo_values">
-        <item name="intervalo_1m">60</item>
-        <item name="intervalo_5m">300</item>
-        <item name="intervalo_15m">900</item>
-        <item name="intervalo_30m">1800</item>
-        <item name="intervalo_1h">3600</item>
-        <item name="intervalo_6h">21600</item>
-        <item name="intervalo_1d">86400</item>
+        <item name="intervalo_1m">1</item>
+        <item name="intervalo_5m">5</item>
+        <item name="intervalo_15m">15</item>
+        <item name="intervalo_30m">30</item>
+        <item name="intervalo_1h">60</item>
+        <item name="intervalo_6h">360</item>
+        <item name="intervalo_12h">720</item>
+        <item name="intervalo_1d">1440</item>
     </string-array>
 
-    <string name="notificaciones_intervalo_values_defecto">300</string>
+    <string name="notificaciones_intervalo_values_defecto">15</string>
 
     <!-- Chats -->
 
