@@ -48,9 +48,6 @@ public class BuzonFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private RecyclerView.LayoutManager mLayoutManager;
     private Handler                    mHandler;
 
-    private String tipo;
-    private String valor;
-
     private homeActivity home;
     @Bind(R.id.navigation) LinearLayout mNavigation;
     @Bind(R.id.title) TextView mTitle;

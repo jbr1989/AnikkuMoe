@@ -17,8 +17,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONException;
@@ -33,7 +31,6 @@ import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
-import es.jbr1989.anikkumoe.http.JSONParser;
 import es.jbr1989.anikkumoe.object.clsUsuario;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 
@@ -47,13 +44,10 @@ public class perfilFragment extends Fragment implements OnClickListener{
     private static final String LOGIN_URL = ROOT_URL+"core/";
 
     clsUsuarioSession oUsuarioSession;
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
-    private NetworkImageView imgAvatar, imgWeb;
+    private SimpleDraweeView imgAvatar, imgWeb;
     private TextView lblUsuario, lblDescr, lblArroba, lblPais, lblWeb, lblNumNakamas, lblNumSiguiendo, lblNumSeguidores, lblNumPublicaciones, lblPerfilSeguidor;
     public ImageButton btnPerfilAdd;
-
-    JSONParser jsonParser = new JSONParser();
 
     private homeActivity home;
     @Bind(R.id.navigation) LinearLayout mNavigation;
@@ -92,8 +86,8 @@ public class perfilFragment extends Fragment implements OnClickListener{
             }
         });
 
-        imgAvatar = (NetworkImageView) rootView.findViewById(R.id.imgAvatar);
-        imgWeb = (NetworkImageView) rootView.findViewById(R.id.imgWeb);
+        imgAvatar = (SimpleDraweeView) rootView.findViewById(R.id.imgAvatar);
+        imgWeb = (SimpleDraweeView) rootView.findViewById(R.id.imgWeb);
 
         lblUsuario = (TextView) rootView.findViewById(R.id.lblUsuario);
         lblDescr = (TextView) rootView.findViewById(R.id.lblDescr);
@@ -141,8 +135,8 @@ public class perfilFragment extends Fragment implements OnClickListener{
             lblNumSeguidores.setText(oUsuario.getMesiguenN().toString());
             lblNumPublicaciones.setText(oUsuario.getPublicacionesN().toString());
 
-            imgAvatar.setImageUrl(ROOT_URL+"/static-img/" + oUsuario.getAvatar(), imageLoader);
-            imgWeb.setImageUrl("http://www.google.com/s2/favicons?domain="+oUsuario.getWeb(), imageLoader);
+            imgAvatar.setImageURI(Uri.parse(ROOT_URL+"/static-img/" + oUsuario.getAvatar()));
+            imgWeb.setImageURI(Uri.parse("http://www.google.com/s2/favicons?domain="+oUsuario.getWeb()));
 
             lblPerfilSeguidor.setVisibility((oUsuario.getId().toString()!=oUsuarioSession.getId() && oUsuario.getIs_following_me() ? View.VISIBLE: View.GONE));
             btnPerfilAdd.setVisibility((!oUsuarioSession.getId().equalsIgnoreCase(oUsuario.getId().toString()) ? View.VISIBLE: View.GONE));

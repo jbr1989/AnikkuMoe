@@ -3,26 +3,23 @@ package es.jbr1989.anikkumoe.ListAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.object.clsUser;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
-import es.jbr1989.anikkumoe.other.clsDate;
 
 /**
  * Created by jbr1989 on 29/09/2016.
@@ -32,24 +29,19 @@ public class GridViewAdapter extends BaseAdapter {
 
     //region VARIABLES
 
-    private static final String ROOT_URL = AppController.getInstance().getUrl();
+    private static final String IMG_URL = AppController.getInstance().getImg();
     public static final String SP_NAME = "Usuarios";
 
     private Context context;
     private ArrayList<clsUser> oUsers;
-    private Map<String, String> MSG_NOTIFICACION;
 
-    private clsDate oDate = new clsDate();
     private Integer nuevos;
-
-    private clsUsuarioSession oUsuarioSession;
 
     private SharedPreferences MensajesConfig;
     private SharedPreferences.Editor MensajesConfigEditor;
 
     private Activity activity;
     private LayoutInflater inflater;
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     //endregion
 
@@ -57,8 +49,6 @@ public class GridViewAdapter extends BaseAdapter {
 
     public GridViewAdapter(Context context){
         this.context = context;
-
-        oUsuarioSession = new clsUsuarioSession(context);
 
         oUsers=new ArrayList<clsUser>();
         nuevos=0;
@@ -95,14 +85,14 @@ public class GridViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         //LinearLayout lytMensaje;
-        NetworkImageView imgGridViewItem;
+        SimpleDraweeView imgGridViewItem;
         TextView txtGridViewItem;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.gridview_item, null);
 
             //lytMensaje = (LinearLayout) convertView.findViewById(R.id.lytMensaje);
-            imgGridViewItem = (NetworkImageView) convertView.findViewById(R.id.imgGridViewItem);
+            imgGridViewItem = (SimpleDraweeView) convertView.findViewById(R.id.imgGridViewItem);
             txtGridViewItem = (TextView) convertView.findViewById(R.id.txtGridViewItem);
 
             convertView.setTag(new GridViewAdapter.ViewHolder(imgGridViewItem,txtGridViewItem));
@@ -118,7 +108,7 @@ public class GridViewAdapter extends BaseAdapter {
         //if (oNotificacion.nuevo()==Boolean.TRUE) lytNotificacion.setBackgroundColor(context.getResources().getColor(R.color.notification_new));
         //else lytNotificacion.setBackgroundColor(Color.TRANSPARENT);
 
-        imgGridViewItem.setImageUrl(ROOT_URL+"static-img/"+ oUser.getAvatar(), imageLoader);
+        imgGridViewItem.setImageURI(Uri.parse(IMG_URL+ oUser.getAvatar()));
         txtGridViewItem.setText(oUser.getNombre());
         return convertView;
     }
@@ -152,10 +142,10 @@ public class GridViewAdapter extends BaseAdapter {
     // Guardar item cargado
     private static class ViewHolder {
         //public final LinearLayout lytMensaje;
-        public final NetworkImageView imgGridViewItem;
+        public final SimpleDraweeView imgGridViewItem;
         public final TextView txtGridViewItem;
 
-        public ViewHolder(NetworkImageView imgGridViewItem,  TextView txtGridViewItem) {
+        public ViewHolder(SimpleDraweeView imgGridViewItem,  TextView txtGridViewItem) {
             this.imgGridViewItem=imgGridViewItem;
             this.txtGridViewItem=txtGridViewItem;
         }

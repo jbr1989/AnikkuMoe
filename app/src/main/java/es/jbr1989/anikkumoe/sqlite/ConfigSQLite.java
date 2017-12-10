@@ -19,7 +19,7 @@ public class ConfigSQLite extends SQLiteHelper {
     }
 
     public Boolean setConfig(String name, String descr){
-        if (exists(name)) return setModConfig(name,descr);
+        if (exists(name)) return setModConfig(name, descr);
         else return setNewConfig(name,descr);
     }
 
@@ -128,22 +128,14 @@ public class ConfigSQLite extends SQLiteHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int versionAnterior, int versionNueva) {
-        //NOTA: Por simplicidad del ejemplo aquí utilizamos directamente la opción de
-        //      eliminar la tabla anterior y crearla de nuevo vacía con el nuevo formato.
-        //      Sin embargo lo normal será que haya que migrar datos de la tabla antigua
-        //      a la nueva, por lo que este método debería ser más elaborado.
 
-        emptyTable();
+        if (versionAnterior<=1) {
+            db.execSQL("INSERT INTO config (name,value) VALUES (\"user\",\"\")");
+            db.execSQL("INSERT INTO config (name,value) VALUES (\"password\",\"\")");
+        }
+
     }
 
-    public void emptyTable(){
-        if (db==null || !db.isOpen()) db = this.getWritableDatabase();
 
-        //Se elimina la versión anterior de la tabla
-        db.execSQL("DROP TABLE IF EXISTS "+table);
-
-        //Se crea la nueva versión de la tabla
-        db.execSQL(sqlCreateConfig);
-    }
 
 }

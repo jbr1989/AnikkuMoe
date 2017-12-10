@@ -28,7 +28,7 @@
 
     <!-- BOTONES PUBLICACIONES -->
     <color name="btn_rep">#A4FFA9</color>
-    <color name="btn_like">#96B0FF</color>
+    <color name="btn_like">#96b0ff</color>
     <color name="btn_dislike">#FFA5A5</color>
 
     <!-- BOTONES PERFIL -->

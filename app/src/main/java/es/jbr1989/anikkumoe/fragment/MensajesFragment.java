@@ -21,8 +21,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
@@ -48,7 +46,6 @@ public class MensajesFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
     private static final String IMG_URL = AppController.getInstance().getImg();
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     private SuperRecyclerView mRecycler;
     private MensajesListAdapter mAdapter;
@@ -170,9 +167,7 @@ public class MensajesFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onResponse(JSONObject response) {
 
                 mAdapter.setDatos(response);
-
-                String url=ROOT_URL+"static-img/"+mAdapter.getAvatar();
-                mAvatar.setImageURI(Uri.parse(url));
+                mAvatar.setImageURI(Uri.parse(IMG_URL+mAdapter.getAvatar()));
 
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);

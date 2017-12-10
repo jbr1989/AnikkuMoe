@@ -7,12 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
@@ -20,7 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
@@ -31,6 +29,7 @@ import es.jbr1989.anikkumoe.object.clsMensaje;
 import es.jbr1989.anikkumoe.object.clsUser;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.clsDate;
+import es.jbr1989.anikkumoe.other.clsTexto;
 
 /**
  * Created by jbr1989 on 26/05/2016.
@@ -39,26 +38,19 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
 
     //region VARIABLES
 
-    private static final String ROOT_URL = AppController.getInstance().getUrl();
     private static final String IMG_URL = AppController.getInstance().getImg();
     public static final String SP_NAME = "Mensajes";
 
     private Context context;
-    private Long ultima_fecha;
-
     private clsUser oUser;
     private ArrayList<clsMensaje> oMensajes;
-    private Map<String, String> MSG_NOTIFICACION;
 
     private clsDate oDate = new clsDate();
-    private Integer nuevos;
 
     private clsUsuarioSession oUsuarioSession;
 
     private SharedPreferences MensajesConfig;
     private SharedPreferences.Editor MensajesConfigEditor;
-
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public RequestQueue requestQueue;
     public CustomRequest request;
@@ -76,7 +68,6 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
         oUsuarioSession = new clsUsuarioSession(context);
 
         oMensajes=new ArrayList<clsMensaje>();
-        nuevos=0;
 
         MensajesConfig = context.getSharedPreferences(SP_NAME, 0);
         MensajesConfigEditor = MensajesConfig.edit();
@@ -89,7 +80,6 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
         oUsuarioSession = new clsUsuarioSession(context);
 
         this.oMensajes=oMensajes;
-        nuevos=0;
 
         MensajesConfig = context.getSharedPreferences(SP_NAME, 0);
         MensajesConfigEditor = MensajesConfig.edit();
@@ -110,8 +100,15 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
 
         holder.imgAvatar.setImageURI(Uri.parse(IMG_URL + (oMensaje.getCreador().equals(oUser.getId()) ? oUser.getAvatar() : oUsuarioSession.getAvatar())));
         holder.txtUsuario.setText((oMensaje.getCreador().equals(oUser.getId()) ? oUser.getNombre() : oUsuarioSession.getNombre()));
-        holder.txtDescr.setText(oMensaje.getTextoHTML());
         holder.txtFecha.setText((oMensaje.getCreador().equals(oUser.getId()) ? "Recibido " : "Enviado ")+oDate.DateDiff(oMensaje.getFecha(), System.currentTimeMillis()));
+
+        String html = "<!DOCTYPE html><html><body style=\"margin:0;\">"+ clsTexto.styles()+oMensaje.getTextoHTML()+"</body></html>";
+
+        holder.webBody.setWebViewClient(home.webClient);
+        //holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        holder.webBody.getSettings().setJavaScriptEnabled(true);
+        //holder.webBody.getSettings().setLoadWithOverviewMode(true);
+        holder.webBody.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
     }
 
@@ -157,7 +154,6 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
 
     public void clearMensajes(){
         oMensajes=new ArrayList<clsMensaje>();
-        nuevos=0;
     }
 
 
@@ -165,7 +161,8 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final LinearLayout lytMensaje;
         public final SimpleDraweeView imgAvatar;
-        public final TextView txtUsuario, txtDescr, txtFecha;
+        public final TextView txtUsuario, txtFecha;
+        public final WebView webBody;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -173,7 +170,7 @@ public class MensajesListAdapter extends RecyclerView.Adapter<MensajesListAdapte
             this.lytMensaje=(LinearLayout) itemView.findViewById(R.id.lytMensaje);
             this.imgAvatar= (SimpleDraweeView) itemView.findViewById(R.id.imgAvatar);
             this.txtUsuario=(TextView) itemView.findViewById(R.id.txtUsuario);
-            this.txtDescr=(TextView) itemView.findViewById(R.id.txtDescr);
+            this.webBody=(WebView) itemView.findViewById(R.id.webBody);
             this.txtFecha=(TextView) itemView.findViewById(R.id.txtFecha);
         }
     }

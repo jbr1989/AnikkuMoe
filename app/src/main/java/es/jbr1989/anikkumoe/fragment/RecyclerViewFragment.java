@@ -22,7 +22,7 @@ import com.android.volley.VolleyError;
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.PublicacionListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
-import es.jbr1989.anikkumoe.http.CustomRequest;
+import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
 
 
@@ -157,9 +157,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
@@ -176,7 +176,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/user/activity?page=0");
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     public void resumen_nuevas_publicaciones(){
@@ -187,9 +187,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }
@@ -200,7 +200,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/user/activity?page="+mAdapter.get_UltimaFecha().toString());
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     //endregion
@@ -217,9 +217,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
@@ -232,7 +232,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/user/browse?page=0");
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     public void explorar_nuevas_publicaciones(){
@@ -243,9 +243,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }
@@ -256,7 +256,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/user/browse?page="+mAdapter.get_UltimaFecha().toString());
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     //endregion
@@ -273,9 +273,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
@@ -299,9 +299,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }
@@ -329,9 +329,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
@@ -355,9 +355,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }
@@ -385,9 +385,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
@@ -415,9 +415,9 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }

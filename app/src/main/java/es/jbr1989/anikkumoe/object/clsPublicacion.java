@@ -6,6 +6,7 @@ import android.text.Spanned;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import es.jbr1989.anikkumoe.other.clsDate;
 import es.jbr1989.anikkumoe.other.clsTexto;
 
 /**
@@ -48,11 +49,14 @@ public class clsPublicacion {
         }
         catch (JSONException ex){ex.printStackTrace();}
 
-        try {
-            JSONObject user_original=jPub.getJSONObject("user_original");
-            this.user_original= new clsUser(user_original);
+        if (!type.equals("ORI")) {
+            try {
+                JSONObject user_original = jPub.getJSONObject("user_original");
+                this.user_original = new clsUser(user_original);
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
         }
-        catch (JSONException ex){ex.printStackTrace();}
 
         try {
             JSONObject feed=jPub.getJSONObject("feed");
@@ -76,21 +80,63 @@ public class clsPublicacion {
             try {this.feed.fecha= feed.getLong("fecha");}
             catch (JSONException ex){ex.printStackTrace();}
 
-            try {
-                JSONObject anime=feed.getJSONObject("anime");
-                this.feed.anime= new clsPublicacionFeedAnime();
+            if (feed.getString("anime")!="null") {
 
-                try {this.feed.anime.id=anime.getInt("id");}
-                catch (JSONException ex){ex.printStackTrace();}
+                try {
+                    JSONObject anime = feed.getJSONObject("anime");
+                    this.feed.anime = new clsPublicacionFeedAnime();
 
-                try {this.feed.anime.titulo= anime.getString("titulo");}
-                catch (JSONException ex){ex.printStackTrace();}
+                    if (anime != null) {
 
-                try {this.feed.anime.portada= anime.getString("portada");}
-                catch (JSONException ex){ex.printStackTrace();}
+                        try {
+                            this.feed.anime.id = anime.getInt("id");
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
+                        }
 
+                        try {
+                            this.feed.anime.titulo = anime.getString("titulo");
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
+                        }
+
+                        try {
+                            this.feed.anime.portada = anime.getString("portada");
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
             }
+
+            try {this.feed.activity_type= feed.getString("activity_type");}
             catch (JSONException ex){ex.printStackTrace();}
+
+            if (feed.getString("activity_data")!="null"){
+
+                try {
+                    JSONObject activity_data = feed.getJSONObject("activity_data");
+                    this.feed.activity_data = new clsPublicacionFeedActivity();
+
+                        try {
+                            this.feed.activity_data.id = activity_data.getInt("id");
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
+                        }
+
+                        try {
+                            this.feed.activity_data.name = activity_data.getString("name");
+                        } catch (JSONException ex) {
+                            ex.printStackTrace();
+                        }
+
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            }
 
             try {
                 JSONObject stats=feed.getJSONObject("stats");
@@ -216,6 +262,9 @@ public class clsPublicacion {
         private String video="";
         private Long fecha;
 
+        private String activity_type;
+        public clsPublicacionFeedActivity activity_data;
+
         public clsPublicacionFeedAnime anime;
         public clsPublicacionFeedStats stats;
 
@@ -261,6 +310,13 @@ public class clsPublicacion {
             return Html.fromHtml(clsTexto.bbcode(texto));
         }
 
+        public String getActivity_type() {
+            return activity_type;
+        }
+
+        public clsPublicacionFeedActivity getActivity_data() {
+            return activity_data;
+        }
     }
 
     public class clsPublicacionFeedAnime{
@@ -335,6 +391,28 @@ public class clsPublicacion {
 
         public Integer getAnger() {
             return anger;
+        }
+    }
+
+    public class clsPublicacionFeedActivity{
+        private Integer id;
+        private String name;
+
+        public Integer getId() {
+            return id;
+        }
+        public String getName() {
+            return name;
+        }
+
+        public String getHtml(Long ldate) {
+            clsDate oDate = new clsDate();
+            String html = "";
+            html+="<p style=\"font-size: 20px\">Tiene una Waifu: <a href=\"http://www.anilista.com/personaje/"+id+"/"+name+"\" target=\"_blank\" style=\"white-space=nowrap;\"><b>"+name+"</b></a></p>";
+            html+="<p style=\"margin: 10px\">"+oDate.getDate(ldate)+"</p>";
+            html+="<img src=\"http://www.anilista.com/img/dir/personaje/regular/"+id+".jpg\">";
+
+            return html;
         }
     }
 

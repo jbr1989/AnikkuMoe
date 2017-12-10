@@ -12,8 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
@@ -27,9 +25,7 @@ import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
-import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsNotificacion;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.clsDate;
 
 /**
@@ -53,15 +49,9 @@ public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionLi
     private Integer nuevos;
 
     private SharedPreferences NotificacionesConfig;
-    private SharedPreferences.Editor NotificacionesConfigEditor;
-
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-
-    private clsUsuarioSession oUsuarioSession;
 
     public RequestQueue requestQueue;
     public CustomRequest request;
-    public CustomRequest2 request2;
 
     public homeActivity home;
 
@@ -76,7 +66,6 @@ public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionLi
         nuevos=0;
 
         NotificacionesConfig = context.getSharedPreferences(SP_NAME, 0);
-        NotificacionesConfigEditor = NotificacionesConfig.edit();
 
         cargar_mensajes(context);
     }
@@ -89,7 +78,6 @@ public class NotificacionListAdapter extends RecyclerView.Adapter<NotificacionLi
         nuevos=0;
 
         NotificacionesConfig = context.getSharedPreferences(SP_NAME, 0);
-        NotificacionesConfigEditor = NotificacionesConfig.edit();
 
         cargar_mensajes(context);
     }

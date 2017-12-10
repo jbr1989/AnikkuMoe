@@ -5,10 +5,7 @@ import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-
-import es.jbr1989.anikkumoe.http.LruBitmapCache;
 
 /**
  * Created by jbr1989 on 06/12/2015.
@@ -18,12 +15,10 @@ public class AppController extends Application {
     public static final String TAG = AppController.class.getSimpleName();
 
     private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
 
     private String _url= "http://www.anikku.moe/";
     private String _api_old = "http://www.anikku.moe/coreold/";
     private String _api ="http://api.anikku.moe/";
-    private String _img_url;
 
     private static AppController mInstance;
 
@@ -66,15 +61,6 @@ public class AppController extends Application {
     }
 
     //end region
-
-
-    public ImageLoader getImageLoader() {
-        getRequestQueue();
-        if (mImageLoader == null) {
-            mImageLoader = new ImageLoader(this.mRequestQueue, new LruBitmapCache());
-        }
-        return this.mImageLoader;
-    }
 
     public String getUrl(){return this._url;}
     public String getApiOld(){return this._api_old;}

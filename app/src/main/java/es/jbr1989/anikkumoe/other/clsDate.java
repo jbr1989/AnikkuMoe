@@ -1,5 +1,8 @@
 package es.jbr1989.anikkumoe.other;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by jbr1989 on 06/12/2015.
  */
@@ -37,6 +40,12 @@ public class clsDate {
 
         return "Ahora";
 
+    }
+
+    public String getDate(Long ldate){
+        Date date=new Date(ldate);
+        SimpleDateFormat df2 = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy");
+        return df2.format(date);
     }
 
 }

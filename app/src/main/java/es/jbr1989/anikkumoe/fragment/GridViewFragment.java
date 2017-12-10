@@ -18,7 +18,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.malinskiy.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
 
@@ -44,7 +43,6 @@ import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 public class GridViewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SwipeDismissRecyclerViewTouchListener.DismissCallbacks {
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     private static final String ARG_TAB_NAME = "tab_name";
     @Bind(R.id.grid) GridView mGridView;

@@ -48,7 +48,6 @@ import java.util.Map;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.http.CustomRequest;
-import es.jbr1989.anikkumoe.http.CustomRequestImg;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.clsImagen;
 
@@ -75,7 +74,6 @@ public class NuevaPublicacionActivity extends AppCompatActivity
 
     public RequestQueue requestQueue;
     public CustomRequest request;
-    public CustomRequestImg requestImg;
 
     public File file;
 
@@ -411,57 +409,7 @@ public class NuevaPublicacionActivity extends AppCompatActivity
         requestQueue.add(stringRequest);
     }
 
-    private void addPublicacion3(final String publicacionText){
 
-        btnAddPublicacion.setEnabled(false);
-
-        Integer tipo =1;
-        //loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
-        String video = lblNewVideo.getText().toString();
-
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Content-Disposition", "form-data");
-        headers.put("Authorization", "Bearer " + oUsuarioSession.getToken());
-
-        Map<String, String> params = new HashMap<String, String>();
-
-        if (!video.isEmpty()){ tipo=3; params.put("video", video);}
-
-        params.put("texto", publicacionText);
-        params.put("spoiler", String.valueOf(chkSpoiler.isChecked()));
-        params.put("tipo", tipo.toString());
-        //params.put("file", getStringImage(magicalCamera.getMyPhoto()));
-        params.put("tags", "");
-        params.put("usus", "");
-
-        //params.put("id_serie", "1");
-
-        requestImg = new CustomRequestImg(requestQueue, headers, params, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String s) {
-                //try {
-                //loading.dismiss();
-                //if (response.getBoolean("success")) Toast.makeText(getBaseContext(), "PUBLICADO", Toast.LENGTH_SHORT).show();
-                Toast.makeText(getBaseContext(), s , Toast.LENGTH_LONG).show();
-                finish();
-                //}catch (JSONException ex){ex.printStackTrace();}
-
-                btnAddPublicacion.setEnabled(true);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //loading.dismiss();
-                Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                btnAddPublicacion.setEnabled(true);
-            }
-        }, file, ROOT_URL+"api/user/activity");
-
-        requestQueue.add(requestImg);
-
-
-    }
 
     public String getStringImage(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

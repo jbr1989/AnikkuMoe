@@ -9,8 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
@@ -18,13 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.object.clsNakama;
-import es.jbr1989.anikkumoe.other.clsDate;
 
 /**
  * Created by jbr1989 on 09/12/2015.
@@ -33,11 +29,9 @@ public class NakamaListAdapter extends BaseAdapter {
 
     //region VARIABLES
 
-    private static final String ROOT_URL = AppController.getInstance().getUrl();
     private static final String IMG_URL = AppController.getInstance().getImg();
 
     public static final String SP_NAME = "Nakamas";
-    public Integer pos;
 
     private Context context;
     private Long fecha;
@@ -45,12 +39,6 @@ public class NakamaListAdapter extends BaseAdapter {
 
     private ArrayList<clsNakama> oNakamas;
     private ArrayList<Integer> oNakamasOnline;
-    private Map<String, String> MSG_NOTIFICACION;
-
-    private clsDate oDate = new clsDate();
-    private Integer nuevos;
-
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public homeActivity home;
 
@@ -64,7 +52,6 @@ public class NakamaListAdapter extends BaseAdapter {
 
         oNakamas=new ArrayList<clsNakama>();
         oNakamasOnline=new ArrayList<Integer>();
-        nuevos=0;
         ultima_fecha=null;
 
     }
@@ -156,7 +143,6 @@ public class NakamaListAdapter extends BaseAdapter {
 
     public void clearNakamas(){
         oNakamas.clear();
-        nuevos=0;
     }
 
     public boolean setNakamasOn(JSONObject response){
@@ -190,7 +176,6 @@ public class NakamaListAdapter extends BaseAdapter {
 
     public void clearNakamasOn(){
         oNakamasOnline.clear();
-        nuevos=0;
     }
 
     public boolean isOnline(Integer id){

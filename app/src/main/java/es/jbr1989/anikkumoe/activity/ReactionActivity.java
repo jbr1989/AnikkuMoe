@@ -44,7 +44,6 @@ public class ReactionActivity extends ListActivity {
     private TypedArray imgs;
     private List<Country> countryList;
     private Integer id_publicacion;
-    private String usuario;
 
     private clsUsuarioSession oUsuarioSession;
 
@@ -84,7 +83,6 @@ public class ReactionActivity extends ListActivity {
         Bundle extras = i.getExtras();
         if(extras != null) {
             id_publicacion = extras.getInt("id_publicacion");
-            usuario = extras.getString("usuario");
         }
     }
 

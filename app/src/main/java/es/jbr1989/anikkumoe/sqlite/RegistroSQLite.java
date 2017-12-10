@@ -2,12 +2,10 @@ package es.jbr1989.anikkumoe.sqlite;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -81,17 +79,6 @@ public class RegistroSQLite extends SQLiteHelper {
         //      Sin embargo lo normal será que haya que migrar datos de la tabla antigua
         //      a la nueva, por lo que este método debería ser más elaborado.
 
-        emptyTable();
-    }
-
-    public void emptyTable(){
-        if (db==null || !db.isOpen()) db = this.getWritableDatabase();
-
-        //Se elimina la versión anterior de la tabla
-        db.execSQL("DROP TABLE IF EXISTS "+table);
-
-        //Se crea la nueva versión de la tabla
-        db.execSQL(sqlCreateRegistro);
     }
 
 }

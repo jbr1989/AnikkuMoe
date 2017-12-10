@@ -1,7 +1,6 @@
 package es.jbr1989.anikkumoe.ListAdapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,21 +10,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
-import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsBuzon;
 import es.jbr1989.anikkumoe.other.clsDate;
 
@@ -41,22 +36,14 @@ public class BuzonListAdapter extends RecyclerView.Adapter<BuzonListAdapter.View
     public static final String SP_NAME = "Mensajes";
 
     private Context context;
-    private Long ultima_fecha;
 
     private ArrayList<clsBuzon> oMensajes;
-    private Map<String, String> MSG_NOTIFICACION;
 
     private clsDate oDate = new clsDate();
     private Integer nuevos;
 
-    private SharedPreferences MensajesConfig;
-    private SharedPreferences.Editor MensajesConfigEditor;
-
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-
     public RequestQueue requestQueue;
     public CustomRequest request;
-    public CustomRequest2 request2;
 
     public homeActivity home;
 
@@ -69,10 +56,6 @@ public class BuzonListAdapter extends RecyclerView.Adapter<BuzonListAdapter.View
 
         this.oMensajes=new ArrayList<clsBuzon>();
         nuevos=0;
-
-        MensajesConfig = context.getSharedPreferences(SP_NAME, 0);
-        MensajesConfigEditor = MensajesConfig.edit();
-
     }
 
     public BuzonListAdapter(Context context, ArrayList<clsBuzon> oNotificaciones) {
@@ -81,9 +64,6 @@ public class BuzonListAdapter extends RecyclerView.Adapter<BuzonListAdapter.View
 
         this.oMensajes=oNotificaciones;
         nuevos=0;
-
-        MensajesConfig = context.getSharedPreferences(SP_NAME, 0);
-        MensajesConfigEditor = MensajesConfig.edit();
     }
 
     //endregion

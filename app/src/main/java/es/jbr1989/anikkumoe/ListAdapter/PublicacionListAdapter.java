@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,8 +24,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -50,6 +47,7 @@ import es.jbr1989.anikkumoe.object.clsPublicacion;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.ExpandedListView;
 import es.jbr1989.anikkumoe.other.clsDate;
+import es.jbr1989.anikkumoe.other.clsTexto;
 
 /**
  * Created by jbr1989 on 09/12/2015.
@@ -58,10 +56,8 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     //region VARIABLES
     private static final String ROOT_URL = AppController.getInstance().getUrl();
-    private static final String API_URL = AppController.getInstance().getApi();
     private static final String IMG_URL = AppController.getInstance().getImg();
     public static final String SP_NAME = "Publicaciones";
-    public Integer pos;
 
     private Context context;
     private Long ultima_fecha;
@@ -69,15 +65,8 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
     private ComentariosListAdapter oListadoComentarios;
 
     private ArrayList<clsPublicacion> oPublicaciones;
-    private Map<String, String> MSG_NOTIFICACION;
 
     private clsDate oDate = new clsDate();
-    private Integer nuevos;
-
-    private SharedPreferences PublicacionesConfig;
-    private SharedPreferences.Editor PublicacionesConfigEditor;
-
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     private clsUsuarioSession oUsuarioSession;
 
@@ -99,10 +88,6 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         requestQueue = Volley.newRequestQueue(context);
 
         oPublicaciones=new ArrayList<clsPublicacion>();
-        nuevos=0;
-
-        PublicacionesConfig = context.getSharedPreferences(SP_NAME, 0);
-        PublicacionesConfigEditor = PublicacionesConfig.edit();
     }
 
     public PublicacionListAdapter(Context context, ArrayList<clsPublicacion> oPublicaciones) {
@@ -113,10 +98,6 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         requestQueue = Volley.newRequestQueue(context);
 
         this.oPublicaciones = oPublicaciones;
-        nuevos=0;
-
-        PublicacionesConfig = context.getSharedPreferences(SP_NAME, 0);
-        PublicacionesConfigEditor = PublicacionesConfig.edit();
 
         oListadoComentarios= new ComentariosListAdapter(context);
     }
@@ -200,17 +181,17 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
         if(pos>=0) oPublicaciones.set(pos,oPublicacion);
     }
 
-    public void setPublicaciones(JSONObject response){
+    public void setPublicaciones(JSONArray response){
 
         clsPublicacion oPublicacion;
         int startIndex = oPublicaciones.size();
 
         try {
-            JSONArray jPublicaciones=response.getJSONArray("data");
+            //JSONArray jPublicaciones=response.getJSONArray("data");
 
-            int num = jPublicaciones.length();
+            int num = response.length();
             for (int i=0; i<num;i++){
-                oPublicacion= new clsPublicacion(jPublicaciones.getJSONObject(i));
+                oPublicacion= new clsPublicacion(response.getJSONObject(i));
                 ultima_fecha=oPublicacion.getFecha();
                 oPublicaciones.add(oPublicacion);
                 //if(oPublicacion.nuevo()) nuevos+=1;
@@ -224,7 +205,6 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     public void clearPublicaciones(){
         oPublicaciones.clear();
-        nuevos=0;
     }
 
 
@@ -552,14 +532,22 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             holder.lytSpoiler.setVisibility(View.GONE);
             holder.lytBody.setVisibility(View.VISIBLE);
 
-            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><style>img{max-width:100%;margin:0 -5px;}</style>";
+            String html = "<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\">"+ clsTexto.styles();
 
-            html+="<div style=\"text-align:justify;margin: 10px 5px;padding: 0;\">"+oPublicacion.feed.getTextoHtml()+"</div>";
+            if (oPublicacion.feed.getActivity_type().equalsIgnoreCase("null")) {
 
-            if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) html+= "<a href=\"img:" + ROOT_URL + "static-img/" + oPublicacion.feed.getImagen() + "\"><img src=\""+ROOT_URL+"static-img/" + oPublicacion.feed.getImagen()+"\" style=\"max-width:100%;\"></a>";
-            else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")) html+= "<a href=\""+oPublicacion.feed.getVideo()+"\"><iframe src=\"http://www.youtube.com/embed/"+oPublicacion.feed.getIdVideo()+"\" type=\"text/html\" width=\"100%\"></iframe></a>";
+                html += "<div style=\"text-align:justify;margin: 10px 5px;padding: 0;\">" + oPublicacion.feed.getTextoHtml() + "</div>";
 
-            html+="</body></html>";
+                if (!oPublicacion.feed.getImagen().equalsIgnoreCase(""))
+                    html += "<a href=\"img:" + ROOT_URL + "static-img/" + oPublicacion.feed.getImagen() + "\"><img src=\"" + ROOT_URL + "static-img/" + oPublicacion.feed.getImagen() + "\" style=\"max-width:100%;\"></a>";
+                else if (!oPublicacion.feed.getVideo().equalsIgnoreCase(""))
+                    html += "<a href=\"" + oPublicacion.feed.getVideo() + "\"><iframe src=\"http://www.youtube.com/embed/" + oPublicacion.feed.getIdVideo() + "\" type=\"text/html\" width=\"100%\"></iframe></a>";
+
+            }else if(oPublicacion.feed.getActivity_type().equalsIgnoreCase("waifu")){
+                html += "<div style=\"padding: 10px; text-align: center\">" + oPublicacion.feed.activity_data.getHtml(oPublicacion.getFecha()) + "</div>";
+            }
+
+            html += "</body></html>";
 
             holder.webBody.setWebViewClient(home.webClient);
             //holder.webBody.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);

@@ -11,8 +11,6 @@ import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
@@ -20,14 +18,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.object.clsComentario;
-import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.clsDate;
+import es.jbr1989.anikkumoe.other.clsTexto;
 
 /**
  * Created by jbr1989 on 16/05/2016.
@@ -41,23 +38,15 @@ public class ComentariosListAdapter extends BaseAdapter {
     private static final String IMG_URL = AppController.getInstance().getImg();
 
     public static final String SP_NAME = "Comentarios";
-    public Integer pos;
 
     private Context context;
-    private Long fecha;
-    private Long ultima_fecha;
 
-    private clsUsuarioSession oUsuarioSession;
     private ArrayList<clsComentario> oComentarios;
-    private Map<String, String> MSG_NOTIFICACION;
 
     private clsDate oDate = new clsDate();
-    private Integer nuevos;
 
     private SharedPreferences ComentariosConfig;
     private SharedPreferences.Editor ComentariosConfigEditor;
-
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public homeActivity home;
 
@@ -69,11 +58,7 @@ public class ComentariosListAdapter extends BaseAdapter {
         this.context = context;
         this.home = (homeActivity) context;
 
-        oUsuarioSession = new clsUsuarioSession(context);
-
         oComentarios=new ArrayList<clsComentario>();
-        nuevos=0;
-        ultima_fecha=null;
 
         ComentariosConfig = context.getSharedPreferences(SP_NAME, 0);
         ComentariosConfigEditor = ComentariosConfig.edit();
@@ -138,7 +123,7 @@ public class ComentariosListAdapter extends BaseAdapter {
 
     public void mostrar_body(final ComentariosListAdapter.ViewHolder holder, clsComentario oComentario){
 
-            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\"><style>img{max-width:100%;}</style>";
+            String html="<!DOCTYPE html><html><body style=\"text-align:center;margin:0;\">"+ clsTexto.styles();
 
             html+="<div style=\"text-align:left;border-left: 2px solid #026acb;margin: 10px 0;padding: 0 10px 0 5px;\">"+oComentario.getHTMLTexto()+"</div>";
 
@@ -186,7 +171,6 @@ public class ComentariosListAdapter extends BaseAdapter {
 
     public void clearComentarios(){
         oComentarios.clear();
-        nuevos=0;
     }
 
     // Guardar item cargado

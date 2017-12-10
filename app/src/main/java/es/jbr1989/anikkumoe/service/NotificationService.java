@@ -29,7 +29,6 @@ import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsChat;
-import es.jbr1989.anikkumoe.object.clsMensaje;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.sqlite.ConfigSQLite;
 import es.jbr1989.anikkumoe.sqlite.RegistroSQLite;

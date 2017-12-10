@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -43,7 +42,6 @@ public class SerieFragment extends Fragment  {
     private static final String API_OLD_URL= AppController.getInstance().getApiOld();
 
     private homeActivity home;
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     @Bind(R.id.appbar) AppBarLayout mAppbar;
     @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout mCollapsingToolbar;

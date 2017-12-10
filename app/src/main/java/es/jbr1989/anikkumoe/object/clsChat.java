@@ -1,5 +1,7 @@
 package es.jbr1989.anikkumoe.object;
 
+import android.database.Cursor;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +25,6 @@ public class clsChat {
 
     //region CONSTRUCTOR
 
-
     public clsChat(JSONObject jPub){
 
         try {this.enviado13=jPub.getLong("enviado13");}
@@ -43,6 +44,27 @@ public class clsChat {
 
         try {this.avatar= jPub.getString("avatar");}
         catch (JSONException ex){ex.printStackTrace();}
+    }
+
+    public clsChat(Cursor c){
+
+        try {this.enviado13=c.getLong(c.getColumnIndex("enviado13"));}
+        catch (Exception ex){ex.printStackTrace();}
+
+        try {this.user_id=c.getString(c.getColumnIndex("user_id"));}
+        catch (Exception ex){ex.printStackTrace();}
+
+        try {this.usuario=c.getString(c.getColumnIndex("usuario"));}
+        catch (Exception ex){ex.printStackTrace();}
+
+        try {this.nombre=c.getString(c.getColumnIndex("nombre"));}
+        catch (Exception ex){ex.printStackTrace();}
+
+        try {this.mensaje=c.getString(c.getColumnIndex("mensaje")); this.mensaje_html=clsTexto.toHTML(this.mensaje);}
+        catch (Exception ex){ex.printStackTrace();}
+
+        try {this.avatar=c.getString(c.getColumnIndex("avatar"));}
+        catch (Exception ex){ex.printStackTrace();}
 
     }
 

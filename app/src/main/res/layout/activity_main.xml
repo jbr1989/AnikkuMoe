@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/lblUsuario"
-        android:textColor="#ffffff" />
+        android:textColor="@color/cardview_dark_background" />
 
     <EditText
         android:id="@+id/txtUser"
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/lblpassword"
-        android:textColor="#ffffff" />
+        android:textColor="@color/cardview_dark_background" />
 
     <EditText
         android:id="@+id/txtPassword"
@@ -44,6 +44,21 @@
         android:ems="10"
         android:inputType="textPassword"
         android:padding="5sp" />
+
+    <CheckBox
+        android:id="@+id/chkRecordarPassword"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="15dp"
+        android:text="Recordar" />
+
+    <CheckBox
+        android:id="@+id/chkLoginAutomatico"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Login automático"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/btnLogin"

@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import es.jbr1989.anikkumoe.activity.NuevaPublicacionActivity;
 import es.jbr1989.anikkumoe.activity.ReactionActivity;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
+import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
 
 /**
@@ -214,7 +216,11 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    if (!home.logout()) cargar_publicacion(id_publicacion);
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
         },ROOT_URL+"api/user/activity/"+id_publicacion.toString());
 
@@ -233,9 +239,9 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
@@ -244,7 +250,7 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
-                    home.logout();
+                    if (!home.logout()) resumen_publicaciones();
                 }else{
                     Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
                     resumen_publicaciones();
@@ -252,7 +258,7 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
             }
         },ROOT_URL+"api/user/activity?page=0");
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     public void resumen_nuevas_publicaciones(){
@@ -263,20 +269,25 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    if (!home.logout()) resumen_nuevas_publicaciones();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    resumen_nuevas_publicaciones();
+                }
             }
         },ROOT_URL+"api/user/activity?page="+mAdapter.get_UltimaFecha().toString());
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     //endregion
@@ -293,9 +304,9 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
@@ -303,12 +314,16 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-                cargar_publicaciones();
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    if (!home.logout()) explorar_publicaciones();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    explorar_publicaciones();
+                }
             }
         },ROOT_URL+"api/user/browse?page=0");
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     public void explorar_nuevas_publicaciones(){
@@ -319,20 +334,25 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    if (!home.logout()) explorar_nuevas_publicaciones();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    explorar_nuevas_publicaciones();
+                }
             }
         },ROOT_URL+"api/user/browse?page="+mAdapter.get_UltimaFecha().toString());
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     //endregion
@@ -349,9 +369,9 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
@@ -359,12 +379,16 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-                cargar_publicaciones();
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    if (!home.logout()) hashtag_publicaciones();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    hashtag_publicaciones();
+                }
             }
         },ROOT_URL+"api/user/hashtag/"+valor+"?page=0");
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     public void hashtag_nuevas_publicaciones(){
@@ -375,20 +399,25 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    if (!home.logout()) hashtag_nuevas_publicaciones();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    hashtag_nuevas_publicaciones();
+                }
             }
         },ROOT_URL+"api/user/hashtag/"+valor+"?page="+mAdapter.get_UltimaFecha().toString());
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     //endregion
@@ -405,9 +434,9 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
@@ -415,12 +444,16 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-                cargar_publicaciones();
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    if (!home.logout()) usuario_publicaciones();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    usuario_publicaciones();
+                }
             }
         },ROOT_URL+"api/user/browse?page=0");
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     public void usuario_nuevas_publicaciones(){
@@ -431,20 +464,25 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        home.request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
                 mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
+                    if (!home.logout()) usuario_nuevas_publicaciones();
+                }else{
+                    Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
+                    usuario_nuevas_publicaciones();
+                }
             }
         },ROOT_URL+"api/user/browse?page="+mAdapter.get_UltimaFecha().toString());
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     //endregion

@@ -3,17 +3,17 @@
 android:layout_width="match_parent"
 android:layout_height="wrap_content">
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/imgAvatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:contentDescription="Descripción del contenido de la imagen"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_alignBottom="@+id/content"
-            android:layout_margin="5sp" />
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/imgAvatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:contentDescription="Descripción del contenido de la imagen"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_alignBottom="@+id/content"
+        android:layout_margin="5sp" />
 
     <LinearLayout
         android:id="@+id/content"

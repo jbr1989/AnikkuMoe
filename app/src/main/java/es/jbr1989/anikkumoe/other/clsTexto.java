@@ -11,7 +11,7 @@ public class clsTexto {
     public clsTexto(){}
 
     public static String recortar(String text, int pos){
-        if (text.length()>pos) text=text.substring(0,pos)+"...";
+        if (text!=null && text.length()>pos) text=text.substring(0,pos)+"...";
         return text;
     }
 
@@ -45,6 +45,8 @@ public class clsTexto {
         bbMap.put("\\[url=(.+?)\\](.+?)\\[/url\\]", "<a href='$1'>$2</a>");
         bbMap.put("\\[youtube\\](.+?)\\[/youtube\\]", "<object width='640' height='380'><param name='movie' value='http://www.youtube.com/v/$1'></param><embed src='http://www.youtube.com/v/$1' type='application/x-shockwave-flash' width='640' height='380'></embed></object>");
         bbMap.put("\\[video\\](.+?)\\[/video\\]", "<video src='$1' />");
+        bbMap.put("\\[sp\\](.+?)\\[/sp\\]", "<span class=\"spoiler\" onclick=\"this.style.display='none';this.nextSibling.style.display='block';\"/>- Spoiler -</span><span class=\"spoiler_text\"  onclick=\"this.style.display='none';this.previousSibling.style.display='block';\">$1</span>");
+        bbMap.put("\\[sp=(.+?)\\](.+?)\\[/sp\\]", "<span class=\"spoiler\" onclick=\"this.style.display='none';this.nextSibling.style.display='block';\"/>$1</span><span class=\"spoiler_text\"  onclick=\"this.style.display='none';this.previousSibling.style.display='block';\">$2</span>");
 
         for (Map.Entry entry: bbMap.entrySet()) {
             html = html.replaceAll(entry.getKey().toString(), entry.getValue().toString());
@@ -71,8 +73,13 @@ public class clsTexto {
 
         html=html.replaceAll("<img\\s[^>]*?src\\s*=\\s*['\\\"]([^'\\\"]*?)['\\\"][^>]*?>", "<a href=\"img:$1\">$0</a>");
 
-
         return bbcode(html);
     }
+
+    public static String styles(){
+        String style="<style>img{max-width:100%;margin:0 -5px;} .spoiler,.spoiler_text{color: #6fce65;display:block;width:95%;background:#3b415a;padding:2%;border-radius:5%;} .spoiler_text{display:none;}</style>";
+        return style;
+    }
+
 
 }

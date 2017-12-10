@@ -70,7 +70,7 @@ public class clsChatPrivado {
 
 
     public String getHTMLMensaje() {
-        return oTexto.bbcode(mensaje);
+        return oTexto.toHTML(mensaje);
     }
 
     //endregion

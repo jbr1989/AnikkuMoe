@@ -12,10 +12,9 @@ import java.util.Date;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "RILlamadas";
+    private static final int DATABASE_VERSION = 2;
+    private static final String DATABASE_NAME = "AnikkuMoe";
 
-    Context contexto;
     SQLiteDatabase db = null;
 
     String sqlCreateRegistro= "CREATE TABLE registro(" +
@@ -31,6 +30,17 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             "value varchar(100) NOT NULL" +
             ");";
 
+    String sqlCreateChat = "CREATE TABLE chat(" +
+            "id_chat integer," +
+            "user_id integer," +
+            "usuario varchar(100),"+
+            "nombre varchar(100),"+
+            "avatar text,"+
+            "mensaje text, "+
+            "enviado13 long," +
+            "PRIMARY KEY (id_chat,user_id,enviado13)"+
+            ");";
+
     public SQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         if (db==null || !db.isOpen()) db = this.getWritableDatabase();
@@ -40,6 +50,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(sqlCreateRegistro);
         db.execSQL(sqlCreateConfig);
+        db.execSQL(sqlCreateChat);
 
         Long now = new Date().getTime();
 
@@ -47,6 +58,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO config (name,value) VALUES (\"notification_chat_global\",\"0\")");
         db.execSQL("INSERT INTO config (name,value) VALUES (\"notification_mensajes\",\"0\")");
         db.execSQL("INSERT INTO config (name,value) VALUES (\"notification_notificaciones\",\"0\")");
+
+        db.execSQL("INSERT INTO config (name,value) VALUES (\"user\",\"\")");
+        db.execSQL("INSERT INTO config (name,value) VALUES (\"password\",\"\")");
     }
 
     @Override

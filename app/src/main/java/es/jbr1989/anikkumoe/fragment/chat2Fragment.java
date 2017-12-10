@@ -2,14 +2,8 @@ package es.jbr1989.anikkumoe.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.preference.PreferenceManager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +16,11 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,22 +31,19 @@ import es.jbr1989.anikkumoe.ListAdapter.Chat2ListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
 import es.jbr1989.anikkumoe.http.CustomRequest;
-import es.jbr1989.anikkumoe.object.clsChat;
-import es.jbr1989.anikkumoe.sqlite.ConfigSQLite;
 
 /**
  * Created by jbr1989 on 09/12/2015.
  */
-public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class chat2Fragment extends Fragment {
 
     private static final String API_OLD_URL = AppController.getInstance().getApiOld();
 
     private SuperRecyclerView mRecycler;
     private Chat2ListAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
-    private Handler mHandler;
 
-    Long intervalo;
+    final Integer id_chat=1;
 
     private homeActivity home;
     @Bind(R.id.navigation) LinearLayout mNavigation;
@@ -90,21 +79,12 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mAvatar.setVisibility(View.GONE);
         mTitle.setText(R.string.FragmentChatGlobal);
 
-        SharedPreferences ChatsConfig = PreferenceManager.getDefaultSharedPreferences(rootView.getContext());
-        intervalo=Long.parseLong(ChatsConfig.getString("chat_intervalo", "10"));
-
-        ArrayList<clsChat> list = new ArrayList<>();
-        mAdapter = new Chat2ListAdapter(rootView.getContext(),list);
-
         mRecycler = (SuperRecyclerView) rootView.findViewById(R.id.list);
         mLayoutManager = new LinearLayoutManager(rootView.getContext());
 
+        mAdapter = new Chat2ListAdapter(rootView.getContext(), id_chat, mRecycler);
+
         mRecycler.setLayoutManager(mLayoutManager);
-
-        mHandler = new Handler(Looper.getMainLooper());
-
-        mRecycler.setRefreshListener(this);
-        mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,144 +103,22 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return rootView;
     }
 
-    @Override
-    public void onRefresh() {
-        //Toast.makeText(getActivity(), "Recargar", Toast.LENGTH_LONG).show();
-
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
-                cargar_chats();
-            }
-        }, 2000);
-    }
-
     //La vista de layout ha sido creada y ya está disponible
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        cargar_chats();
+        obtener_chats();
     }
 
-    private Runnable onEverySecond=new Runnable() {
-        public void run() {
-            // do real work here
-            //Toast.makeText(getActivity(), "Buscando nuevos mensajes...", Toast.LENGTH_SHORT).show();
 
-            if (mAdapter.get_UltimaFecha()!=null) cargar_nuevos_chats();
-            else cargar_chats();
-        }
-    };
 
     // region CHATS
 
-    public void cargar_chats(){
-
-        home.setRefreshActionButtonState(true);
-
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("mdl", "plugin");
-        params.put("acc", "chatbox");
-        params.put("id", "1");
-
-        home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                mAdapter.clearChats();
-                mAdapter.setChats(response);
-                mAdapter.notifyDataSetChanged();
-                mLayoutManager.scrollToPosition(mLayoutManager.findLastVisibleItemPosition());
-                mRecycler.setAdapter(mAdapter);
-
-                home.setRefreshActionButtonState(false);
-                actualizar_config();
-
-                if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                home.setRefreshActionButtonState(false);
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-
-                if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
-            }
-        }, API_OLD_URL);
-
-        home.requestQueue.add(home.request);
+    public void obtener_chats(){
+        mAdapter.clearChats();
+        mAdapter.getChats(1);
     }
 
-    public void cargar_nuevos_chats(){
-
-        home.setRefreshActionButtonState(true);
-
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("mdl", "plugin");
-        params.put("acc", "chatbox_messages_news");
-        params.put("fecha", mAdapter.get_UltimaFecha().toString());
-        params.put("id", "1");
-
-        home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                if (mAdapter.setNewChats(response)) {
-                    mAdapter.notifyDataSetChanged();
-                    mRecycler.setAdapter(mAdapter);
-                    actualizar_config();
-                }
-                if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
-                home.setRefreshActionButtonState(false);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                home.setRefreshActionButtonState(false);
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-                if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
-            }
-        }, API_OLD_URL);
-
-        home.requestQueue.add(home.request);
-    }
-
-    public void cargar_anteriores_chats(long tiempo){
-
-        home.setRefreshActionButtonState(true);
-
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("Content-Type", "application/x-www-form-urlencoded");
-        headers.put("Authorization", "Bearer " + home.oUsuarioSession.getToken());
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("mdl", "plugin");
-        params.put("acc", "chatbox_messages_news");
-        params.put("fecha", mAdapter.get_AnteriorFecha(tiempo).toString());
-        params.put("id", "1");
-
-        home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                if (mAdapter.setOlderChats(response)) { mAdapter.notifyDataSetChanged(); mRecycler.setAdapter(mAdapter);}
-                home.setRefreshActionButtonState(false);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                home.setRefreshActionButtonState(false);
-                Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }, API_OLD_URL);
-
-        home.requestQueue.add(home.request);
-    }
 
     public void sendMessage(String messageText){
 
@@ -280,7 +138,7 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
         home.request = new CustomRequest(home.requestQueue, Request.Method.POST, headers, params, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                if (mAdapter.setNewChats(response)) { mAdapter.notifyDataSetChanged(); mRecycler.setAdapter(mAdapter);}
+                mAdapter.setNewChats(id_chat, response);
                 clearMessage();
                 sendBtn.setEnabled(true);
             }
@@ -299,13 +157,6 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
         messageET.setText("");
     }
 
-
-    // SQL
-    public void actualizar_config(){
-        ConfigSQLite oConfigSQLite = new ConfigSQLite(home);
-        oConfigSQLite.setModConfig("time_chat_global",mAdapter.get_UltimaFecha().toString());
-        oConfigSQLite.setModConfig("notification_chat_global","0");
-    }
 
     // end region
 
@@ -344,14 +195,13 @@ public class chat2Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onResume() {
         super.onResume();
-
-        if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
+        mAdapter.startHandler();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mHandler.removeCallbacks(onEverySecond);
+        mAdapter.stopHandler();
     }
 
 

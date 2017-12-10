@@ -19,8 +19,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONException;
@@ -47,13 +45,11 @@ public class perfil3Fragment extends Fragment {
     private static final String IMG_URL = AppController.getInstance().getImg();
     private static final String LOGIN_URL = ROOT_URL+"core/";
 
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-
     private homeActivity home;
 
     //@Bind(R.id.navigation) LinearLayout mNavigation;
     @Bind(R.id.title) TextView mTitle;
-    @Bind(R.id.banner) NetworkImageView mBanner;
+    @Bind(R.id.banner) SimpleDraweeView mBanner;
     @Bind(R.id.avatar) SimpleDraweeView mAvatar;
     @Bind(R.id.btnPerfilAdd) FloatingActionButton mPerfilAdd;
 
@@ -131,7 +127,7 @@ public class perfil3Fragment extends Fragment {
 
         try {
             mTitle.setText(oUsuario.getNombre());
-            mBanner.setImageUrl(ROOT_URL+"static-img/"+oUsuario.getBanner(),imageLoader);
+            mBanner.setImageURI(Uri.parse(ROOT_URL+"static-img/"+oUsuario.getBanner()));
             mAvatar.setImageURI(Uri.parse(IMG_URL+oUsuario.getAvatar()));
 
             String id = home.oUsuarioSession.getId();

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -20,13 +21,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.flyco.systembar.SystemBarHelper;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
@@ -43,21 +42,19 @@ import es.jbr1989.anikkumoe.http.MyWebClient;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.receiver.CronReceiver;
 import es.jbr1989.anikkumoe.service.NotifyService;
+import es.jbr1989.anikkumoe.sqlite.ConfigSQLite;
 
 /**
  * Created by jbr1989 on 05/12/2015.
  */
 public class homeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
-    private static final String ROOT_URL = AppController.getInstance().getUrl();
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-
-    @Bind(R.id.nav_view) NavigationView mNavigationView;
-    @Bind(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+    private static final String IMG_URL = AppController.getInstance().getImg();
 
     public FragmentManager fragmentManager;
     public MyWebClient webClient;
     public Fragment fragment;
+    public DrawerLayout mDrawerLayout;
 
     public RequestQueue requestQueue;
     public CustomRequest request;
@@ -70,10 +67,10 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
+
         setContentView(R.layout.home);
         ButterKnife.bind(this);
-
-        Fresco.initialize(this);
 
         oUsuarioSession=new clsUsuarioSession(this);
         requestQueue = Volley.newRequestQueue(this);
@@ -83,19 +80,21 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
 
         Config = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
+        NavigationView mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
         View header = mNavigationView.getHeaderView(0);
-        NetworkImageView mAvatar = (NetworkImageView) header.findViewById(R.id.menu_avatar);
+        SimpleDraweeView mAvatar = (SimpleDraweeView) header.findViewById(R.id.menu_avatar);
         TextView mNombre = (TextView) header.findViewById(R.id.menu_nombre);
         TextView mUser = (TextView) header.findViewById(R.id.menu_user);
 
-        mAvatar.setImageUrl(ROOT_URL+"/static-img/" + oUsuarioSession.getAvatar(), imageLoader);
+        mAvatar.setImageURI(Uri.parse(IMG_URL + oUsuarioSession.getAvatar()));
         mNombre.setText(oUsuarioSession.getNombre());
         mUser.setText("@"+oUsuarioSession.getUsuario());
 
         int color = getResources().getColor(R.color.colorPrimary);
         //方法1:删除DrawerLayout所在布局中所有fitsSystemWindows属性,尤其是DrawerLayout的fitsSystemWindows属性
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         SystemBarHelper.tintStatusBarForDrawer(this, mDrawerLayout, color);
 
         Intent i= getIntent();
@@ -267,15 +266,26 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
         switchContent(fragment);
     }
 
-    public void logout(){
+    public boolean logout(){
         oUsuarioSession.delUsuario();
         oUsuarioSession.setLogin(false);
         stopService(new Intent(this, NotifyService.class));
 
+        if (Config.getBoolean("login_automatico", false)){
+            ConfigSQLite oConfigSQL = new ConfigSQLite(this);
+            String user = oConfigSQL.getConfig("user");
+            String password = oConfigSQL.getConfig("password");
+
+            MainActivity main = new MainActivity();
+            main.login(user, password, false);
+            return false;
+        }
+
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
-
         finish();
+
+        return true;
     }
 
     // NOTIFICACIONES

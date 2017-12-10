@@ -4,11 +4,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.android.volley.toolbox.NetworkImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/imgGridViewItem"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/txtGridViewItem"

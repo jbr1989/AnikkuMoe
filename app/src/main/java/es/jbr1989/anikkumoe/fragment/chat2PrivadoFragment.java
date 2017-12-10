@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +22,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
@@ -50,7 +47,7 @@ public class chat2PrivadoFragment extends Fragment implements SwipeRefreshLayout
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
     private static final String API_OLD_URL = AppController.getInstance().getApiOld();
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
+    private static final String IMG_URL = AppController.getInstance().getImg();
 
     private SuperRecyclerView mRecycler;
     private Chat2PrivadoListAdapter mAdapter;
@@ -183,9 +180,7 @@ public class chat2PrivadoFragment extends Fragment implements SwipeRefreshLayout
                 mRecycler.setAdapter(mAdapter);
 
                 home.setRefreshActionButtonState(false);
-
-                String url=ROOT_URL+"static-img/"+mAdapter.getAvatar();
-                mAvatar.setImageURI(Uri.parse(url));
+                mAvatar.setImageURI(Uri.parse(IMG_URL +mAdapter.getAvatar()));
 
                 if (intervalo!=0) mHandler.postDelayed(onEverySecond, intervalo*1000);
             }

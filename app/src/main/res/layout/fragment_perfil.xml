@@ -18,7 +18,7 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <com.android.volley.toolbox.NetworkImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/banner"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"

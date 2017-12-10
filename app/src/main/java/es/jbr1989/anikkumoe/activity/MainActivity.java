@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +32,7 @@ import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.object.clsUsuario;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
+import es.jbr1989.anikkumoe.sqlite.ConfigSQLite;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -45,10 +49,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public CustomRequest request;
 
     private EditText txtUser, txtPassword;
+    private CheckBox chkRecordarPassword, chkLoginAutomatico;
     private TextView lblRecuperar, lblRegistro;
     private Button btnLogin;
     private String user, password;
     private TextView txtError;
+
+    public SharedPreferences Config;
+    public ConfigSQLite oConfigSQL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,18 +67,34 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         txtUser = (EditText) findViewById(R.id.txtUser);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
+        chkLoginAutomatico = (CheckBox) findViewById(R.id.chkLoginAutomatico);
+        chkRecordarPassword = (CheckBox) findViewById(R.id.chkRecordarPassword);
         lblRecuperar = (TextView) findViewById(R.id.lblRecuperar);
         lblRegistro=(TextView) findViewById(R.id.lblRegistro);
         btnLogin = (Button) findViewById(R.id.btnLogin);
 
+        chkRecordarPassword.setOnClickListener(this);
         lblRecuperar.setOnClickListener(this);
         lblRegistro.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
 
         oUsuarioSession = new clsUsuarioSession(this);
 
-        //Intent NotificationServiceIntent = new Intent(this, NotificationService.class);
-        //this.startService(NotificationServiceIntent);
+        Config = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        oConfigSQL = new ConfigSQLite(ctx);
+
+        if (Config.getBoolean("login_recordar_password", false)){
+            txtUser.setText(oConfigSQL.getConfig("user"));
+            txtPassword.setText(oConfigSQL.getConfig("password"));
+
+            chkRecordarPassword.setChecked(true);
+        }else{
+            chkRecordarPassword.setChecked(false);
+            chkLoginAutomatico.setEnabled(false);
+        }
+
+        chkLoginAutomatico.setChecked(chkLoginAutomatico.isEnabled() && Config.getBoolean("login_automatico", false));
     }
 
     @Override
@@ -80,8 +104,17 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 user = txtUser.getText().toString();
                 password = txtPassword.getText().toString();
 
-                login();
+                SharedPreferences.Editor editor=Config.edit();
+                editor.putBoolean("login_recordar_password", chkRecordarPassword.isChecked());
+                editor.putBoolean("login_automatico", chkLoginAutomatico.isChecked());
+                editor.commit();
 
+                if (user.length()==0 || password.length()==0) Toast.makeText(MainActivity.this, "Usuario y contraseña obligatorios", Toast.LENGTH_SHORT).show();
+                else login(user, password, true);
+
+                break;
+            case R.id.chkRecordarPassword:
+                chkLoginAutomatico.setEnabled(chkRecordarPassword.isChecked());
                 break;
             case R.id.lblRecuperar:
             case R.id.lblRegistro:
@@ -104,7 +137,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onStart();
     }
 
-    private void login(){
+    public void login(final String user, final String password, final Boolean iniciar){
 
         pDialog = new ProgressDialog(MainActivity.this);
         pDialog.setMessage("Comprobando...");
@@ -127,7 +160,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             try {
                 String token = response.getString("token");
                 oUsuarioSession.login(user, token);
-                datos_usuario(user, token);
+                datos_usuario(user, token, iniciar);
             }
             catch (JSONException ex) {}
 
@@ -144,7 +177,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-    public void datos_usuario(String usuario, String token){
+    public void datos_usuario(final String usuario, final String token, final Boolean iniciar){
 
         pDialog.setMessage("Cargando usuario...");
         pDialog.show();
@@ -165,12 +198,14 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 oUsuarioSession.setUsuario(oUsuario);
                 oUsuarioSession.setLogin(true);
 
-                Intent i = new Intent(MainActivity.this, homeActivity.class);
-                finish();
-                startActivity(i);
+                oConfigSQL.setConfig("user", txtUser.getText().toString());
+                oConfigSQL.setConfig("password", (chkRecordarPassword.isChecked() ? txtPassword.getText().toString() : ""));
 
-                //if (Config.getBoolean("notificacion_activo",true))
-                    //startService(new Intent(MainActivity.this, NotifyService.class));
+                if (iniciar) {
+                    Intent i = new Intent(MainActivity.this, homeActivity.class);
+                    finish();
+                    startActivity(i);
+                }
 
                 pDialog.dismiss();
             }

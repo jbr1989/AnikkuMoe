@@ -43,7 +43,7 @@ public class clsBuzon {
         try {this.avatar=jPub.getString("avatar");}
         catch (JSONException ex){ex.printStackTrace();}
 
-        try {this.texto=jPub.getString("texto"); this.texto_html= clsTexto.toHTML(this.texto);}
+        try {this.texto=jPub.getString("mensaje"); this.texto_html= clsTexto.toHTML(this.texto);}
         catch (JSONException ex){ex.printStackTrace();}
 
         try {this.fecha= jPub.getLong("fecha");}

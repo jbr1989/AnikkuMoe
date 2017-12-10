@@ -12,8 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
@@ -29,6 +27,7 @@ import es.jbr1989.anikkumoe.object.clsChatPrivado;
 import es.jbr1989.anikkumoe.object.clsUsuario;
 import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.clsDate;
+import es.jbr1989.anikkumoe.other.clsTexto;
 
 /**
  * Created by jbr1989 on 09/12/2015.
@@ -49,12 +48,9 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
     private clsUsuario oUsuario;
 
     private clsDate oDate = new clsDate();
-    private Integer nuevos;
 
     private SharedPreferences ChatsConfig;
     private SharedPreferences.Editor ChatsConfigEditor;
-
-    ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public homeActivity home;
 
@@ -69,7 +65,6 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
 
         oChats=new ArrayList<clsChatPrivado>();
         oUsuario = new clsUsuario();
-        nuevos=0;
         ultima_fecha=null;
 
         ChatsConfig = context.getSharedPreferences(SP_NAME, 0);
@@ -84,7 +79,6 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
         oUsuarioSession = new clsUsuarioSession(context);
 
         this.oChats=oChats;
-        nuevos=0;
         ultima_fecha=null;
 
         ChatsConfig = context.getSharedPreferences(SP_NAME, 0);
@@ -113,9 +107,11 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
         holder.txtFecha.setText(oDate.DateDiff(oChat.getEnviado13(), System.currentTimeMillis()));
         //txtBody.setText(oChat.getHTMLMensaje());
 
+        String html = "<!DOCTYPE html><html><body style=\"margin:0;\">"+ clsTexto.styles()+oChat.getHTMLMensaje()+"</body></html>";
+
         holder.webBody.setWebViewClient(home.webClient);
         holder.webBody.getSettings().setJavaScriptEnabled(true);
-        holder.webBody.loadDataWithBaseURL(null, oChat.getHTMLMensaje(), "text/html", "UTF-8", null);
+        holder.webBody.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
         holder.webBody.setBackgroundColor(0x00000000);
 
         holder.txtUsuario.setOnClickListener(new View.OnClickListener() {
@@ -216,6 +212,7 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
 
     public void setChats(JSONObject response){
 
+
         clsChatPrivado oChat;
 
         try {
@@ -259,7 +256,6 @@ public class Chat2PrivadoListAdapter extends RecyclerView.Adapter<Chat2PrivadoLi
 
     public void clearChats(){
         oChats= new ArrayList<clsChatPrivado>();
-        nuevos=0;
     }
 
     // Guardar item cargado

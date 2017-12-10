@@ -33,7 +33,7 @@ public class clsMensaje{
         try {this.setDestino(jMensaje.getInt("destino"));}
         catch (JSONException ex){ex.printStackTrace();}
 
-        try {this.setTexto(jMensaje.getString("texto"));}
+        try {this.setTexto(jMensaje.getString("mensaje"));}
         catch (JSONException ex){ex.printStackTrace();}
 
         try {this.setFecha(jMensaje.getLong("fecha"));}
@@ -89,7 +89,7 @@ public class clsMensaje{
         return fecha;
     }
 
-    public Spanned getTextoHTML(){ return Html.fromHtml(texto_html);}
+    public String getTextoHTML(){ return texto_html;} //Html.fromHtml(texto_html);}
 
 
     //endregion
