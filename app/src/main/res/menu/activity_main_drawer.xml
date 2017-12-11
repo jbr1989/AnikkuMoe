@@ -27,10 +27,6 @@
             android:icon="@drawable/ic_group_black_24dp"
             android:title="@string/FragmentNakamas"/>
         <item
-            android:id="@+id/nav_FragmentPerfil"
-            android:icon="@drawable/ic_account_circle_black_24dp"
-            android:title="@string/FragmentPerfil"/>
-        <item
             android:id="@+id/nav_FragmentConfig"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/FragmentConfig"/>

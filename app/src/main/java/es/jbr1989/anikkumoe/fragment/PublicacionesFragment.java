@@ -53,6 +53,8 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
     public static final String TAG = "PublicacionesFragment";
 
+    public static final int REACTION_REQUEST = 1;
+
     private SuperRecyclerView          mRecycler;
     private PublicacionListAdapter          mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -130,16 +132,17 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
     }
 
     @Override
-    public  void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+        if(requestCode == REACTION_REQUEST && resultCode == Activity.RESULT_OK){
             Integer id_publicacion = data.getIntExtra(ReactionActivity.RESULT_ID,0);
+            Integer position = data.getIntExtra(ReactionActivity.RESULT_POSITION,0);
             String reaction = data.getStringExtra(ReactionActivity.RESULT_REACTION);
 
             //mAdapter.setReaction(id_publicacion,reaction);
-            cargar_publicacion(id_publicacion);
+            cargar_publicacion(id_publicacion, position);
 
-            Toast.makeText(getActivity(), "Reaction: " +reaction, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity(), "Reaction: " +reaction, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -194,7 +197,7 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
         }
     }
 
-    public void cargar_publicacion(final Integer id_publicacion){
+    public void cargar_publicacion(final Integer id_publicacion, final Integer position){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
@@ -210,14 +213,13 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
             @Override
             public void onResponse(JSONObject response) {
                 clsPublicacion oPublicacion= new clsPublicacion(response);
-                mAdapter.setPublicacion(id_publicacion, oPublicacion);
-                mAdapter.notifyDataSetChanged();
+                mAdapter.setPublicacion(oPublicacion, position);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (error!=null && error.toString().equals("com.android.volley.AuthFailureError")){
-                    if (!home.logout()) cargar_publicacion(id_publicacion);
+                    if (!home.logout()) cargar_publicacion(id_publicacion, position);
                 }else{
                     Toast.makeText(getActivity(), error.toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -434,10 +436,10 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
+        CustomRequest request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
-                mAdapter.setPublicaciones(response);
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones2(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
             }
@@ -464,10 +466,10 @@ public class PublicacionesFragment extends Fragment implements SwipeRefreshLayou
 
         Map<String, String> params = new HashMap<String, String>();
 
-        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
+        CustomRequest request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
-                mAdapter.setPublicaciones(response);
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones2(response);
                 mAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {

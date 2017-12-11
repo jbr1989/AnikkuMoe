@@ -38,12 +38,15 @@ public class ReactionActivity extends ListActivity {
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
     public static String RESULT_ID="id";
+    public static String RESULT_POSITION= "position";
     public static String RESULT_REACTION = "reaction";
 
     public String[] countrynames, countrycodes;
     private TypedArray imgs;
     private List<Country> countryList;
+
     private Integer id_publicacion;
+    private Integer position;
 
     private clsUsuarioSession oUsuarioSession;
 
@@ -66,16 +69,11 @@ public class ReactionActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Country c = countryList.get(position);
-                returnIntent = new Intent();
-                returnIntent.putExtra(RESULT_ID, id_publicacion);
-                returnIntent.putExtra(RESULT_REACTION, c.getCode());
-                //setResult(RESULT_OK, returnIntent);
-                imgs.recycle(); //recycle images
 
-                like(id_publicacion, c.getCode());
+                like(c.getCode());
                 //Toast.makeText(view.getContext(), "CODE: "+c.getCode(), Toast.LENGTH_SHORT).show();
                 //Toast.makeText(view.getContext(), "ID:"+id_publicacion.toString(), Toast.LENGTH_SHORT).show();
-                finish();
+
             }
         });
 
@@ -83,6 +81,7 @@ public class ReactionActivity extends ListActivity {
         Bundle extras = i.getExtras();
         if(extras != null) {
             id_publicacion = extras.getInt("id_publicacion");
+            position= extras.getInt("position");
         }
     }
 
@@ -116,7 +115,7 @@ public class ReactionActivity extends ListActivity {
         }
     }
 
-    public void like(Integer id_publicacion, String code){
+    public void like(final String code){
 
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/x-www-form-urlencoded");
@@ -131,8 +130,20 @@ public class ReactionActivity extends ListActivity {
                 try {
                     if(response.getString("success").equalsIgnoreCase("true")){
                         Toast.makeText(ReactionActivity.this, "PUNTUACION CORRECTA", Toast.LENGTH_SHORT).show();
+
+                        returnIntent = new Intent();
+                        returnIntent.putExtra(RESULT_ID, id_publicacion);
+                        returnIntent.putExtra(RESULT_POSITION, position);
+                        returnIntent.putExtra(RESULT_REACTION, code);
+
+                        imgs.recycle(); //recycle images
+
+                        setResult(RESULT_OK, returnIntent);
+                        finish();
+
                     }else{Toast.makeText(ReactionActivity.this, "PUNTUACION INCORRECTA", Toast.LENGTH_SHORT).show();}
                 } catch (JSONException e) {
+                    setResult(RESULT_CANCELED);
                     Toast.makeText(ReactionActivity.this, "ERROR AL PUNTUAR", Toast.LENGTH_SHORT).show();
                 }
 

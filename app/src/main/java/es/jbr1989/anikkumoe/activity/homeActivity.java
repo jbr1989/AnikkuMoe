@@ -92,6 +92,12 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
         mNombre.setText(oUsuarioSession.getNombre());
         mUser.setText("@"+oUsuarioSession.getUsuario());
 
+        mAvatar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                displayView(R.id.menu_avatar, true);
+            }
+        });
+
         int color = getResources().getColor(R.color.colorPrimary);
         //方法1:删除DrawerLayout所在布局中所有fitsSystemWindows属性,尤其是DrawerLayout的fitsSystemWindows属性
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -180,7 +186,7 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new nakamasFragment();
                 title=getResources().getString(R.string.FragmentNakamas);
                 break;
-            case R.id.nav_FragmentPerfil:
+            case R.id.menu_avatar:
                 arguments.putString("usuario", oUsuarioSession.getUsuario());
                 fragment = perfil3Fragment.newInstance(arguments);
                 title=getResources().getString(R.string.FragmentPerfil);

@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
     <changelog>
-        <release version="0.4.5" versioncode="18" summary="Alpha" date="">
+    <!--<change>Ver mensajes ya vistos del chat global sin conexión a Internet.</change>-->
+    <!--<change>El listado de mensajes del chat ahora muestra los últimos</change>-->
+    <!--<change>Ver publicaciones, nakamas, siguiendo y seguidores en el perfil de usuario.</change>-->
+    <!--<change>Poner imagenes en las publicaciones.</change>-->
+        <release version="0.4.6" versioncode="19" summary="Alpha" date="11/12/2017">
+            <change>Quitado la opción de "Mi perfil" en el menú. Ahora para ver el perfil personal hacer click en la imagen del usuario en el menú.</change>
+            <change>FIX: Al valorar una publicación se actualizará sus valoraciones.</change>
+            <change>FIX: Intentando solucionar todos los problemas de las nuevas actualizaciones de Frans XD (En proceso...)</change>
+        </release>
+        <release version="0.4.5" versioncode="18" summary="Alpha" date="10/12/2017">
             <change>Habilitadas las publicaciones de "Waifu".</change>
-            <change>Habilitado la nueva etiqueta de Spoiler [sp].</change>
+            <change>Habilitado la nueva etiqueta de BBcode Spoiler [sp].</change>
             <change>Ya se puede guardar los datos de conexión para el login más rápido</change>
             <change>Cargar los mensajes anteriores del chat público. (Beta)</change>
             <change>FIX: Intentando solucionar todos los problemas de las nuevas actualizaciones de Frans XD (En proceso...)</change>
-            <change>FIX: Reduccion del tamaño de la aplicación. Un poco de limpieza del código.</change>
-            <!--<change>Ver mensajes ya vistos del chat global sin conexión a Internet.</change>-->
-            <!--<change>El listado de mensajes del chat ahora muestra los últimos</change>-->
-            <!--<change>Ver publicaciones, nakamas, siguiendo y seguidores en el perfil de usuario.</change>-->
-            <!--<change>Poner imagenes en las publicaciones.</change>-->
+            <change>FIX: Reduccion del tamaño de la aplicación. Un poco de limpieza de código.</change>
         </release>
         <release version="0.4.4" versioncode="17" summary="Alpha" date="17/11/2017">
             <change>Notificación de nuevas notificaciones al iniciar la aplicación.</change>
@@ -26,7 +31,7 @@
         </release>
         <release version="0.4.2" versioncode="15" summary="Alpha" date="20/06/2017">
             <change>FIX: Quitada la imagen de fondo del login. Daba error en Android 7.0</change>
-            <change>FIN DEL DESARROLLO. Últimamente hay muchos problemas con la página web y ademas no hay mucha actividad. Por eso, de momento lo dejaré apartado. Si algún día veo que la cosa funciona mejor o la gente se anima, volveré.</change>
+            <change>PAUSA DEL DESARROLLO. Últimamente hay muchos problemas con la página web y ademas no hay mucha actividad. Por eso, de momento lo dejaré apartado. Si algún día veo que la cosa funciona mejor o la gente se anima, volveré.</change>
         </release>
         <release version="0.4.1" versioncode="14" summary="Alpha" date="11/12/2016">
             <change>Ver publicaciones en el perfil de usuario.</change>

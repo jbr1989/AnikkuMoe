@@ -25,6 +25,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.json.JSONArray;
@@ -40,6 +43,7 @@ import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.ReactionActivity;
 import es.jbr1989.anikkumoe.activity.homeActivity;
+import es.jbr1989.anikkumoe.fragment.PublicacionesFragment;
 import es.jbr1989.anikkumoe.fragment.SerieFragment;
 import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
@@ -48,6 +52,7 @@ import es.jbr1989.anikkumoe.object.clsUsuarioSession;
 import es.jbr1989.anikkumoe.other.ExpandedListView;
 import es.jbr1989.anikkumoe.other.clsDate;
 import es.jbr1989.anikkumoe.other.clsTexto;
+import me.relex.photodraweeview.PhotoDraweeView;
 
 /**
  * Created by jbr1989 on 09/12/2015.
@@ -114,7 +119,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
     @Override
     public void onBindViewHolder(final PublicacionListAdapter.ViewHolder holder, final int position) {
         final clsPublicacion oPublicacion=oPublicaciones.get(position);
-        cargar_publicacion(holder, oPublicacion);
+        cargar_publicacion(holder, oPublicacion, position);
     }
 
     @Override
@@ -176,9 +181,10 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     //endregion
 
-    public void setPublicacion(Integer id_publicacion, clsPublicacion oPublicacion){
-        Integer pos = indexOf_id(id_publicacion);
-        if(pos>=0) oPublicaciones.set(pos,oPublicacion);
+    public void setPublicacion(clsPublicacion oPublicacion, Integer position){
+        //Integer pos = indexOf_id(id_publicacion);
+        if(position>=0) oPublicaciones.set(position,oPublicacion);
+        notifyItemChanged(position);
     }
 
     public void setPublicaciones(JSONArray response){
@@ -203,6 +209,28 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     }
 
+    public void setPublicaciones2(JSONObject response){
+
+        clsPublicacion oPublicacion;
+        int startIndex = oPublicaciones.size();
+
+        try {
+            JSONArray jPublicaciones=response.getJSONArray("data");
+
+            int num = jPublicaciones.length();
+            for (int i=0; i<num;i++){
+                oPublicacion= new clsPublicacion(jPublicaciones.getJSONObject(i));
+                ultima_fecha=oPublicacion.getFecha();
+                oPublicaciones.add(oPublicacion);
+                //if(oPublicacion.nuevo()) nuevos+=1;
+            }
+
+            notifyItemRangeInserted(startIndex, num);
+
+        }catch (JSONException ex){ex.printStackTrace();}
+
+    }
+
     public void clearPublicaciones(){
         oPublicaciones.clear();
     }
@@ -212,7 +240,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
     public static class ViewHolder extends RecyclerView.ViewHolder {
         //public final CardView lytPublicacion;
         public final LinearLayout lytBody, lytSpoiler, lytAnime, lytComentar,lytComentarios, lytLikes, lytReplicas, lytReactionLike, lytReactionLove, lytReactionHaha, lytReactionWow, lytReactionSorry, lytReactionAnger, lytReactionReplicas;
-        public final SimpleDraweeView imgAvatar, imgAvatarOri, imgAnime;
+        public final SimpleDraweeView imgAvatar, imgAvatarOri, imgAnime, imgBody;
         public final ImageView imgLike;
         public final WebView webBody;
         public final TextView txtNombre, txtFecha, txtUsuario, txtNombreOri, txtAnime, txtComentarios, txtReactionLike, txtReactionLove, txtReactionHaha, txtReactionWow, txtReactionSorry, txtReactionAnger, txtReactionReplicas, txtLike, txtMessage;
@@ -234,6 +262,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             this.imgAvatar = (SimpleDraweeView) itemView.findViewById(R.id.imgPubAvatar);
             this.imgAvatarOri = (SimpleDraweeView) itemView.findViewById(R.id.imgPubAvatarOri);
             this.webBody= (WebView) itemView.findViewById(R.id.webBody);
+            this.imgBody = (SimpleDraweeView) itemView.findViewById(R.id.imgBody);
             this.txtNombre = (TextView) itemView.findViewById(R.id.txtNombre);
             this.txtFecha = (TextView) itemView.findViewById(R.id.txtFecha);
             this.txtUsuario = (TextView) itemView.findViewById(R.id.txtUsuario);
@@ -270,7 +299,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     //region PUBLICACION
 
-    public void cargar_publicacion(final ViewHolder holder, final clsPublicacion oPublicacion){
+    public void cargar_publicacion(final ViewHolder holder, final clsPublicacion oPublicacion, final Integer position){
 
         if (oPublicacion.getType().equalsIgnoreCase("REP")) {
             holder.imgAvatarOri.setImageURI(Uri.parse(IMG_URL + oPublicacion.user.getAvatar()));
@@ -394,8 +423,9 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
             public void onClick(View v) {
                 final Intent intent = new Intent(v.getContext(), ReactionActivity.class);
                 intent.putExtra("id_publicacion", oPublicacion.feed.getId());
+                intent.putExtra("position", position);
                 //intent.putExtra("usuario", (!oPublicacion.getType().equalsIgnoreCase("REP") ? oPublicacion.user.getUsuario() : oPublicacion.user_original.getUsuario()));
-                ((Activity) context).startActivityForResult(intent, 1);
+                ((Activity) context).startActivityForResult(intent, PublicacionesFragment.REACTION_REQUEST);
             }
         });
 
@@ -526,7 +556,7 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
     //region OPCIONES PUBLICACION
 
-    public void mostrar_body(final PublicacionListAdapter.ViewHolder holder, clsPublicacion oPublicacion, Boolean ver_spoiler){
+    public void mostrar_body(final PublicacionListAdapter.ViewHolder holder, final clsPublicacion oPublicacion, Boolean ver_spoiler){
 
         if (!ver_spoiler){
             holder.lytSpoiler.setVisibility(View.GONE);
@@ -538,13 +568,30 @@ public class PublicacionListAdapter extends RecyclerView.Adapter<PublicacionList
 
                 html += "<div style=\"text-align:justify;margin: 10px 5px;padding: 0;\">" + oPublicacion.feed.getTextoHtml() + "</div>";
 
-                if (!oPublicacion.feed.getImagen().equalsIgnoreCase(""))
-                    html += "<a href=\"img:" + ROOT_URL + "static-img/" + oPublicacion.feed.getImagen() + "\"><img src=\"" + ROOT_URL + "static-img/" + oPublicacion.feed.getImagen() + "\" style=\"max-width:100%;\"></a>";
-                else if (!oPublicacion.feed.getVideo().equalsIgnoreCase(""))
-                    html += "<a href=\"" + oPublicacion.feed.getVideo() + "\"><iframe src=\"http://www.youtube.com/embed/" + oPublicacion.feed.getIdVideo() + "\" type=\"text/html\" width=\"100%\"></iframe></a>";
+                if (!oPublicacion.feed.getImagen().equalsIgnoreCase("")) {
+                    holder.imgBody.setVisibility(View.VISIBLE);
 
+                    DraweeController controller = Fresco.newDraweeControllerBuilder()
+                            .setUri(Uri.parse(ROOT_URL + "static-img/" + oPublicacion.feed.getImagen()))
+                            .setAutoPlayAnimations(true)
+                            .build();
+
+                    holder.imgBody.setController(controller);
+                    holder.imgBody.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+
+                    holder.imgBody.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            home.webClient.cargar_img(ROOT_URL + "static-img/" + oPublicacion.feed.getImagen());
+                        }
+                    });
+                    //html += "<a href=\"img:" + ROOT_URL + "static-img/" + oPublicacion.feed.getImagen() + "\"><img src=\"" + ROOT_URL + "static-img/" + oPublicacion.feed.getImagen() + "\" style=\"max-width:100%;\"></a>";
+                }else if (!oPublicacion.feed.getVideo().equalsIgnoreCase("")) {
+                    holder.imgBody.setVisibility(View.GONE);
+                    html += "<a href=\"" + oPublicacion.feed.getVideo() + "\"><iframe src=\"http://www.youtube.com/embed/" + oPublicacion.feed.getIdVideo() + "\" type=\"text/html\" width=\"100%\"></iframe></a>";
+                }
             }else if(oPublicacion.feed.getActivity_type().equalsIgnoreCase("waifu")){
                 html += "<div style=\"padding: 10px; text-align: center\">" + oPublicacion.feed.activity_data.getHtml(oPublicacion.getFecha()) + "</div>";
+                holder.imgBody.setVisibility(View.GONE);
             }
 
             html += "</body></html>";

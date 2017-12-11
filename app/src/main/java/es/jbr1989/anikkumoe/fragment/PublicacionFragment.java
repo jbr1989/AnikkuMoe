@@ -99,7 +99,7 @@ public class PublicacionFragment extends Fragment {
 
                 PublicacionListAdapter oListadoPublicaciones= new PublicacionListAdapter(rootView.getContext());
                 PublicacionListAdapter.ViewHolder holder= new PublicacionListAdapter.ViewHolder(rootView);
-                oListadoPublicaciones.cargar_publicacion(holder, oPublicacion);
+                oListadoPublicaciones.cargar_publicacion(holder, oPublicacion, 0);
 
                 //if(comentarios) PublicacionListAdapter.ver_comentarios();
             }

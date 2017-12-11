@@ -33,7 +33,6 @@
         <item name="mensajes">@string/FragmentMensajes</item>
         <item name="chat_global">@string/FragmentChatGlobal</item>
         <item name="nakamas">@string/FragmentNakamas</item>
-        <item name="perfil">@string/FragmentPerfil</item>
         <item name="config">@string/FragmentConfig</item>
         <item name="logout">@string/FragmentLogout</item>
     </string-array>
@@ -58,9 +57,8 @@
         <item name="mensajes">3</item>
         <item name="chat_global">4</item>
         <item name="nakamas">5</item>
-        <item name="perfil">6</item>
-        <item name="config">7</item>
-        <item name="logout">8</item>
+        <item name="config">6</item>
+        <item name="logout">7</item>
     </string-array>
 
     <string name="nav_drawer_values_defecto">1</string>

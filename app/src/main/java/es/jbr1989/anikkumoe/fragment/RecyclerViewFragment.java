@@ -23,6 +23,7 @@ import com.malinskiy.superrecyclerview.OnMoreListener;
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import es.jbr1989.anikkumoe.AppController;
 import es.jbr1989.anikkumoe.ListAdapter.PublicacionListAdapter;
 import es.jbr1989.anikkumoe.R;
 import es.jbr1989.anikkumoe.activity.homeActivity;
+import es.jbr1989.anikkumoe.http.CustomRequest;
 import es.jbr1989.anikkumoe.http.CustomRequest2;
 import es.jbr1989.anikkumoe.object.clsPublicacion;
 
@@ -83,6 +85,8 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
         mRecycler.setRefreshingColorResources(android.R.color.holo_orange_light, android.R.color.holo_blue_light, android.R.color.holo_green_light, android.R.color.holo_red_light);
         mRecycler.setupMoreListener(this, 1);
 
+        cargar_publicaciones();
+
         return rootView;
     }
 
@@ -114,7 +118,6 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        cargar_publicaciones();
     }
 
     @Override
@@ -288,7 +291,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/user/hashtag/"+valor+"?page=0");
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     public void hashtag_nuevas_publicaciones(){
@@ -312,7 +315,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/user/hashtag/"+valor+"?page="+mAdapter.get_UltimaFecha().toString());
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     //endregion
@@ -329,10 +332,10 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
+        CustomRequest request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
-                mAdapter.setPublicaciones(response);
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones2(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
             }
@@ -344,7 +347,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/user/"+valor+"/activity?type=0&page=0");
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     public void usuario_nuevas_publicaciones(){
@@ -355,10 +358,10 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
+        CustomRequest request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
-                mAdapter.setPublicaciones(response);
+            public void onResponse(JSONObject response) {
+                mAdapter.setPublicaciones2(response);
                 mAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
@@ -368,7 +371,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/user/"+valor+"/activity?type=0&page="+mAdapter.get_UltimaFecha().toString());
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     //endregion
@@ -404,7 +407,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/serie/"+valor +"/activity?page=0");
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     public void serie_nuevas_publicaciones(){
@@ -428,7 +431,7 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
             }
         },ROOT_URL+"api/serie/"+valor +"/activity?page="+mAdapter.get_UltimaFecha().toString());
 
-        home.requestQueue.add(home.request);
+        home.requestQueue.add(request);
     }
 
     //endregion

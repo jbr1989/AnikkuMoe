@@ -305,7 +305,7 @@ public class Chat2ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             intermedia_fecha =primera_fecha;
             ultima_fecha=get_UltimaFecha();
             notifyDataSetChanged();
-            //cargar_nuevos_chats(); // Despues de mostrar los ultimos mensajes del SQL cargar si hay nuevos desde la ultima conexión
+            cargar_nuevos_chats(); // Despues de mostrar los ultimos mensajes del SQL cargar si hay nuevos desde la ultima conexión
         }
     }
 

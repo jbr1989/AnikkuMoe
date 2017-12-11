@@ -11,15 +11,18 @@
 			<function title="Agradecimientos a">
 				<credit>@Miree (Gracias a ella conoci Anikku)</credit>
 				<credit>@mechafruit (Camarada en el plugin de Anikku)</credit>
+				<credit>@frans (Desarrollador de Anikku.moe)</credit>
 				<credit>A ti que estas viendo esto por apoyar. :)</credit>
 			</function>
 			<function title="Plugins">
-				<credit><url title="Subsampling Scale Image View (davemorrissey)">https://github.com/davemorrissey</url></credit>
+				<credit><url title="SuperRecyclerView">https://github.com/Malinskiy/SuperRecyclerView</url></credit>
+				<credit><url title="Subsampling Scale Image View (davemorrissey)">https://github.com/davemorrissey/subsampling-scale-image-view</url></credit>
+				<credit><url title="Fresco">http://frescolib.org/</url></credit>
 			</function>
 		</section>
+		<copyright>(c) dizo 2016</copyright>
 		<websites>
 			<url title="Pagina Web (PROXIMAMENTE)">https://anikkumoe.jbr1989</url>
 		</websites>
-		<copyright>(c) dizo 2016</copyright>
 	</credits>
 
