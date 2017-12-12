@@ -58,7 +58,8 @@
             app:scrollbarStyle="insideInset"
             android:nestedScrollingEnabled="false"
             android:background="#ffffff"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_above="@+id/txtMensajeMensaje"/>
 
     </RelativeLayout>
 

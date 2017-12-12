@@ -33,7 +33,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.MetadataChangeSet;
-import com.vansuita.library.IPickResult;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +55,9 @@ import es.jbr1989.anikkumoe.other.clsImagen;
  * Created by jbr1989 on 01/06/2016.
  */
 public class NuevaPublicacionActivity extends AppCompatActivity
-        implements IPickResult, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -65,8 +67,6 @@ public class NuevaPublicacionActivity extends AppCompatActivity
     private static final String DIALOG_ERROR = "dialog_error";
     // Bool to track whether the app is already resolving an error
     private boolean mResolvingError = false;
-
-
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
@@ -105,6 +105,10 @@ public class NuevaPublicacionActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nueva_publicacion);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
         setTitle("Nueva publicación");
 
         ctx=this;
@@ -250,13 +254,6 @@ public class NuevaPublicacionActivity extends AppCompatActivity
             mGoogleApiClient.disconnect();
         }
         super.onPause();
-    }
-
-    @Override
-    public void onPickImageResult(Bitmap bitmap) {
-        //TODO: use bitmap.
-        imgNewImagen.setImageBitmap(bitmap);
-        lytMultimedia.setVisibility(View.VISIBLE);
     }
 
     public void addPublicacion(String publicacionText){

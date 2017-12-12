@@ -20,6 +20,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +37,8 @@ import es.jbr1989.anikkumoe.sqlite.ConfigSQLite;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
@@ -62,6 +65,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         ctx=this;
 

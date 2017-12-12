@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.flyco.systembar.SystemBarHelper;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import butterknife.ButterKnife;
 import es.jbr1989.anikkumoe.AppController;
@@ -49,6 +50,8 @@ import es.jbr1989.anikkumoe.sqlite.ConfigSQLite;
  */
 public class homeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     private static final String IMG_URL = AppController.getInstance().getImg();
 
     public FragmentManager fragmentManager;
@@ -68,6 +71,9 @@ public class homeActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         setContentView(R.layout.home);
         ButterKnife.bind(this);

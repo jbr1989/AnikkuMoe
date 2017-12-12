@@ -15,9 +15,10 @@
 				<credit>A ti que estas viendo esto por apoyar. :)</credit>
 			</function>
 			<function title="Plugins">
-				<credit><url title="SuperRecyclerView">https://github.com/Malinskiy/SuperRecyclerView</url></credit>
+				<credit><url title="SuperRecyclerView (Malinskiy)">https://github.com/Malinskiy/SuperRecyclerView</url></credit>
 				<credit><url title="Subsampling Scale Image View (davemorrissey)">https://github.com/davemorrissey/subsampling-scale-image-view</url></credit>
-				<credit><url title="Fresco">http://frescolib.org/</url></credit>
+				<credit><url title="Fresco (Facebook)">http://frescolib.org/</url></credit>
+				<credit><url title="Volley (Google)">https://github.com/google/volley</url></credit>
 			</function>
 		</section>
 		<copyright>(c) dizo 2016</copyright>

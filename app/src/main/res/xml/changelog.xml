@@ -4,6 +4,11 @@
     <!--<change>El listado de mensajes del chat ahora muestra los últimos</change>-->
     <!--<change>Ver publicaciones, nakamas, siguiendo y seguidores en el perfil de usuario.</change>-->
     <!--<change>Poner imagenes en las publicaciones.</change>-->
+        <release version="0.4.7" versioncode="20" summary="Alpha" date="12/12/2017">
+            <change>FIX: Enviar mensajes privados.</change>
+            <change>FIX: Intentando solucionar todos los problemas de las nuevas actualizaciones de Frans XD (En proceso...)</change>
+            <change>UPDATE: Actualización de bibliotecas (código).</change>
+        </release>
         <release version="0.4.6" versioncode="19" summary="Alpha" date="11/12/2017">
             <change>Quitado la opción de "Mi perfil" en el menú. Ahora para ver el perfil personal hacer click en la imagen del usuario en el menú.</change>
             <change>FIX: Al valorar una publicación se actualizará sus valoraciones.</change>

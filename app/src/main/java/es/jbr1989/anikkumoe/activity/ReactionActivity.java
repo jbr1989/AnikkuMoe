@@ -15,6 +15,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +35,8 @@ import es.jbr1989.anikkumoe.object.clsUsuarioSession;
  * Created by jbr1989 on 21/04/2016.
  */
 public class ReactionActivity extends ListActivity {
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     private static final String ROOT_URL = AppController.getInstance().getUrl();
 
@@ -58,6 +61,9 @@ public class ReactionActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         oUsuarioSession = new clsUsuarioSession(this);
         requestQueue = Volley.newRequestQueue(this);
