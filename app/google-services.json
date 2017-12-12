@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "587127082363",
+    "firebase_url": "https://anikkumoe.firebaseio.com",
+    "project_id": "anikkumoe",
+    "storage_bucket": "anikkumoe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587127082363:android:a76c8ebfe189a1bb",
+        "android_client_info": {
+          "package_name": "es.jbr1989.anikkumoe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587127082363-gom0u8cfb5rq9oc9cvo8a8cv4879685l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "es.jbr1989.anikkumoe",
+            "certificate_hash": "97cdafa31535412971b086029ef2aca4b29b206c"
+          }
+        },
+        {
+          "client_id": "587127082363-6c3pqk6jvq97hst5clokcgmmfbl9kck8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZgj2HaVOeyvLmbcvgDCaTFTBaUte5mI8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587127082363-6c3pqk6jvq97hst5clokcgmmfbl9kck8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
