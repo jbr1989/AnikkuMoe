@@ -332,10 +332,10 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        CustomRequest request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
-                mAdapter.setPublicaciones2(response);
+            public void onResponse(JSONArray response) {
+                mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
                 mRecycler.setAdapter(mAdapter);
             }
@@ -358,10 +358,10 @@ public class RecyclerViewFragment extends Fragment implements SwipeRefreshLayout
 
         Map<String, String> params = new HashMap<String, String>();
 
-        CustomRequest request = new CustomRequest(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONObject>() {
+        CustomRequest2 request = new CustomRequest2(home.requestQueue, Request.Method.GET, headers, params, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
-                mAdapter.setPublicaciones2(response);
+            public void onResponse(JSONArray response) {
+                mAdapter.setPublicaciones(response);
                 mAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
